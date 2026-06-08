@@ -1,0 +1,380 @@
+:root {
+    --pf-public-primary: #0E2238;
+    --pf-public-accent: #C5A572;
+    --pf-public-bg: #ffffff;
+    --pf-public-soft: #f8f6f0;
+    --pf-public-text: #0E2238;
+    --pf-public-muted: rgba(14, 34, 56, 0.62);
+    --pf-public-line: rgba(14, 34, 56, 0.13);
+    --pf-public-radius: 18px;
+    --pf-public-shadow: 0 18px 50px rgba(14, 34, 56, 0.12);
+}
+
+.pulseforms-wrapper {
+    max-width: 760px;
+    margin: 24px 0;
+    color: var(--pf-public-text);
+}
+
+.pulseforms-form {
+    background: var(--pf-public-bg);
+    border: 1px solid var(--pf-public-line);
+    border-radius: 28px;
+    padding: clamp(22px, 4vw, 34px);
+    box-shadow: var(--pf-public-shadow);
+}
+
+.pulseforms-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.pulseforms-field {
+    min-width: 0;
+}
+
+.pulseforms-width-full {
+    grid-column: 1 / -1;
+}
+
+.pulseforms-field label,
+.pulseforms-choice,
+.pulseforms-toggle {
+    color: var(--pf-public-text);
+    font-weight: 800;
+}
+
+.pulseforms-field > label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.pulseforms-required {
+    color: #b42318;
+}
+
+.pulseforms-field input,
+.pulseforms-field select,
+.pulseforms-field textarea {
+    width: 100%;
+    border: 1px solid var(--pf-public-line);
+    border-radius: var(--pf-public-radius);
+    background: #ffffff;
+    color: var(--pf-public-text);
+    padding: 14px 15px;
+    font-size: 15px;
+    outline: none;
+    box-shadow: none;
+    transition: 0.22s ease;
+}
+
+.pulseforms-field textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.pulseforms-field input:focus,
+.pulseforms-field select:focus,
+.pulseforms-field textarea:focus {
+    border-color: var(--pf-public-accent);
+    box-shadow: 0 0 0 4px rgba(197, 165, 114, 0.14);
+}
+
+.pulseforms-choice-list {
+    display: grid;
+    gap: 10px;
+}
+
+.pulseforms-choice,
+.pulseforms-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.pulseforms-choice input,
+.pulseforms-toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pulseforms-checkbox-ui,
+.pulseforms-radio-ui {
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--pf-public-line);
+    background: #ffffff;
+    display: inline-grid;
+    place-items: center;
+    transition: 0.2s ease;
+    flex: 0 0 auto;
+}
+
+.pulseforms-checkbox-ui {
+    border-radius: 7px;
+}
+
+.pulseforms-radio-ui {
+    border-radius: 999px;
+}
+
+.pulseforms-choice input:checked + .pulseforms-checkbox-ui,
+.pulseforms-choice input:checked + .pulseforms-radio-ui {
+    border-color: var(--pf-public-accent);
+    background: var(--pf-public-accent);
+}
+
+.pulseforms-checkbox-ui::after {
+    content: "";
+    width: 10px;
+    height: 6px;
+    border-left: 2px solid var(--pf-public-primary);
+    border-bottom: 2px solid var(--pf-public-primary);
+    transform: rotate(-45deg) scale(0);
+    transition: 0.18s ease;
+}
+
+.pulseforms-radio-ui::after {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: var(--pf-public-primary);
+    transform: scale(0);
+    transition: 0.18s ease;
+}
+
+.pulseforms-choice input:checked + .pulseforms-checkbox-ui::after,
+.pulseforms-choice input:checked + .pulseforms-radio-ui::after {
+    transform: rotate(-45deg) scale(1);
+}
+
+.pulseforms-choice input:checked + .pulseforms-radio-ui::after {
+    transform: scale(1);
+}
+
+.pulseforms-toggle-ui {
+    width: 48px;
+    height: 28px;
+    border-radius: 999px;
+    background: rgba(14, 34, 56, 0.15);
+    position: relative;
+    transition: 0.22s ease;
+    flex: 0 0 auto;
+}
+
+.pulseforms-toggle-ui::after {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    left: 3px;
+    top: 3px;
+    border-radius: 999px;
+    background: white;
+    box-shadow: 0 4px 14px rgba(14, 34, 56, 0.18);
+    transition: 0.22s ease;
+}
+
+.pulseforms-toggle input:checked + .pulseforms-toggle-ui {
+    background: var(--pf-public-accent);
+}
+
+.pulseforms-toggle input:checked + .pulseforms-toggle-ui::after {
+    transform: translateX(20px);
+}
+
+.pulseforms-file input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pulseforms-file label {
+    border: 1px dashed var(--pf-public-line);
+    border-radius: var(--pf-public-radius);
+    background: var(--pf-public-soft);
+    padding: 20px;
+    display: grid;
+    gap: 4px;
+    place-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.22s ease;
+}
+
+.pulseforms-file label:hover {
+    border-color: var(--pf-public-accent);
+    background: rgba(197, 165, 114, 0.12);
+}
+
+.pulseforms-file .material-symbols-outlined {
+    color: var(--pf-public-accent);
+    font-size: 32px;
+}
+
+.pulseforms-file small {
+    color: var(--pf-public-muted);
+}
+
+.pulseforms-actions {
+    margin-top: 20px;
+}
+
+.pulseforms-submit {
+    border: 0;
+    border-radius: var(--pf-public-radius);
+    background: var(--pf-public-accent);
+    color: var(--pf-public-primary);
+    padding: 14px 20px;
+    font-weight: 900;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.22s ease;
+}
+
+.pulseforms-submit:hover {
+    background: var(--pf-public-primary);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.pulseforms-submit.is-loading {
+    opacity: 0.82;
+    pointer-events: none;
+}
+
+.pulseforms-loader {
+    display: none;
+    width: 17px;
+    height: 17px;
+    border-radius: 999px;
+    border: 3px solid rgba(14, 34, 56, 0.22);
+    border-top-color: var(--pf-public-primary);
+    animation: pulseforms-spin 0.7s linear infinite;
+}
+
+.pulseforms-submit.is-loading .pulseforms-loader {
+    display: inline-block;
+}
+
+@keyframes pulseforms-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.pulseforms-feedback {
+    display: none;
+    margin-top: 18px;
+    border-radius: 18px;
+    padding: 14px 16px;
+    font-weight: 800;
+}
+
+.pulseforms-feedback.is-visible {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pulseforms-feedback.is-success {
+    background: #ecfdf3;
+    color: #027a48;
+    border: 1px solid #abefc6;
+}
+
+.pulseforms-feedback.is-error {
+    background: #fef3f2;
+    color: #b42318;
+    border: 1px solid #fecdca;
+}
+
+.pulseforms-system-notice {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #fef3f2;
+    color: #b42318;
+    border: 1px solid #fecdca;
+    border-radius: 18px;
+    padding: 14px 16px;
+    font-weight: 800;
+}
+
+.pulseforms-hp-field {
+    position: absolute;
+    left: -99999px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pulseforms-theme-aurora .pulseforms-form {
+    background:
+        radial-gradient(circle at top left, rgba(197, 165, 114, 0.14), transparent 30%),
+        #ffffff;
+}
+
+.pulseforms-theme-noir {
+    --pf-public-primary: #ffffff;
+    --pf-public-accent: #C5A572;
+    --pf-public-bg: #0E2238;
+    --pf-public-soft: rgba(255, 255, 255, 0.08);
+    --pf-public-text: #ffffff;
+    --pf-public-muted: rgba(255, 255, 255, 0.68);
+    --pf-public-line: rgba(255, 255, 255, 0.14);
+}
+
+.pulseforms-theme-noir .pulseforms-form {
+    background:
+        radial-gradient(circle at top left, rgba(197, 165, 114, 0.16), transparent 32%),
+        #0E2238;
+}
+
+.pulseforms-theme-noir .pulseforms-field input,
+.pulseforms-theme-noir .pulseforms-field select,
+.pulseforms-theme-noir .pulseforms-field textarea {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+.pulseforms-theme-noir .pulseforms-field input::placeholder,
+.pulseforms-theme-noir .pulseforms-field textarea::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.pulseforms-theme-solace {
+    --pf-public-accent: #d97706;
+    --pf-public-soft: #fff7ed;
+}
+
+.pulseforms-theme-solace .pulseforms-form {
+    background:
+        radial-gradient(circle at top left, rgba(217, 119, 6, 0.12), transparent 32%),
+        #ffffff;
+}
+
+.material-symbols-outlined {
+    font-size: 20px;
+    line-height: 1;
+}
+
+@media (max-width: 680px) {
+    .pulseforms-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .pulseforms-wrapper {
+        max-width: 100%;
+    }
+
+    .pulseforms-submit {
+        width: 100%;
+    }
+}
