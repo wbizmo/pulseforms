@@ -1,0 +1,154 @@
+:root {
+    --pf-primary: #0E2238;
+    --pf-accent: #C5A572;
+    --pf-bg: #f8f6f0;
+    --pf-soft: #eef2f6;
+    --pf-white: #ffffff;
+    --pf-text: #0E2238;
+    --pf-muted: rgba(14, 34, 56, 0.62);
+    --pf-line: rgba(14, 34, 56, 0.1);
+    --pf-shadow: 0 20px 55px rgba(14, 34, 56, 0.12);
+    --pf-radius: 24px;
+}
+
+.pf-admin-wrap {
+    margin: 24px 24px 0 4px;
+    color: var(--pf-text);
+}
+
+.pf-hero {
+    background:
+        radial-gradient(circle at top left, rgba(197, 165, 114, 0.2), transparent 34%),
+        linear-gradient(135deg, #ffffff, #f8f6f0);
+    border: 1px solid var(--pf-line);
+    border-radius: 28px;
+    padding: 28px;
+    box-shadow: var(--pf-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 22px;
+}
+
+.pf-eyebrow {
+    margin: 0 0 8px;
+    color: var(--pf-accent);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.pf-hero h1 {
+    margin: 0;
+    font-size: 34px;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    color: var(--pf-primary);
+}
+
+.pf-hero p:not(.pf-eyebrow),
+.pf-card p {
+    color: var(--pf-muted);
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.pf-card {
+    background: var(--pf-white);
+    border: 1px solid var(--pf-line);
+    border-radius: var(--pf-radius);
+    padding: 24px;
+    box-shadow: 0 12px 34px rgba(14, 34, 56, 0.08);
+}
+
+.pf-card h2 {
+    margin-top: 0;
+    color: var(--pf-primary);
+    letter-spacing: -0.03em;
+}
+
+.pf-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+}
+
+.pf-btn {
+    border: 0;
+    cursor: pointer;
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: 0.22s ease;
+}
+
+.pf-btn-primary {
+    background: var(--pf-accent);
+    color: var(--pf-primary);
+}
+
+.pf-btn-primary:hover {
+    background: var(--pf-primary);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.pf-btn-dark {
+    background: var(--pf-primary);
+    color: #ffffff;
+}
+
+.pf-btn-dark:hover {
+    background: var(--pf-accent);
+    color: var(--pf-primary);
+}
+
+.pf-coffee-icon {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    background: rgba(197, 165, 114, 0.18);
+    color: var(--pf-primary);
+    font-size: 30px;
+    margin-bottom: 14px;
+}
+
+.pf-copy-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(14, 34, 56, 0.05);
+    border: 1px solid var(--pf-line);
+    border-radius: 16px;
+    padding: 12px;
+    margin-top: 18px;
+}
+
+.pf-copy-box code {
+    flex: 1;
+    word-break: break-all;
+    color: var(--pf-primary);
+}
+
+.material-symbols-outlined {
+    font-size: 20px;
+    line-height: 1;
+}
+
+@media (max-width: 900px) {
+    .pf-hero,
+    .pf-grid {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
