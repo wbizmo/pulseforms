@@ -16,4 +16,16 @@
             }, 1400);
         });
     });
+
+    $(document).on("click", ".pf-copy-shortcode", function () {
+        const shortcode = $(this).data("shortcode");
+        const button = $(this);
+
+        navigator.clipboard.writeText(shortcode).then(function () {
+            button.html('<span class="material-symbols-outlined">check_circle</span>');
+            setTimeout(function () {
+                button.html('<span class="material-symbols-outlined">content_copy</span>');
+            }, 1200);
+        });
+    });
 })(jQuery);
