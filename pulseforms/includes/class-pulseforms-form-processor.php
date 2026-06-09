@@ -60,6 +60,10 @@ class PulseForms_Form_Processor {
                 ]);
             }
 
+            if (!is_array($settings)) {
+                $settings = [];
+            }
+
             $posted_fields = isset($_POST['pulseforms_fields']) && is_array($_POST['pulseforms_fields'])
                 ? wp_unslash($_POST['pulseforms_fields'])
                 : [];
@@ -114,6 +118,8 @@ class PulseForms_Form_Processor {
             }
 
             $save_submissions = isset($settings['save_submissions']) ? (bool) $settings['save_submissions'] : true;
+            $admin_email_enabled = isset($settings['admin_email_enabled']) ? (bool) $settings['admin_email_enabled'] : false;
+            $user_email_enabled = isset($settings['user_email_enabled']) ? (bool) $settings['user_email_enabled'] : false;
 
             $submission_id = null;
 
@@ -128,6 +134,38 @@ class PulseForms_Form_Processor {
                         'form_name' => $form->name,
                         'page_url' => $page_url,
                         'db_error' => $wpdb->last_error,
+                    ]);
+                }
+            }
+
+            $emailer = new PulseForms_Emailer();
+
+            if ($admin_email_enabled) {
+                $admin_email_result = $emailer->send_admin_notification($form, $submission_id, $clean_data, $page_url);
+
+                if (is_wp_error($admin_email_result)) {
+                    $this->log_and_fail('error', 'admin_email_failed', 'Admin notification email failed.', [
+                        'form_id' => $form_id,
+                        'form_name' => $form->name,
+                        'submission_id' => $submission_id,
+                        'page_url' => $page_url,
+                        'email_error_code' => $admin_email_result->get_error_code(),
+                        'email_error_message' => $admin_email_result->get_error_message(),
+                    ]);
+                }
+            }
+
+            if ($user_email_enabled) {
+                $user_email_result = $emailer->send_user_confirmation($form, $submission_id, $clean_data, $page_url);
+
+                if (is_wp_error($user_email_result)) {
+                    $this->log_and_fail('error', 'user_email_failed', 'User confirmation email failed.', [
+                        'form_id' => $form_id,
+                        'form_name' => $form->name,
+                        'submission_id' => $submission_id,
+                        'page_url' => $page_url,
+                        'email_error_code' => $user_email_result->get_error_code(),
+                        'email_error_message' => $user_email_result->get_error_message(),
                     ]);
                 }
             }

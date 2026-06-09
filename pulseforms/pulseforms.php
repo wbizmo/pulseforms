@@ -26,6 +26,7 @@ require_once PULSEFORMS_PATH . 'includes/class-pulseforms-activator.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-deactivator.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-admin.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-logger.php';
+require_once PULSEFORMS_PATH . 'includes/class-pulseforms-emailer.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-form-renderer.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-form-processor.php';
 
