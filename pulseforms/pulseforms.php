@@ -27,6 +27,7 @@ require_once PULSEFORMS_PATH . 'includes/class-pulseforms-deactivator.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-admin.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-logger.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-form-renderer.php';
+require_once PULSEFORMS_PATH . 'includes/class-pulseforms-form-processor.php';
 
 register_activation_hook(__FILE__, ['PulseForms_Activator', 'activate']);
 register_deactivation_hook(__FILE__, ['PulseForms_Deactivator', 'deactivate']);
@@ -37,6 +38,9 @@ function pulseforms_run() {
 
     $renderer = new PulseForms_Form_Renderer();
     $renderer->init();
+
+    $processor = new PulseForms_Form_Processor();
+    $processor->init();
 }
 
 pulseforms_run();
