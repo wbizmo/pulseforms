@@ -28,4 +28,9 @@
             }, 1200);
         });
     });
+
+    $(document).on("click", ".pf-toggle-submission", function () {
+        const target = $(this).data("target");
+        $("#" + target).toggleClass("is-open");
+    });
 })(jQuery);

@@ -10,6 +10,8 @@ class PulseForms_Admin {
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
         add_action('admin_post_pulseforms_create_form', [$this, 'handle_create_form']);
         add_action('admin_post_pulseforms_delete_form', [$this, 'handle_delete_form']);
+        add_action('admin_post_pulseforms_delete_submission', [$this, 'handle_delete_submission']);
+        add_action('admin_post_pulseforms_mark_submission_read', [$this, 'handle_mark_submission_read']);
     }
 
     public function register_admin_menu() {
@@ -23,59 +25,12 @@ class PulseForms_Admin {
             26
         );
 
-        add_submenu_page(
-            'pulseforms',
-            __('All Forms', 'pulseforms'),
-            __('All Forms', 'pulseforms'),
-            'manage_options',
-            'pulseforms',
-            [$this, 'render_forms_page']
-        );
-
-        add_submenu_page(
-            'pulseforms',
-            __('Add New', 'pulseforms'),
-            __('Add New', 'pulseforms'),
-            'manage_options',
-            'pulseforms-add-new',
-            [$this, 'render_add_new_page']
-        );
-
-        add_submenu_page(
-            'pulseforms',
-            __('Submissions', 'pulseforms'),
-            __('Submissions', 'pulseforms'),
-            'manage_options',
-            'pulseforms-submissions',
-            [$this, 'render_submissions_page']
-        );
-
-        add_submenu_page(
-            'pulseforms',
-            __('Logs', 'pulseforms'),
-            __('Logs', 'pulseforms'),
-            'manage_options',
-            'pulseforms-logs',
-            [$this, 'render_logs_page']
-        );
-
-        add_submenu_page(
-            'pulseforms',
-            __('Settings', 'pulseforms'),
-            __('Settings', 'pulseforms'),
-            'manage_options',
-            'pulseforms-settings',
-            [$this, 'render_settings_page']
-        );
-
-        add_submenu_page(
-            'pulseforms',
-            __('Support', 'pulseforms'),
-            __('Support', 'pulseforms'),
-            'manage_options',
-            'pulseforms-support',
-            [$this, 'render_support_page']
-        );
+        add_submenu_page('pulseforms', __('All Forms', 'pulseforms'), __('All Forms', 'pulseforms'), 'manage_options', 'pulseforms', [$this, 'render_forms_page']);
+        add_submenu_page('pulseforms', __('Add New', 'pulseforms'), __('Add New', 'pulseforms'), 'manage_options', 'pulseforms-add-new', [$this, 'render_add_new_page']);
+        add_submenu_page('pulseforms', __('Submissions', 'pulseforms'), __('Submissions', 'pulseforms'), 'manage_options', 'pulseforms-submissions', [$this, 'render_submissions_page']);
+        add_submenu_page('pulseforms', __('Logs', 'pulseforms'), __('Logs', 'pulseforms'), 'manage_options', 'pulseforms-logs', [$this, 'render_logs_page']);
+        add_submenu_page('pulseforms', __('Settings', 'pulseforms'), __('Settings', 'pulseforms'), 'manage_options', 'pulseforms-settings', [$this, 'render_settings_page']);
+        add_submenu_page('pulseforms', __('Support', 'pulseforms'), __('Support', 'pulseforms'), 'manage_options', 'pulseforms-support', [$this, 'render_support_page']);
     }
 
     public function enqueue_admin_assets($hook) {
@@ -109,20 +64,28 @@ class PulseForms_Admin {
     public function get_forms() {
         global $wpdb;
 
-        $table = $wpdb->prefix . 'pulseforms_forms';
-
-        return $wpdb->get_results(
-            "SELECT * FROM {$table} ORDER BY created_at DESC"
-        );
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pulseforms_forms ORDER BY created_at DESC");
     }
 
     public function get_form($id) {
         global $wpdb;
 
-        $table = $wpdb->prefix . 'pulseforms_forms';
+        return $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_forms WHERE id = %d", absint($id))
+        );
+    }
+
+    public function get_submissions() {
+        global $wpdb;
+
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pulseforms_submissions ORDER BY created_at DESC LIMIT 200");
+    }
+
+    public function get_submission($id) {
+        global $wpdb;
 
         return $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", absint($id))
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_submissions WHERE id = %d", absint($id))
         );
     }
 
@@ -144,27 +107,15 @@ class PulseForms_Admin {
             exit;
         }
 
-        $allowed_types = [
-            'contact',
-            'newsletter',
-            'subscription',
-            'multi_step',
-            'registration',
-            'login',
-            'custom',
-        ];
-
+        $allowed_types = ['contact', 'newsletter', 'subscription', 'multi_step', 'registration', 'login', 'custom'];
         if (!in_array($type, $allowed_types, true)) {
             $type = 'custom';
         }
 
         $allowed_themes = ['aurora', 'noir', 'solace'];
-
         if (!in_array($theme, $allowed_themes, true)) {
             $theme = 'aurora';
         }
-
-        $default_fields = $this->get_default_fields_for_type($type);
 
         $settings = [
             'admin_email_enabled' => !in_array($type, ['login', 'registration'], true),
@@ -192,7 +143,7 @@ class PulseForms_Admin {
             [
                 'name'           => $name,
                 'type'           => $type,
-                'fields'         => wp_json_encode($default_fields),
+                'fields'         => wp_json_encode($this->get_default_fields_for_type($type)),
                 'settings'       => wp_json_encode($settings),
                 'style_settings' => wp_json_encode($style_settings),
                 'status'         => 'active',
@@ -203,16 +154,11 @@ class PulseForms_Admin {
         );
 
         if (!$inserted) {
-            PulseForms_Logger::log(
-                'error',
-                'form_create_failed',
-                'PulseForms could not create the form.',
-                [
-                    'form_name' => $name,
-                    'form_type' => $type,
-                    'db_error'  => $wpdb->last_error,
-                ]
-            );
+            PulseForms_Logger::log('error', 'form_create_failed', 'PulseForms could not create the form.', [
+                'form_name' => $name,
+                'form_type' => $type,
+                'db_error'  => $wpdb->last_error,
+            ]);
 
             wp_safe_redirect(admin_url('admin.php?page=pulseforms-add-new&pf_error=create_failed'));
             exit;
@@ -245,29 +191,101 @@ class PulseForms_Admin {
             exit;
         }
 
-        $deleted = $wpdb->delete(
-            $wpdb->prefix . 'pulseforms_forms',
-            ['id' => $form_id],
-            ['%d']
-        );
+        $deleted = $wpdb->delete($wpdb->prefix . 'pulseforms_forms', ['id' => $form_id], ['%d']);
 
         if (!$deleted) {
-            PulseForms_Logger::log(
-                'error',
-                'form_delete_failed',
-                'PulseForms could not delete the form.',
-                [
-                    'form_id'   => $form_id,
-                    'form_name' => $form->name,
-                    'db_error'  => $wpdb->last_error,
-                ]
-            );
+            PulseForms_Logger::log('error', 'form_delete_failed', 'PulseForms could not delete the form.', [
+                'form_id'   => $form_id,
+                'form_name' => $form->name,
+                'db_error'  => $wpdb->last_error,
+            ]);
 
             wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_error=delete_failed'));
             exit;
         }
 
         wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_deleted=1'));
+        exit;
+    }
+
+    public function handle_delete_submission() {
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('You do not have permission to delete submissions.', 'pulseforms'));
+        }
+
+        $submission_id = isset($_GET['submission_id']) ? absint($_GET['submission_id']) : 0;
+
+        if (!$submission_id) {
+            wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_error=missing_submission'));
+            exit;
+        }
+
+        check_admin_referer('pulseforms_delete_submission_' . $submission_id);
+
+        global $wpdb;
+
+        $submission = $this->get_submission($submission_id);
+
+        if (!$submission) {
+            wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_error=submission_not_found'));
+            exit;
+        }
+
+        $deleted = $wpdb->delete(
+            $wpdb->prefix . 'pulseforms_submissions',
+            ['id' => $submission_id],
+            ['%d']
+        );
+
+        if (!$deleted) {
+            PulseForms_Logger::log('error', 'submission_delete_failed', 'PulseForms could not delete the submission.', [
+                'submission_id' => $submission_id,
+                'db_error'      => $wpdb->last_error,
+            ]);
+
+            wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_error=delete_failed'));
+            exit;
+        }
+
+        wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_deleted=1'));
+        exit;
+    }
+
+    public function handle_mark_submission_read() {
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('You do not have permission to update submissions.', 'pulseforms'));
+        }
+
+        $submission_id = isset($_GET['submission_id']) ? absint($_GET['submission_id']) : 0;
+
+        if (!$submission_id) {
+            wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_error=missing_submission'));
+            exit;
+        }
+
+        check_admin_referer('pulseforms_mark_submission_read_' . $submission_id);
+
+        global $wpdb;
+
+        $updated = $wpdb->update(
+            $wpdb->prefix . 'pulseforms_submissions',
+            ['status' => 'read'],
+            ['id' => $submission_id],
+            ['%s'],
+            ['%d']
+        );
+
+        if ($updated === false) {
+            PulseForms_Logger::log('error', 'submission_mark_read_failed', 'PulseForms could not mark the submission as read.', [
+                'submission_id' => $submission_id,
+                'db_error'      => $wpdb->last_error,
+            ]);
+
+            wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_error=mark_read_failed'));
+            exit;
+        }
+
+        wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_read=1'));
         exit;
     }
 
@@ -372,6 +390,7 @@ class PulseForms_Admin {
     }
 
     public function render_submissions_page() {
+        $submissions = $this->get_submissions();
         require PULSEFORMS_PATH . 'admin/views/submissions.php';
     }
 
