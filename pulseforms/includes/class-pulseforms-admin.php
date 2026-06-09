@@ -12,18 +12,12 @@ class PulseForms_Admin {
         add_action('admin_post_pulseforms_delete_form', [$this, 'handle_delete_form']);
         add_action('admin_post_pulseforms_delete_submission', [$this, 'handle_delete_submission']);
         add_action('admin_post_pulseforms_mark_submission_read', [$this, 'handle_mark_submission_read']);
+        add_action('admin_post_pulseforms_delete_log', [$this, 'handle_delete_log']);
+        add_action('admin_post_pulseforms_clear_logs', [$this, 'handle_clear_logs']);
     }
 
     public function register_admin_menu() {
-        add_menu_page(
-            __('PulseForms', 'pulseforms'),
-            __('PulseForms', 'pulseforms'),
-            'manage_options',
-            'pulseforms',
-            [$this, 'render_forms_page'],
-            'dashicons-feedback',
-            26
-        );
+        add_menu_page(__('PulseForms', 'pulseforms'), __('PulseForms', 'pulseforms'), 'manage_options', 'pulseforms', [$this, 'render_forms_page'], 'dashicons-feedback', 26);
 
         add_submenu_page('pulseforms', __('All Forms', 'pulseforms'), __('All Forms', 'pulseforms'), 'manage_options', 'pulseforms', [$this, 'render_forms_page']);
         add_submenu_page('pulseforms', __('Add New', 'pulseforms'), __('Add New', 'pulseforms'), 'manage_options', 'pulseforms-add-new', [$this, 'render_add_new_page']);
@@ -63,30 +57,32 @@ class PulseForms_Admin {
 
     public function get_forms() {
         global $wpdb;
-
         return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pulseforms_forms ORDER BY created_at DESC");
     }
 
     public function get_form($id) {
         global $wpdb;
-
-        return $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_forms WHERE id = %d", absint($id))
-        );
+        return $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_forms WHERE id = %d", absint($id)));
     }
 
     public function get_submissions() {
         global $wpdb;
-
         return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pulseforms_submissions ORDER BY created_at DESC LIMIT 200");
     }
 
     public function get_submission($id) {
         global $wpdb;
+        return $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_submissions WHERE id = %d", absint($id)));
+    }
 
-        return $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_submissions WHERE id = %d", absint($id))
-        );
+    public function get_logs() {
+        global $wpdb;
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pulseforms_logs ORDER BY created_at DESC LIMIT 300");
+    }
+
+    public function get_log($id) {
+        global $wpdb;
+        return $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_logs WHERE id = %d", absint($id)));
     }
 
     public function handle_create_form() {
@@ -231,11 +227,7 @@ class PulseForms_Admin {
             exit;
         }
 
-        $deleted = $wpdb->delete(
-            $wpdb->prefix . 'pulseforms_submissions',
-            ['id' => $submission_id],
-            ['%d']
-        );
+        $deleted = $wpdb->delete($wpdb->prefix . 'pulseforms_submissions', ['id' => $submission_id], ['%d']);
 
         if (!$deleted) {
             PulseForms_Logger::log('error', 'submission_delete_failed', 'PulseForms could not delete the submission.', [
@@ -286,6 +278,48 @@ class PulseForms_Admin {
         }
 
         wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_read=1'));
+        exit;
+    }
+
+    public function handle_delete_log() {
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('You do not have permission to delete logs.', 'pulseforms'));
+        }
+
+        $log_id = isset($_GET['log_id']) ? absint($_GET['log_id']) : 0;
+
+        if (!$log_id) {
+            wp_safe_redirect(admin_url('admin.php?page=pulseforms-logs&pf_error=missing_log'));
+            exit;
+        }
+
+        check_admin_referer('pulseforms_delete_log_' . $log_id);
+
+        global $wpdb;
+
+        $deleted = $wpdb->delete($wpdb->prefix . 'pulseforms_logs', ['id' => $log_id], ['%d']);
+
+        if (!$deleted) {
+            wp_safe_redirect(admin_url('admin.php?page=pulseforms-logs&pf_error=delete_failed'));
+            exit;
+        }
+
+        wp_safe_redirect(admin_url('admin.php?page=pulseforms-logs&pf_deleted=1'));
+        exit;
+    }
+
+    public function handle_clear_logs() {
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('You do not have permission to clear logs.', 'pulseforms'));
+        }
+
+        check_admin_referer('pulseforms_clear_logs');
+
+        global $wpdb;
+
+        $wpdb->query("TRUNCATE TABLE {$wpdb->prefix}pulseforms_logs");
+
+        wp_safe_redirect(admin_url('admin.php?page=pulseforms-logs&pf_cleared=1'));
         exit;
     }
 
@@ -395,6 +429,7 @@ class PulseForms_Admin {
     }
 
     public function render_logs_page() {
+        $logs = $this->get_logs();
         require PULSEFORMS_PATH . 'admin/views/logs.php';
     }
 
