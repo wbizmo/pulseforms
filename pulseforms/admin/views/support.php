@@ -1,29 +1,57 @@
+<?php
+if (!defined('ABSPATH')) {
+    exit;
+}
+?>
+
 <div class="pf-admin-wrap">
     <div class="pf-hero">
         <div>
             <p class="pf-eyebrow">Support</p>
-            <h1>Support PulseForms</h1>
-            <p>PulseForms is built to make powerful form features freely available.</p>
+            <h1>About PulseForms</h1>
+            <p>PulseForms is an open-source WordPress form builder created to make polished, customizable forms freely available.</p>
         </div>
     </div>
 
     <div class="pf-grid">
         <div class="pf-card">
-            <h2>About PulseForms</h2>
-            <p>PulseForms is a modern WordPress form builder focused on clean UI, strong customization, secure submissions, email notifications, and admin-friendly logs.</p>
+            <h2>About the Plugin</h2>
+            <p>
+                PulseForms is built for WordPress users who want beautiful forms, clean customization,
+                secure submissions, email notifications, logs, shortcodes, and a better form ownership experience.
+            </p>
+
+            <p>
+                The plugin is open source and designed to remain lightweight, extensible, and useful for real WordPress websites.
+            </p>
         </div>
 
-        <div class="pf-card pf-coffee-card">
-            <span class="material-symbols-outlined pf-coffee-icon">local_cafe</span>
-            <h2>Buy the Developer Coffee</h2>
-            <p>You can support development using BTC.</p>
+        <div class="pf-card pf-creator-card">
+            <img
+                src="https://github.com/wbizmo.png?size=160"
+                alt="Williams GitHub profile picture"
+                class="pf-creator-avatar"
+            >
 
-            <div class="pf-copy-box">
-                <code id="pfBtcAddress">YOUR_BTC_WALLET_ADDRESS_HERE</code>
-                <button type="button" class="pf-btn pf-btn-dark" id="pfCopyBtc">
-                    <span class="material-symbols-outlined">content_copy</span>
-                    Copy
-                </button>
+            <div>
+                <p class="pf-eyebrow">Created By</p>
+                <h2>Williams</h2>
+                <p>
+                    Software Engineer focused on web platforms, backend systems, CMS development,
+                    WordPress engineering, automation, and business software.
+                </p>
+
+                <div class="pf-creator-links">
+                    <a href="https://github.com/wbizmo" target="_blank" rel="noopener noreferrer" class="pf-btn pf-btn-primary">
+                        <span class="material-symbols-outlined">code</span>
+                        GitHub
+                    </a>
+
+                    <a href="https://github.com/wbizmo/pulseforms" target="_blank" rel="noopener noreferrer" class="pf-btn pf-btn-light">
+                        <span class="material-symbols-outlined">open_in_new</span>
+                        Plugin Repository
+                    </a>
+                </div>
             </div>
         </div>
     </div>
