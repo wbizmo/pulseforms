@@ -44,14 +44,7 @@ class PulseForms_Form_Renderer {
     }
 
     public function render_shortcode($atts) {
-        $atts = shortcode_atts(
-            [
-                'id' => 0,
-            ],
-            $atts,
-            'pulseform'
-        );
-
+        $atts = shortcode_atts(['id' => 0], $atts, 'pulseform');
         $form_id = absint($atts['id']);
 
         if (!$form_id) {
@@ -69,31 +62,61 @@ class PulseForms_Form_Renderer {
         $style_settings = json_decode($form->style_settings, true);
 
         if (!is_array($fields)) {
-            PulseForms_Logger::log(
-                'error',
-                'form_render_failed',
-                'PulseForms could not render form because fields JSON is invalid.',
-                [
-                    'form_id' => $form_id,
-                    'form_name' => $form->name,
-                    'page_url' => $this->current_page_url(),
-                    'raw_fields' => $form->fields,
-                ]
-            );
+            PulseForms_Logger::log('error', 'form_render_failed', 'PulseForms could not render form because fields JSON is invalid.', [
+                'form_id'   => $form_id,
+                'form_name' => $form->name,
+                'page_url'  => $this->current_page_url(),
+                'raw_fields'=> $form->fields,
+            ]);
 
             return $this->render_error_notice(__('Something went wrong. Please try again later.', 'pulseforms'));
+        }
+
+        if (!is_array($settings)) {
+            $settings = [];
+        }
+
+        if (!is_array($style_settings)) {
+            $style_settings = [];
         }
 
         $theme = isset($style_settings['theme']) ? sanitize_key($style_settings['theme']) : 'aurora';
         $style_mode = isset($style_settings['style_mode']) ? sanitize_key($style_settings['style_mode']) : 'pulse';
         $submit_text = isset($settings['submit_text']) ? sanitize_text_field($settings['submit_text']) : __('Submit', 'pulseforms');
 
+        $primary_color = isset($style_settings['primary_color']) && $style_settings['primary_color']
+            ? sanitize_hex_color($style_settings['primary_color'])
+            : '#0E2238';
+
+        $accent_color = isset($style_settings['accent_color']) && $style_settings['accent_color']
+            ? sanitize_hex_color($style_settings['accent_color'])
+            : '#C5A572';
+
+        $field_radius = isset($style_settings['field_radius']) ? absint($style_settings['field_radius']) : 14;
+        $button_radius = isset($style_settings['button_radius']) ? absint($style_settings['button_radius']) : 14;
+        $custom_css = isset($style_settings['custom_css']) ? wp_strip_all_tags($style_settings['custom_css']) : '';
+
+        $inline_style = sprintf(
+            '--pf-public-primary:%s;--pf-public-accent:%s;--pf-public-radius:%dpx;--pf-public-button-radius:%dpx;',
+            esc_attr($primary_color),
+            esc_attr($accent_color),
+            esc_attr($field_radius),
+            esc_attr($button_radius)
+        );
+
         ob_start();
         ?>
         <div
             class="pulseforms-wrapper pulseforms-theme-<?php echo esc_attr($theme); ?> pulseforms-style-<?php echo esc_attr($style_mode); ?>"
             data-form-id="<?php echo esc_attr($form_id); ?>"
+            style="<?php echo esc_attr($inline_style); ?>"
         >
+            <?php if (!empty($custom_css)) : ?>
+                <style>
+                    <?php echo esc_html($custom_css); ?>
+                </style>
+            <?php endif; ?>
+
             <form class="pulseforms-form" method="post" enctype="multipart/form-data" novalidate>
                 <input type="hidden" name="action" value="pulseforms_submit_form">
                 <input type="hidden" name="pulseforms_form_id" value="<?php echo esc_attr($form_id); ?>">
@@ -131,10 +154,8 @@ class PulseForms_Form_Renderer {
     private function get_form($form_id) {
         global $wpdb;
 
-        $table = $wpdb->prefix . 'pulseforms_forms';
-
         return $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", $form_id)
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_forms WHERE id = %d", $form_id)
         );
     }
 
@@ -181,12 +202,7 @@ class PulseForms_Form_Renderer {
 
                 case 'textarea':
                     ?>
-                    <textarea
-                        id="<?php echo esc_attr($field_id); ?>"
-                        name="<?php echo esc_attr($name); ?>"
-                        placeholder="<?php echo esc_attr($placeholder); ?>"
-                        <?php required($required); ?>
-                    ></textarea>
+                    <textarea id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>" placeholder="<?php echo esc_attr($placeholder); ?>" <?php required($required); ?>></textarea>
                     <?php
                     break;
 
@@ -208,12 +224,7 @@ class PulseForms_Form_Renderer {
                     <div class="pulseforms-choice-list">
                         <?php foreach ($options as $index => $option) : ?>
                             <label class="pulseforms-choice">
-                                <input
-                                    type="checkbox"
-                                    name="<?php echo esc_attr($name); ?>[]"
-                                    value="<?php echo esc_attr($option); ?>"
-                                    <?php echo $required && $index === 0 ? 'required' : ''; ?>
-                                >
+                                <input type="checkbox" name="<?php echo esc_attr($name); ?>[]" value="<?php echo esc_attr($option); ?>" <?php echo $required && $index === 0 ? 'required' : ''; ?>>
                                 <span class="pulseforms-checkbox-ui"></span>
                                 <span><?php echo esc_html($option); ?></span>
                             </label>
@@ -228,12 +239,7 @@ class PulseForms_Form_Renderer {
                     <div class="pulseforms-choice-list">
                         <?php foreach ($options as $option) : ?>
                             <label class="pulseforms-choice">
-                                <input
-                                    type="radio"
-                                    name="<?php echo esc_attr($name); ?>"
-                                    value="<?php echo esc_attr($option); ?>"
-                                    <?php required($required); ?>
-                                >
+                                <input type="radio" name="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($option); ?>" <?php required($required); ?>>
                                 <span class="pulseforms-radio-ui"></span>
                                 <span><?php echo esc_html($option); ?></span>
                             </label>
@@ -259,12 +265,7 @@ class PulseForms_Form_Renderer {
                 case 'file':
                     ?>
                     <div class="pulseforms-file">
-                        <input
-                            type="file"
-                            id="<?php echo esc_attr($field_id); ?>"
-                            name="<?php echo esc_attr($name); ?>"
-                            <?php required($required); ?>
-                        >
+                        <input type="file" id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>" <?php required($required); ?>>
                         <label for="<?php echo esc_attr($field_id); ?>">
                             <span class="material-symbols-outlined">upload_file</span>
                             <strong><?php esc_html_e('Choose file', 'pulseforms'); ?></strong>
@@ -302,13 +303,7 @@ class PulseForms_Form_Renderer {
 
     private function input_field($type, $field_id, $name, $placeholder, $required) {
         ?>
-        <input
-            type="<?php echo esc_attr($type); ?>"
-            id="<?php echo esc_attr($field_id); ?>"
-            name="<?php echo esc_attr($name); ?>"
-            placeholder="<?php echo esc_attr($placeholder); ?>"
-            <?php required($required); ?>
-        >
+        <input type="<?php echo esc_attr($type); ?>" id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>" placeholder="<?php echo esc_attr($placeholder); ?>" <?php required($required); ?>>
         <?php
     }
 
