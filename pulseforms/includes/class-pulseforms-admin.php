@@ -144,13 +144,13 @@ class PulseForms_Admin {
         ];
 
         $style_settings = [
-            'theme'          => $theme,
-            'style_mode'     => 'pulse',
-            'primary_color'  => '#0E2238',
-            'accent_color'   => '#C5A572',
-            'button_radius'  => '14',
-            'field_radius'   => '14',
-            'custom_css'     => '',
+            'theme'         => $theme,
+            'style_mode'    => 'pulse',
+            'primary_color' => '#0E2238',
+            'accent_color'  => '#C5A572',
+            'button_radius' => '14',
+            'field_radius'  => '14',
+            'custom_css'    => '',
         ];
 
         $inserted = $wpdb->insert(
@@ -258,13 +258,13 @@ class PulseForms_Admin {
         }
 
         $style_settings = [
-            'theme'          => $theme,
-            'style_mode'     => $style_mode,
-            'primary_color'  => isset($_POST['primary_color']) ? sanitize_hex_color(wp_unslash($_POST['primary_color'])) : '#0E2238',
-            'accent_color'   => isset($_POST['accent_color']) ? sanitize_hex_color(wp_unslash($_POST['accent_color'])) : '#C5A572',
-            'button_radius'  => isset($_POST['button_radius']) ? absint($_POST['button_radius']) : 14,
-            'field_radius'   => isset($_POST['field_radius']) ? absint($_POST['field_radius']) : 14,
-            'custom_css'     => isset($_POST['custom_css']) ? wp_strip_all_tags(wp_unslash($_POST['custom_css'])) : '',
+            'theme'         => $theme,
+            'style_mode'    => $style_mode,
+            'primary_color' => isset($_POST['primary_color']) ? sanitize_hex_color(wp_unslash($_POST['primary_color'])) : '#0E2238',
+            'accent_color'  => isset($_POST['accent_color']) ? sanitize_hex_color(wp_unslash($_POST['accent_color'])) : '#C5A572',
+            'button_radius' => isset($_POST['button_radius']) ? absint($_POST['button_radius']) : 14,
+            'field_radius'  => isset($_POST['field_radius']) ? absint($_POST['field_radius']) : 14,
+            'custom_css'    => isset($_POST['custom_css']) ? wp_strip_all_tags(wp_unslash($_POST['custom_css'])) : '',
         ];
 
         $updated = $wpdb->update(
@@ -468,11 +468,25 @@ class PulseForms_Admin {
             : 'jpg,jpeg,png,gif,pdf,doc,docx,txt';
 
         $settings = [
-            'upload_max_size'     => isset($_POST['upload_max_size']) ? max(1, min(25, absint($_POST['upload_max_size']))) : 5,
-            'allowed_file_types'  => $allowed_file_types,
-            'rate_limit_attempts' => isset($_POST['rate_limit_attempts']) ? max(1, min(50, absint($_POST['rate_limit_attempts']))) : 5,
-            'rate_limit_window'   => isset($_POST['rate_limit_window']) ? max(1, min(1440, absint($_POST['rate_limit_window']))) : 10,
-            'log_retention_days'  => isset($_POST['log_retention_days']) ? max(1, min(365, absint($_POST['log_retention_days']))) : 30,
+            'upload_max_size' => isset($_POST['upload_max_size'])
+                ? max(1, min(25, absint($_POST['upload_max_size'])))
+                : 5,
+
+            'allowed_file_types' => $allowed_file_types,
+
+            'rate_limit_attempts' => isset($_POST['rate_limit_attempts'])
+                ? max(1, min(50, absint($_POST['rate_limit_attempts'])))
+                : 5,
+
+            'rate_limit_window' => isset($_POST['rate_limit_window'])
+                ? max(1, min(1440, absint($_POST['rate_limit_window'])))
+                : 10,
+
+            'log_retention_days' => isset($_POST['log_retention_days'])
+                ? max(1, min(365, absint($_POST['log_retention_days'])))
+                : 30,
+
+            'remove_data_on_uninstall' => isset($_POST['remove_data_on_uninstall']),
         ];
 
         update_option('pulseforms_settings', $settings);

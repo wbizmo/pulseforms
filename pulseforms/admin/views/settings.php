@@ -10,6 +10,7 @@ $upload_max_size = isset($options['upload_max_size']) ? absint($options['upload_
 $allowed_file_types = isset($options['allowed_file_types']) ? sanitize_text_field($options['allowed_file_types']) : 'jpg,jpeg,png,gif,pdf,doc,docx,txt';
 $rate_limit_attempts = isset($options['rate_limit_attempts']) ? absint($options['rate_limit_attempts']) : 5;
 $rate_limit_window = isset($options['rate_limit_window']) ? absint($options['rate_limit_window']) : 10;
+$remove_data_on_uninstall = isset($options['remove_data_on_uninstall']) ? (bool) $options['remove_data_on_uninstall'] : false;
 ?>
 
 <div class="pf-admin-wrap">
@@ -17,7 +18,7 @@ $rate_limit_window = isset($options['rate_limit_window']) ? absint($options['rat
         <div>
             <p class="pf-eyebrow">Settings</p>
             <h1>PulseForms Settings</h1>
-            <p>Manage global security, upload, logging, and rate-limit behavior.</p>
+            <p>Manage global security, upload, logging, rate-limit, and uninstall behavior.</p>
         </div>
     </div>
 
@@ -77,6 +78,21 @@ $rate_limit_window = isset($options['rate_limit_window']) ? absint($options['rat
                     <input type="number" id="log_retention_days" name="log_retention_days" min="1" max="365" value="<?php echo esc_attr($log_retention_days); ?>">
                 </div>
             </div>
+        </div>
+
+        <div class="pf-card">
+            <h2>Uninstall Behavior</h2>
+            <p>Choose whether PulseForms should preserve or remove plugin data when the plugin is uninstalled.</p>
+
+            <label class="pf-switch-row">
+                <input type="checkbox" name="remove_data_on_uninstall" value="1" <?php checked($remove_data_on_uninstall); ?>>
+                <span class="pf-switch-ui"></span>
+                <span>Remove all PulseForms forms, submissions, logs, and settings when plugin is uninstalled</span>
+            </label>
+
+            <p class="pf-help">
+                Leave this disabled if you want to keep your forms and submissions after uninstalling. Enable it only when you want a full cleanup.
+            </p>
         </div>
 
         <div class="pf-save-bar">
