@@ -25,7 +25,7 @@ class PulseForms_Form_Processor {
 
             if (!$nonce || !wp_verify_nonce($nonce, 'pulseforms_submit_' . $form_id)) {
                 $this->log_and_fail('warning', 'nonce_failed', 'Submission failed nonce verification.', [
-                    'form_id' => $form_id,
+                    'form_id'  => $form_id,
                     'page_url' => $page_url,
                 ]);
             }
@@ -34,16 +34,18 @@ class PulseForms_Form_Processor {
 
             if (!empty($honeypot)) {
                 $this->log_and_fail('warning', 'honeypot_triggered', 'Submission blocked by honeypot.', [
-                    'form_id' => $form_id,
+                    'form_id'  => $form_id,
                     'page_url' => $page_url,
                 ]);
             }
+
+            $this->check_rate_limit($form_id, $page_url);
 
             $form = $this->get_form($form_id);
 
             if (!$form || $form->status !== 'active') {
                 $this->log_and_fail('error', 'form_unavailable', 'Submission failed because form was unavailable.', [
-                    'form_id' => $form_id,
+                    'form_id'  => $form_id,
                     'page_url' => $page_url,
                 ]);
             }
@@ -53,9 +55,9 @@ class PulseForms_Form_Processor {
 
             if (!is_array($fields)) {
                 $this->log_and_fail('error', 'invalid_fields_json', 'Submission failed because form fields JSON is invalid.', [
-                    'form_id' => $form_id,
-                    'form_name' => $form->name,
-                    'page_url' => $page_url,
+                    'form_id'    => $form_id,
+                    'form_name'  => $form->name,
+                    'page_url'   => $page_url,
                     'raw_fields' => $form->fields,
                 ]);
             }
@@ -64,11 +66,25 @@ class PulseForms_Form_Processor {
                 $settings = [];
             }
 
+            if (!empty($settings['captcha_enabled'])) {
+                $captcha_answer = isset($_POST['pulseforms_captcha_answer']) ? sanitize_text_field(wp_unslash($_POST['pulseforms_captcha_answer'])) : '';
+                $captcha_hash = isset($_POST['pulseforms_captcha_hash']) ? sanitize_text_field(wp_unslash($_POST['pulseforms_captcha_hash'])) : '';
+
+                if ($captcha_answer === '' || $captcha_hash === '' || wp_hash((string) absint($captcha_answer)) !== $captcha_hash) {
+                    $this->log_and_fail('warning', 'custom_captcha_failed', 'Submission failed custom captcha verification.', [
+                        'form_id'   => $form_id,
+                        'form_name' => $form->name,
+                        'page_url'  => $page_url,
+                    ], __('Please complete the security check and try again.', 'pulseforms'));
+                }
+            }
+
             $posted_fields = isset($_POST['pulseforms_fields']) && is_array($_POST['pulseforms_fields'])
                 ? wp_unslash($_POST['pulseforms_fields'])
                 : [];
 
             $clean_data = [];
+            $uploaded_files = [];
             $validation_errors = [];
 
             foreach ($fields as $field) {
@@ -78,6 +94,27 @@ class PulseForms_Form_Processor {
                 $required = !empty($field['required']);
 
                 if (!$field_id || in_array($field_type, ['html', 'hidden'], true)) {
+                    continue;
+                }
+
+                if ($field_type === 'file') {
+                    $file_result = $this->handle_file_upload($field_id, $label, $required, $form, $page_url);
+
+                    if (is_wp_error($file_result)) {
+                        $validation_errors[] = $file_result->get_error_message();
+                        continue;
+                    }
+
+                    if (!empty($file_result)) {
+                        $uploaded_files[$field_id] = $file_result;
+
+                        $clean_data[$field_id] = [
+                            'label' => $label,
+                            'type'  => $field_type,
+                            'value' => isset($file_result['name']) ? $file_result['name'] : '',
+                        ];
+                    }
+
                     continue;
                 }
 
@@ -110,9 +147,9 @@ class PulseForms_Form_Processor {
 
             if (!empty($validation_errors)) {
                 $this->log_and_fail('info', 'validation_failed', 'Submission failed validation.', [
-                    'form_id' => $form_id,
-                    'form_name' => $form->name,
-                    'page_url' => $page_url,
+                    'form_id'           => $form_id,
+                    'form_name'         => $form->name,
+                    'page_url'          => $page_url,
                     'validation_errors' => $validation_errors,
                 ], __('Please check the form and try again.', 'pulseforms'));
             }
@@ -124,16 +161,16 @@ class PulseForms_Form_Processor {
             $submission_id = null;
 
             if ($save_submissions) {
-                $submission_id = $this->save_submission($form, $clean_data, $page_url);
+                $submission_id = $this->save_submission($form, $clean_data, $uploaded_files, $page_url);
 
                 if (!$submission_id) {
                     global $wpdb;
 
                     $this->log_and_fail('error', 'submission_save_failed', 'Submission could not be saved to the database.', [
-                        'form_id' => $form_id,
+                        'form_id'   => $form_id,
                         'form_name' => $form->name,
-                        'page_url' => $page_url,
-                        'db_error' => $wpdb->last_error,
+                        'page_url'  => $page_url,
+                        'db_error'  => $wpdb->last_error,
                     ]);
                 }
             }
@@ -145,11 +182,11 @@ class PulseForms_Form_Processor {
 
                 if (is_wp_error($admin_email_result)) {
                     $this->log_and_fail('error', 'admin_email_failed', 'Admin notification email failed.', [
-                        'form_id' => $form_id,
-                        'form_name' => $form->name,
-                        'submission_id' => $submission_id,
-                        'page_url' => $page_url,
-                        'email_error_code' => $admin_email_result->get_error_code(),
+                        'form_id'             => $form_id,
+                        'form_name'           => $form->name,
+                        'submission_id'       => $submission_id,
+                        'page_url'            => $page_url,
+                        'email_error_code'    => $admin_email_result->get_error_code(),
                         'email_error_message' => $admin_email_result->get_error_message(),
                     ]);
                 }
@@ -160,11 +197,11 @@ class PulseForms_Form_Processor {
 
                 if (is_wp_error($user_email_result)) {
                     $this->log_and_fail('error', 'user_email_failed', 'User confirmation email failed.', [
-                        'form_id' => $form_id,
-                        'form_name' => $form->name,
-                        'submission_id' => $submission_id,
-                        'page_url' => $page_url,
-                        'email_error_code' => $user_email_result->get_error_code(),
+                        'form_id'             => $form_id,
+                        'form_name'           => $form->name,
+                        'submission_id'       => $submission_id,
+                        'page_url'            => $page_url,
+                        'email_error_code'    => $user_email_result->get_error_code(),
                         'email_error_message' => $user_email_result->get_error_message(),
                     ]);
                 }
@@ -184,11 +221,11 @@ class PulseForms_Form_Processor {
                 'Unexpected PHP error during form submission.',
                 [
                     'error_message' => $e->getMessage(),
-                    'error_file' => $e->getFile(),
-                    'error_line' => $e->getLine(),
-                    'error_trace' => $e->getTraceAsString(),
-                    'php_version' => PHP_VERSION,
-                    'wp_version' => get_bloginfo('version'),
+                    'error_file'    => $e->getFile(),
+                    'error_line'    => $e->getLine(),
+                    'error_trace'   => $e->getTraceAsString(),
+                    'php_version'   => PHP_VERSION,
+                    'wp_version'    => get_bloginfo('version'),
                 ]
             );
 
@@ -234,7 +271,102 @@ class PulseForms_Form_Processor {
         }
     }
 
-    private function save_submission($form, $clean_data, $page_url) {
+    private function handle_file_upload($field_id, $label, $required, $form, $page_url) {
+        $input_name = 'pulseforms_fields';
+
+        if (
+            empty($_FILES[$input_name]) ||
+            empty($_FILES[$input_name]['name'][$field_id])
+        ) {
+            if ($required) {
+                return new WP_Error('required_file_missing', $label . ' is required.');
+            }
+
+            return null;
+        }
+
+        $file_name = sanitize_file_name(wp_unslash($_FILES[$input_name]['name'][$field_id]));
+        $file_type = isset($_FILES[$input_name]['type'][$field_id]) ? sanitize_text_field(wp_unslash($_FILES[$input_name]['type'][$field_id])) : '';
+        $tmp_name = isset($_FILES[$input_name]['tmp_name'][$field_id]) ? $_FILES[$input_name]['tmp_name'][$field_id] : '';
+        $error = isset($_FILES[$input_name]['error'][$field_id]) ? absint($_FILES[$input_name]['error'][$field_id]) : UPLOAD_ERR_NO_FILE;
+        $size = isset($_FILES[$input_name]['size'][$field_id]) ? absint($_FILES[$input_name]['size'][$field_id]) : 0;
+
+        if ($error !== UPLOAD_ERR_OK) {
+            PulseForms_Logger::log('error', 'file_upload_error', 'File upload failed with PHP upload error.', [
+                'form_id'      => $form->id,
+                'form_name'    => $form->name,
+                'page_url'     => $page_url,
+                'field_id'     => $field_id,
+                'field_label'  => $label,
+                'upload_error' => $error,
+            ]);
+
+            return new WP_Error('file_upload_error', $label . ' could not be uploaded.');
+        }
+
+        $max_size = 5 * 1024 * 1024;
+
+        if ($size > $max_size) {
+            return new WP_Error('file_too_large', $label . ' is too large.');
+        }
+
+        $allowed_mimes = [
+            'jpg|jpeg|jpe' => 'image/jpeg',
+            'png'          => 'image/png',
+            'gif'          => 'image/gif',
+            'pdf'          => 'application/pdf',
+            'doc'          => 'application/msword',
+            'docx'         => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'txt'          => 'text/plain',
+        ];
+
+        $file_check = wp_check_filetype_and_ext($tmp_name, $file_name, $allowed_mimes);
+
+        if (empty($file_check['type'])) {
+            return new WP_Error('invalid_file_type', $label . ' file type is not allowed.');
+        }
+
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+
+        $uploaded = wp_handle_upload(
+            [
+                'name'     => $file_name,
+                'type'     => $file_type,
+                'tmp_name' => $tmp_name,
+                'error'    => $error,
+                'size'     => $size,
+            ],
+            [
+                'test_form' => false,
+                'mimes'     => $allowed_mimes,
+            ]
+        );
+
+        if (isset($uploaded['error'])) {
+            PulseForms_Logger::log('error', 'file_upload_failed', 'WordPress file upload handler failed.', [
+                'form_id'      => $form->id,
+                'form_name'    => $form->name,
+                'page_url'     => $page_url,
+                'field_id'     => $field_id,
+                'field_label'  => $label,
+                'upload_error' => $uploaded['error'],
+            ]);
+
+            return new WP_Error('file_upload_failed', $label . ' could not be uploaded.');
+        }
+
+        return [
+            'field_id' => $field_id,
+            'label'    => $label,
+            'name'     => basename($uploaded['file']),
+            'url'      => esc_url_raw($uploaded['url']),
+            'path'     => sanitize_text_field($uploaded['file']),
+            'type'     => sanitize_text_field($uploaded['type']),
+            'size'     => $size,
+        ];
+    }
+
+    private function save_submission($form, $clean_data, $uploaded_files, $page_url) {
         global $wpdb;
 
         $inserted = $wpdb->insert(
@@ -243,7 +375,7 @@ class PulseForms_Form_Processor {
                 'form_id'         => absint($form->id),
                 'form_name'       => sanitize_text_field($form->name),
                 'submission_data' => wp_json_encode($clean_data),
-                'files'           => null,
+                'files'           => wp_json_encode($uploaded_files),
                 'user_id'         => get_current_user_id() ?: null,
                 'user_ip'         => $this->get_user_ip_hash(),
                 'user_agent'      => isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_textarea_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : null,
@@ -267,6 +399,27 @@ class PulseForms_Form_Processor {
         wp_send_json_error([
             'message' => $public_message ?: __('Something went wrong. Please try again.', 'pulseforms'),
         ], 400);
+    }
+
+    private function check_rate_limit($form_id, $page_url) {
+        $ip_hash = $this->get_user_ip_hash();
+
+        if (!$ip_hash) {
+            return;
+        }
+
+        $key = 'pulseforms_rate_' . md5($form_id . '_' . $ip_hash);
+        $count = (int) get_transient($key);
+
+        if ($count >= 5) {
+            $this->log_and_fail('warning', 'rate_limit_triggered', 'Submission blocked by rate limiting.', [
+                'form_id'  => $form_id,
+                'page_url' => $page_url,
+                'ip_hash'  => $ip_hash,
+            ], __('Too many attempts. Please try again later.', 'pulseforms'));
+        }
+
+        set_transient($key, $count + 1, 10 * MINUTE_IN_SECONDS);
     }
 
     private function get_user_ip_hash() {

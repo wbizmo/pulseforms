@@ -63,10 +63,10 @@ class PulseForms_Form_Renderer {
 
         if (!is_array($fields)) {
             PulseForms_Logger::log('error', 'form_render_failed', 'PulseForms could not render form because fields JSON is invalid.', [
-                'form_id'   => $form_id,
-                'form_name' => $form->name,
-                'page_url'  => $this->current_page_url(),
-                'raw_fields'=> $form->fields,
+                'form_id'    => $form_id,
+                'form_name'  => $form->name,
+                'page_url'   => $this->current_page_url(),
+                'raw_fields' => $form->fields,
             ]);
 
             return $this->render_error_notice(__('Something went wrong. Please try again later.', 'pulseforms'));
@@ -83,6 +83,7 @@ class PulseForms_Form_Renderer {
         $theme = isset($style_settings['theme']) ? sanitize_key($style_settings['theme']) : 'aurora';
         $style_mode = isset($style_settings['style_mode']) ? sanitize_key($style_settings['style_mode']) : 'pulse';
         $submit_text = isset($settings['submit_text']) ? sanitize_text_field($settings['submit_text']) : __('Submit', 'pulseforms');
+        $captcha_enabled = !empty($settings['captcha_enabled']);
 
         $primary_color = isset($style_settings['primary_color']) && $style_settings['primary_color']
             ? sanitize_hex_color($style_settings['primary_color'])
@@ -104,6 +105,10 @@ class PulseForms_Form_Renderer {
             esc_attr($button_radius)
         );
 
+        $captcha_a = wp_rand(2, 9);
+        $captcha_b = wp_rand(2, 9);
+        $captcha_answer = $captcha_a + $captcha_b;
+
         ob_start();
         ?>
         <div
@@ -123,6 +128,10 @@ class PulseForms_Form_Renderer {
                 <input type="hidden" name="pulseforms_page_url" value="<?php echo esc_url($this->current_page_url()); ?>">
                 <input type="hidden" name="pulseforms_nonce" value="<?php echo esc_attr(wp_create_nonce('pulseforms_submit_' . $form_id)); ?>">
 
+                <?php if ($captcha_enabled) : ?>
+                    <input type="hidden" name="pulseforms_captcha_hash" value="<?php echo esc_attr(wp_hash((string) $captcha_answer)); ?>">
+                <?php endif; ?>
+
                 <div class="pulseforms-hp-field" aria-hidden="true">
                     <label>
                         <?php esc_html_e('Leave this field empty', 'pulseforms'); ?>
@@ -134,6 +143,23 @@ class PulseForms_Form_Renderer {
                     <?php foreach ($fields as $field) : ?>
                         <?php echo $this->render_field($field); ?>
                     <?php endforeach; ?>
+
+                    <?php if ($captcha_enabled) : ?>
+                        <div class="pulseforms-field pulseforms-field-captcha pulseforms-width-full">
+                            <label for="pulseforms_captcha_<?php echo esc_attr($form_id); ?>">
+                                <?php echo esc_html(sprintf(__('Security check: What is %d + %d?', 'pulseforms'), $captcha_a, $captcha_b)); ?>
+                                <span class="pulseforms-required">*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                id="pulseforms_captcha_<?php echo esc_attr($form_id); ?>"
+                                name="pulseforms_captcha_answer"
+                                placeholder="<?php esc_attr_e('Enter answer', 'pulseforms'); ?>"
+                                required
+                            >
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="pulseforms-actions">
