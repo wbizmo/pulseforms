@@ -769,3 +769,49 @@
     height: 48px;
     padding: 6px;
 }
+
+.pf-submitted-files {
+    margin-top: 20px;
+}
+
+.pf-submitted-files h4 {
+    margin: 0 0 12px;
+    color: var(--pf-primary);
+}
+
+.pf-file-list {
+    display: grid;
+    gap: 10px;
+}
+
+.pf-file-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(14, 34, 56, 0.04);
+    border: 1px solid var(--pf-line);
+    border-radius: 16px;
+    padding: 13px;
+    text-decoration: none;
+    color: var(--pf-primary);
+    transition: 0.22s ease;
+}
+
+.pf-file-card:hover {
+    background: rgba(197, 165, 114, 0.14);
+    color: var(--pf-primary);
+}
+
+.pf-file-card .material-symbols-outlined {
+    color: var(--pf-accent);
+}
+
+.pf-file-card strong,
+.pf-file-card small {
+    display: block;
+}
+
+.pf-file-card small {
+    color: var(--pf-muted);
+    margin-top: 3px;
+}

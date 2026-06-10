@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
         <div>
             <p class="pf-eyebrow">Submissions</p>
             <h1>Form Submissions</h1>
-            <p>View form entries, metadata, submission status, source pages, and submitted values.</p>
+            <p>View form entries, metadata, uploaded files, source pages, and submitted values.</p>
         </div>
     </div>
 
@@ -46,25 +46,25 @@ if (!defined('ABSPATH')) {
             <div class="pf-submission-list">
                 <?php foreach ($submissions as $submission) : ?>
                     <?php
-                        $data = json_decode($submission->submission_data, true);
-                        $delete_url = wp_nonce_url(
-                            admin_url('admin-post.php?action=pulseforms_delete_submission&submission_id=' . absint($submission->id)),
-                            'pulseforms_delete_submission_' . absint($submission->id)
-                        );
+                    $data = json_decode($submission->submission_data, true);
+                    $files = json_decode($submission->files, true);
 
-                        $mark_read_url = wp_nonce_url(
-                            admin_url('admin-post.php?action=pulseforms_mark_submission_read&submission_id=' . absint($submission->id)),
-                            'pulseforms_mark_submission_read_' . absint($submission->id)
-                        );
+                    $delete_url = wp_nonce_url(
+                        admin_url('admin-post.php?action=pulseforms_delete_submission&submission_id=' . absint($submission->id)),
+                        'pulseforms_delete_submission_' . absint($submission->id)
+                    );
+
+                    $mark_read_url = wp_nonce_url(
+                        admin_url('admin-post.php?action=pulseforms_mark_submission_read&submission_id=' . absint($submission->id)),
+                        'pulseforms_mark_submission_read_' . absint($submission->id)
+                    );
                     ?>
 
                     <article class="pf-submission-card <?php echo $submission->status === 'unread' ? 'is-unread' : ''; ?>">
                         <div class="pf-submission-top">
                             <div>
                                 <div class="pf-submission-title-row">
-                                    <h3>
-                                        <?php echo esc_html($submission->form_name ?: 'Untitled Form'); ?>
-                                    </h3>
+                                    <h3><?php echo esc_html($submission->form_name ?: 'Untitled Form'); ?></h3>
 
                                     <span class="pf-status <?php echo $submission->status === 'unread' ? 'pf-status-unread' : 'pf-status-active'; ?>">
                                         <?php echo esc_html($submission->status); ?>
@@ -132,8 +132,8 @@ if (!defined('ABSPATH')) {
                                     <div class="pf-value-list">
                                         <?php foreach ($data as $field) : ?>
                                             <?php
-                                                $label = isset($field['label']) ? $field['label'] : 'Field';
-                                                $value = isset($field['value']) ? $field['value'] : '';
+                                            $label = isset($field['label']) ? $field['label'] : 'Field';
+                                            $value = isset($field['value']) ? $field['value'] : '';
                                             ?>
                                             <div class="pf-value-row">
                                                 <strong><?php echo esc_html($label); ?></strong>
@@ -150,6 +150,24 @@ if (!defined('ABSPATH')) {
                                     <p>No readable submission data found.</p>
                                 <?php endif; ?>
                             </div>
+
+                            <?php if (is_array($files) && !empty($files)) : ?>
+                                <div class="pf-submitted-files">
+                                    <h4>Uploaded Files</h4>
+
+                                    <div class="pf-file-list">
+                                        <?php foreach ($files as $file) : ?>
+                                            <a class="pf-file-card" href="<?php echo esc_url($file['url']); ?>" target="_blank" rel="noopener noreferrer">
+                                                <span class="material-symbols-outlined">attach_file</span>
+                                                <span>
+                                                    <strong><?php echo esc_html($file['label'] ?? 'Uploaded File'); ?></strong>
+                                                    <small><?php echo esc_html($file['name'] ?? 'File'); ?></small>
+                                                </span>
+                                            </a>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </article>
                 <?php endforeach; ?>
