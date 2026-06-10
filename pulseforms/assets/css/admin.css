@@ -695,3 +695,77 @@
     word-break: break-word;
     margin: 0;
 }
+
+.pf-toggle-grid {
+    display: grid;
+    gap: 14px;
+}
+
+.pf-switch-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-weight: 800;
+    color: var(--pf-primary);
+}
+
+.pf-switch-row input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pf-switch-ui {
+    width: 50px;
+    height: 30px;
+    border-radius: 999px;
+    background: rgba(14, 34, 56, 0.15);
+    position: relative;
+    transition: 0.22s ease;
+    flex: 0 0 auto;
+}
+
+.pf-switch-ui::after {
+    content: "";
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 3px;
+    left: 3px;
+    background: #ffffff;
+    border-radius: 999px;
+    box-shadow: 0 6px 14px rgba(14, 34, 56, 0.2);
+    transition: 0.22s ease;
+}
+
+.pf-switch-row input:checked + .pf-switch-ui {
+    background: var(--pf-accent);
+}
+
+.pf-switch-row input:checked + .pf-switch-ui::after {
+    transform: translateX(20px);
+}
+
+.pf-field textarea {
+    width: 100%;
+    border: 1px solid rgba(14, 34, 56, 0.15);
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 13px 14px;
+    color: var(--pf-primary);
+    outline: none;
+    box-shadow: none;
+    transition: 0.2s ease;
+    font-family: Consolas, Monaco, monospace;
+}
+
+.pf-field textarea:focus {
+    border-color: var(--pf-accent);
+    box-shadow: 0 0 0 4px rgba(197, 165, 114, 0.14);
+}
+
+.pf-field input[type="color"] {
+    height: 48px;
+    padding: 6px;
+}

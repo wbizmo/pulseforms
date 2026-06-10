@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
         <div>
             <p class="pf-eyebrow">PulseForms</p>
             <h1>All Forms</h1>
-            <p>Create beautiful, secure, customizable WordPress forms.</p>
+            <p>Create, edit, customize, and embed beautiful WordPress forms.</p>
         </div>
 
         <a href="<?php echo esc_url(admin_url('admin.php?page=pulseforms-add-new')); ?>" class="pf-btn pf-btn-primary">
@@ -19,24 +19,19 @@ if (!defined('ABSPATH')) {
     </div>
 
     <?php if (isset($_GET['pf_created'])) : ?>
-        <div class="pf-notice pf-notice-success">
-            <span class="material-symbols-outlined">check_circle</span>
-            Form created successfully.
-        </div>
+        <div class="pf-notice pf-notice-success"><span class="material-symbols-outlined">check_circle</span> Form created successfully.</div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['pf_updated'])) : ?>
+        <div class="pf-notice pf-notice-success"><span class="material-symbols-outlined">check_circle</span> Form updated successfully.</div>
     <?php endif; ?>
 
     <?php if (isset($_GET['pf_deleted'])) : ?>
-        <div class="pf-notice pf-notice-success">
-            <span class="material-symbols-outlined">check_circle</span>
-            Form deleted successfully.
-        </div>
+        <div class="pf-notice pf-notice-success"><span class="material-symbols-outlined">check_circle</span> Form deleted successfully.</div>
     <?php endif; ?>
 
     <?php if (isset($_GET['pf_error'])) : ?>
-        <div class="pf-notice pf-notice-error">
-            <span class="material-symbols-outlined">error</span>
-            Something went wrong. Check logs for details.
-        </div>
+        <div class="pf-notice pf-notice-error"><span class="material-symbols-outlined">error</span> Something went wrong. Check logs for details.</div>
     <?php endif; ?>
 
     <?php if (!empty($forms)) : ?>
@@ -65,25 +60,23 @@ if (!defined('ABSPATH')) {
                     <tbody>
                         <?php foreach ($forms as $form) : ?>
                             <?php
-                                $style_settings = json_decode($form->style_settings, true);
-                                $theme = isset($style_settings['theme']) ? $style_settings['theme'] : 'aurora';
-                                $delete_url = wp_nonce_url(
-                                    admin_url('admin-post.php?action=pulseforms_delete_form&form_id=' . absint($form->id)),
-                                    'pulseforms_delete_form_' . absint($form->id)
-                                );
+                            $style_settings = json_decode($form->style_settings, true);
+                            $theme = isset($style_settings['theme']) ? $style_settings['theme'] : 'aurora';
+
+                            $edit_url = admin_url('admin.php?page=pulseforms-edit-form&form_id=' . absint($form->id));
+
+                            $delete_url = wp_nonce_url(
+                                admin_url('admin-post.php?action=pulseforms_delete_form&form_id=' . absint($form->id)),
+                                'pulseforms_delete_form_' . absint($form->id)
+                            );
                             ?>
+
                             <tr>
-                                <td>
-                                    <strong><?php echo esc_html($form->name); ?></strong>
-                                </td>
+                                <td><strong><?php echo esc_html($form->name); ?></strong></td>
 
-                                <td>
-                                    <span class="pf-pill"><?php echo esc_html(ucwords(str_replace('_', ' ', $form->type))); ?></span>
-                                </td>
+                                <td><span class="pf-pill"><?php echo esc_html(ucwords(str_replace('_', ' ', $form->type))); ?></span></td>
 
-                                <td>
-                                    <?php echo esc_html(ucfirst($theme)); ?>
-                                </td>
+                                <td><?php echo esc_html(ucfirst($theme)); ?></td>
 
                                 <td>
                                     <div class="pf-shortcode-copy">
@@ -94,16 +87,12 @@ if (!defined('ABSPATH')) {
                                     </div>
                                 </td>
 
-                                <td>
-                                    <span class="pf-status pf-status-active"><?php echo esc_html($form->status); ?></span>
-                                </td>
+                                <td><span class="pf-status pf-status-active"><?php echo esc_html($form->status); ?></span></td>
 
-                                <td>
-                                    <?php echo esc_html(mysql2date('M j, Y', $form->created_at)); ?>
-                                </td>
+                                <td><?php echo esc_html(mysql2date('M j, Y', $form->created_at)); ?></td>
 
                                 <td class="pf-table-actions">
-                                    <a href="#" class="pf-icon-btn" title="Builder coming next">
+                                    <a href="<?php echo esc_url($edit_url); ?>" class="pf-icon-btn" title="Edit form">
                                         <span class="material-symbols-outlined">edit</span>
                                     </a>
 

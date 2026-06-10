@@ -8,19 +8,32 @@ class PulseForms_Admin {
     public function init() {
         add_action('admin_menu', [$this, 'register_admin_menu']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
+
         add_action('admin_post_pulseforms_create_form', [$this, 'handle_create_form']);
+        add_action('admin_post_pulseforms_update_form', [$this, 'handle_update_form']);
         add_action('admin_post_pulseforms_delete_form', [$this, 'handle_delete_form']);
+
         add_action('admin_post_pulseforms_delete_submission', [$this, 'handle_delete_submission']);
         add_action('admin_post_pulseforms_mark_submission_read', [$this, 'handle_mark_submission_read']);
+
         add_action('admin_post_pulseforms_delete_log', [$this, 'handle_delete_log']);
         add_action('admin_post_pulseforms_clear_logs', [$this, 'handle_clear_logs']);
     }
 
     public function register_admin_menu() {
-        add_menu_page(__('PulseForms', 'pulseforms'), __('PulseForms', 'pulseforms'), 'manage_options', 'pulseforms', [$this, 'render_forms_page'], 'dashicons-feedback', 26);
+        add_menu_page(
+            __('PulseForms', 'pulseforms'),
+            __('PulseForms', 'pulseforms'),
+            'manage_options',
+            'pulseforms',
+            [$this, 'render_forms_page'],
+            'dashicons-feedback',
+            26
+        );
 
         add_submenu_page('pulseforms', __('All Forms', 'pulseforms'), __('All Forms', 'pulseforms'), 'manage_options', 'pulseforms', [$this, 'render_forms_page']);
         add_submenu_page('pulseforms', __('Add New', 'pulseforms'), __('Add New', 'pulseforms'), 'manage_options', 'pulseforms-add-new', [$this, 'render_add_new_page']);
+        add_submenu_page('pulseforms', __('Edit Form', 'pulseforms'), __('Edit Form', 'pulseforms'), 'manage_options', 'pulseforms-edit-form', [$this, 'render_edit_form_page']);
         add_submenu_page('pulseforms', __('Submissions', 'pulseforms'), __('Submissions', 'pulseforms'), 'manage_options', 'pulseforms-submissions', [$this, 'render_submissions_page']);
         add_submenu_page('pulseforms', __('Logs', 'pulseforms'), __('Logs', 'pulseforms'), 'manage_options', 'pulseforms-logs', [$this, 'render_logs_page']);
         add_submenu_page('pulseforms', __('Settings', 'pulseforms'), __('Settings', 'pulseforms'), 'manage_options', 'pulseforms-settings', [$this, 'render_settings_page']);
@@ -57,32 +70,36 @@ class PulseForms_Admin {
 
     public function get_forms() {
         global $wpdb;
+
         return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pulseforms_forms ORDER BY created_at DESC");
     }
 
     public function get_form($id) {
         global $wpdb;
-        return $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_forms WHERE id = %d", absint($id)));
+
+        return $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_forms WHERE id = %d", absint($id))
+        );
     }
 
     public function get_submissions() {
         global $wpdb;
+
         return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pulseforms_submissions ORDER BY created_at DESC LIMIT 200");
     }
 
     public function get_submission($id) {
         global $wpdb;
-        return $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_submissions WHERE id = %d", absint($id)));
+
+        return $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_submissions WHERE id = %d", absint($id))
+        );
     }
 
     public function get_logs() {
         global $wpdb;
-        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pulseforms_logs ORDER BY created_at DESC LIMIT 300");
-    }
 
-    public function get_log($id) {
-        global $wpdb;
-        return $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_logs WHERE id = %d", absint($id)));
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pulseforms_logs ORDER BY created_at DESC LIMIT 300");
     }
 
     public function handle_create_form() {
@@ -161,6 +178,120 @@ class PulseForms_Admin {
         }
 
         wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_created=1'));
+        exit;
+    }
+
+    public function handle_update_form() {
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('You do not have permission to update forms.', 'pulseforms'));
+        }
+
+        $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : 0;
+
+        if (!$form_id) {
+            wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_error=missing_form'));
+            exit;
+        }
+
+        check_admin_referer('pulseforms_update_form_' . $form_id);
+
+        $form = $this->get_form($form_id);
+
+        if (!$form) {
+            wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_error=form_not_found'));
+            exit;
+        }
+
+        global $wpdb;
+
+        $name = isset($_POST['form_name']) ? sanitize_text_field(wp_unslash($_POST['form_name'])) : '';
+        $status = isset($_POST['form_status']) ? sanitize_key(wp_unslash($_POST['form_status'])) : 'active';
+        $fields_raw = isset($_POST['form_fields']) ? wp_unslash($_POST['form_fields']) : '';
+
+        if (empty($name)) {
+            wp_safe_redirect(admin_url('admin.php?page=pulseforms-edit-form&form_id=' . $form_id . '&pf_error=missing_name'));
+            exit;
+        }
+
+        if (!in_array($status, ['active', 'inactive'], true)) {
+            $status = 'active';
+        }
+
+        $decoded_fields = json_decode($fields_raw, true);
+
+        if (!is_array($decoded_fields)) {
+            PulseForms_Logger::log('error', 'form_update_invalid_json', 'Form update failed because fields JSON was invalid.', [
+                'form_id' => $form_id,
+                'form_name' => $name,
+                'json_error' => json_last_error_msg(),
+                'raw_fields' => $fields_raw,
+            ]);
+
+            wp_safe_redirect(admin_url('admin.php?page=pulseforms-edit-form&form_id=' . $form_id . '&pf_error=invalid_json'));
+            exit;
+        }
+
+        $sanitized_fields = $this->sanitize_fields_array($decoded_fields);
+
+        $settings = [
+            'admin_email_enabled' => isset($_POST['admin_email_enabled']),
+            'user_email_enabled'  => isset($_POST['user_email_enabled']),
+            'save_submissions'    => isset($_POST['save_submissions']),
+            'honeypot_enabled'    => isset($_POST['honeypot_enabled']),
+            'captcha_enabled'     => isset($_POST['captcha_enabled']),
+            'success_message'     => isset($_POST['success_message']) ? sanitize_text_field(wp_unslash($_POST['success_message'])) : __('Thank you. Your submission has been received.', 'pulseforms'),
+            'error_message'       => isset($_POST['error_message']) ? sanitize_text_field(wp_unslash($_POST['error_message'])) : __('Something went wrong. Please try again.', 'pulseforms'),
+            'submit_text'         => isset($_POST['submit_text']) ? sanitize_text_field(wp_unslash($_POST['submit_text'])) : __('Submit', 'pulseforms'),
+        ];
+
+        $theme = isset($_POST['form_theme']) ? sanitize_key(wp_unslash($_POST['form_theme'])) : 'aurora';
+        $style_mode = isset($_POST['style_mode']) ? sanitize_key(wp_unslash($_POST['style_mode'])) : 'pulse';
+
+        if (!in_array($theme, ['aurora', 'noir', 'solace'], true)) {
+            $theme = 'aurora';
+        }
+
+        if (!in_array($style_mode, ['pulse', 'inherit'], true)) {
+            $style_mode = 'pulse';
+        }
+
+        $style_settings = [
+            'theme'          => $theme,
+            'style_mode'     => $style_mode,
+            'primary_color'  => isset($_POST['primary_color']) ? sanitize_hex_color(wp_unslash($_POST['primary_color'])) : '#0E2238',
+            'accent_color'   => isset($_POST['accent_color']) ? sanitize_hex_color(wp_unslash($_POST['accent_color'])) : '#C5A572',
+            'button_radius'  => isset($_POST['button_radius']) ? absint($_POST['button_radius']) : 14,
+            'field_radius'   => isset($_POST['field_radius']) ? absint($_POST['field_radius']) : 14,
+            'custom_css'     => isset($_POST['custom_css']) ? wp_strip_all_tags(wp_unslash($_POST['custom_css'])) : '',
+        ];
+
+        $updated = $wpdb->update(
+            $wpdb->prefix . 'pulseforms_forms',
+            [
+                'name'           => $name,
+                'fields'         => wp_json_encode($sanitized_fields),
+                'settings'       => wp_json_encode($settings),
+                'style_settings' => wp_json_encode($style_settings),
+                'status'         => $status,
+                'updated_at'     => current_time('mysql'),
+            ],
+            ['id' => $form_id],
+            ['%s', '%s', '%s', '%s', '%s', '%s'],
+            ['%d']
+        );
+
+        if ($updated === false) {
+            PulseForms_Logger::log('error', 'form_update_failed', 'PulseForms could not update the form.', [
+                'form_id' => $form_id,
+                'form_name' => $name,
+                'db_error' => $wpdb->last_error,
+            ]);
+
+            wp_safe_redirect(admin_url('admin.php?page=pulseforms-edit-form&form_id=' . $form_id . '&pf_error=update_failed'));
+            exit;
+        }
+
+        wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_updated=1'));
         exit;
     }
 
@@ -323,6 +454,61 @@ class PulseForms_Admin {
         exit;
     }
 
+    private function sanitize_fields_array($fields) {
+        $allowed_types = [
+            'text',
+            'email',
+            'phone',
+            'number',
+            'textarea',
+            'select',
+            'radio',
+            'checkbox',
+            'toggle',
+            'date',
+            'file',
+            'hidden',
+            'html',
+            'password',
+        ];
+
+        $clean = [];
+
+        foreach ($fields as $field) {
+            if (!is_array($field)) {
+                continue;
+            }
+
+            $id = isset($field['id']) ? sanitize_key($field['id']) : '';
+            $type = isset($field['type']) ? sanitize_key($field['type']) : 'text';
+
+            if (!$id) {
+                continue;
+            }
+
+            if (!in_array($type, $allowed_types, true)) {
+                $type = 'text';
+            }
+
+            $clean_field = [
+                'id'          => $id,
+                'type'        => $type,
+                'label'       => isset($field['label']) ? sanitize_text_field($field['label']) : ucfirst($id),
+                'placeholder' => isset($field['placeholder']) ? sanitize_text_field($field['placeholder']) : '',
+                'required'    => !empty($field['required']),
+                'width'       => isset($field['width']) && in_array($field['width'], ['full', 'half'], true) ? sanitize_key($field['width']) : 'full',
+            ];
+
+            if (isset($field['options']) && is_array($field['options'])) {
+                $clean_field['options'] = array_map('sanitize_text_field', $field['options']);
+            }
+
+            $clean[] = $clean_field;
+        }
+
+        return $clean;
+    }
+
     private function get_default_submit_text($type) {
         $map = [
             'contact'      => __('Send Message', 'pulseforms'),
@@ -421,6 +607,18 @@ class PulseForms_Admin {
 
     public function render_add_new_page() {
         require PULSEFORMS_PATH . 'admin/views/add-new.php';
+    }
+
+    public function render_edit_form_page() {
+        $form_id = isset($_GET['form_id']) ? absint($_GET['form_id']) : 0;
+        $form = $this->get_form($form_id);
+
+        if (!$form) {
+            echo '<div class="pf-admin-wrap"><div class="pf-card"><h2>Form not found.</h2><p>The requested form could not be found.</p></div></div>';
+            return;
+        }
+
+        require PULSEFORMS_PATH . 'admin/views/edit-form.php';
     }
 
     public function render_submissions_page() {
