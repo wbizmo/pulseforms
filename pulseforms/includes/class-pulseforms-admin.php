@@ -18,6 +18,8 @@ class PulseForms_Admin {
 
         add_action('admin_post_pulseforms_delete_log', [$this, 'handle_delete_log']);
         add_action('admin_post_pulseforms_clear_logs', [$this, 'handle_clear_logs']);
+
+        add_action('admin_post_pulseforms_save_settings', [$this, 'handle_save_settings']);
     }
 
     public function register_admin_menu() {
@@ -221,8 +223,8 @@ class PulseForms_Admin {
 
         if (!is_array($decoded_fields)) {
             PulseForms_Logger::log('error', 'form_update_invalid_json', 'Form update failed because fields JSON was invalid.', [
-                'form_id' => $form_id,
-                'form_name' => $name,
+                'form_id'    => $form_id,
+                'form_name'  => $name,
                 'json_error' => json_last_error_msg(),
                 'raw_fields' => $fields_raw,
             ]);
@@ -282,9 +284,9 @@ class PulseForms_Admin {
 
         if ($updated === false) {
             PulseForms_Logger::log('error', 'form_update_failed', 'PulseForms could not update the form.', [
-                'form_id' => $form_id,
+                'form_id'   => $form_id,
                 'form_name' => $name,
-                'db_error' => $wpdb->last_error,
+                'db_error'  => $wpdb->last_error,
             ]);
 
             wp_safe_redirect(admin_url('admin.php?page=pulseforms-edit-form&form_id=' . $form_id . '&pf_error=update_failed'));
@@ -451,6 +453,31 @@ class PulseForms_Admin {
         $wpdb->query("TRUNCATE TABLE {$wpdb->prefix}pulseforms_logs");
 
         wp_safe_redirect(admin_url('admin.php?page=pulseforms-logs&pf_cleared=1'));
+        exit;
+    }
+
+    public function handle_save_settings() {
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('You do not have permission to save settings.', 'pulseforms'));
+        }
+
+        check_admin_referer('pulseforms_save_settings');
+
+        $allowed_file_types = isset($_POST['allowed_file_types'])
+            ? sanitize_text_field(wp_unslash($_POST['allowed_file_types']))
+            : 'jpg,jpeg,png,gif,pdf,doc,docx,txt';
+
+        $settings = [
+            'upload_max_size'     => isset($_POST['upload_max_size']) ? max(1, min(25, absint($_POST['upload_max_size']))) : 5,
+            'allowed_file_types'  => $allowed_file_types,
+            'rate_limit_attempts' => isset($_POST['rate_limit_attempts']) ? max(1, min(50, absint($_POST['rate_limit_attempts']))) : 5,
+            'rate_limit_window'   => isset($_POST['rate_limit_window']) ? max(1, min(1440, absint($_POST['rate_limit_window']))) : 10,
+            'log_retention_days'  => isset($_POST['log_retention_days']) ? max(1, min(365, absint($_POST['log_retention_days']))) : 30,
+        ];
+
+        update_option('pulseforms_settings', $settings);
+
+        wp_safe_redirect(admin_url('admin.php?page=pulseforms-settings&pf_saved=1'));
         exit;
     }
 

@@ -843,3 +843,9 @@
         flex-direction: column;
     }
 }
+
+.pf-help {
+    margin: 8px 0 0;
+    color: var(--pf-muted);
+    font-size: 13px;
+}
