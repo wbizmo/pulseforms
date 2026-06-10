@@ -42,6 +42,24 @@ function pulseforms_run() {
 
     $processor = new PulseForms_Form_Processor();
     $processor->init();
+
+    add_action('pulseforms_daily_cleanup', 'pulseforms_cleanup_old_logs');
+}
+
+function pulseforms_cleanup_old_logs() {
+    global $wpdb;
+
+    $settings = get_option('pulseforms_settings', []);
+    $days = isset($settings['log_retention_days']) ? absint($settings['log_retention_days']) : 30;
+    $days = max(1, min(365, $days));
+
+    $wpdb->query(
+        $wpdb->prepare(
+            "DELETE FROM {$wpdb->prefix}pulseforms_logs WHERE created_at < DATE_SUB(%s, INTERVAL %d DAY)",
+            current_time('mysql'),
+            $days
+        )
+    );
 }
 
 pulseforms_run();

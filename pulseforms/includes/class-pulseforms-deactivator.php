@@ -6,6 +6,6 @@ if (!defined('ABSPATH')) {
 
 class PulseForms_Deactivator {
     public static function deactivate() {
-        // Keep data on deactivation.
+        wp_clear_scheduled_hook('pulseforms_daily_cleanup');
     }
 }

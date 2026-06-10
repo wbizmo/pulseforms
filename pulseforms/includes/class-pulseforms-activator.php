@@ -73,5 +73,19 @@ class PulseForms_Activator {
         dbDelta($sql_logs);
 
         add_option('pulseforms_version', PULSEFORMS_VERSION);
+
+        if (!get_option('pulseforms_settings')) {
+            add_option('pulseforms_settings', [
+                'upload_max_size'     => 5,
+                'allowed_file_types'  => 'jpg,jpeg,png,gif,pdf,doc,docx,txt',
+                'rate_limit_attempts' => 5,
+                'rate_limit_window'   => 10,
+                'log_retention_days'  => 30,
+            ]);
+        }
+
+        if (!wp_next_scheduled('pulseforms_daily_cleanup')) {
+            wp_schedule_event(time(), 'daily', 'pulseforms_daily_cleanup');
+        }
     }
 }
