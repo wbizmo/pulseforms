@@ -246,6 +246,24 @@ class PulseForms_Form_Processor {
         );
     }
 
+    private function get_plugin_settings() {
+        $defaults = [
+            'upload_max_size'     => 5,
+            'allowed_file_types'  => 'jpg,jpeg,png,gif,pdf,doc,docx,txt',
+            'rate_limit_attempts' => 5,
+            'rate_limit_window'   => 10,
+            'log_retention_days'  => 30,
+        ];
+
+        $settings = get_option('pulseforms_settings', []);
+
+        if (!is_array($settings)) {
+            $settings = [];
+        }
+
+        return wp_parse_args($settings, $defaults);
+    }
+
     private function sanitize_value_by_type($value, $type) {
         if (is_array($value)) {
             return array_map('sanitize_text_field', $value);
@@ -285,6 +303,8 @@ class PulseForms_Form_Processor {
             return null;
         }
 
+        $plugin_settings = $this->get_plugin_settings();
+
         $file_name = sanitize_file_name(wp_unslash($_FILES[$input_name]['name'][$field_id]));
         $file_type = isset($_FILES[$input_name]['type'][$field_id]) ? sanitize_text_field(wp_unslash($_FILES[$input_name]['type'][$field_id])) : '';
         $tmp_name = isset($_FILES[$input_name]['tmp_name'][$field_id]) ? $_FILES[$input_name]['tmp_name'][$field_id] : '';
@@ -304,21 +324,14 @@ class PulseForms_Form_Processor {
             return new WP_Error('file_upload_error', $label . ' could not be uploaded.');
         }
 
-        $max_size = 5 * 1024 * 1024;
+        $max_size_mb = isset($plugin_settings['upload_max_size']) ? absint($plugin_settings['upload_max_size']) : 5;
+        $max_size = max(1, $max_size_mb) * 1024 * 1024;
 
         if ($size > $max_size) {
             return new WP_Error('file_too_large', $label . ' is too large.');
         }
 
-        $allowed_mimes = [
-            'jpg|jpeg|jpe' => 'image/jpeg',
-            'png'          => 'image/png',
-            'gif'          => 'image/gif',
-            'pdf'          => 'application/pdf',
-            'doc'          => 'application/msword',
-            'docx'         => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'txt'          => 'text/plain',
-        ];
+        $allowed_mimes = $this->get_allowed_mimes_from_settings($plugin_settings);
 
         $file_check = wp_check_filetype_and_ext($tmp_name, $file_name, $allowed_mimes);
 
@@ -366,6 +379,49 @@ class PulseForms_Form_Processor {
         ];
     }
 
+    private function get_allowed_mimes_from_settings($settings) {
+        $allowed = isset($settings['allowed_file_types'])
+            ? strtolower(sanitize_text_field($settings['allowed_file_types']))
+            : 'jpg,jpeg,png,gif,pdf,doc,docx,txt';
+
+        $requested_types = array_filter(array_map('trim', explode(',', $allowed)));
+
+        $mime_map = [
+            'jpg'  => ['jpg|jpeg|jpe', 'image/jpeg'],
+            'jpeg' => ['jpg|jpeg|jpe', 'image/jpeg'],
+            'png'  => ['png', 'image/png'],
+            'gif'  => ['gif', 'image/gif'],
+            'pdf'  => ['pdf', 'application/pdf'],
+            'doc'  => ['doc', 'application/msword'],
+            'docx' => ['docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+            'txt'  => ['txt', 'text/plain'],
+        ];
+
+        $mimes = [];
+
+        foreach ($requested_types as $type) {
+            if (!isset($mime_map[$type])) {
+                continue;
+            }
+
+            $mimes[$mime_map[$type][0]] = $mime_map[$type][1];
+        }
+
+        if (empty($mimes)) {
+            $mimes = [
+                'jpg|jpeg|jpe' => 'image/jpeg',
+                'png'          => 'image/png',
+                'gif'          => 'image/gif',
+                'pdf'          => 'application/pdf',
+                'doc'          => 'application/msword',
+                'docx'         => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'txt'          => 'text/plain',
+            ];
+        }
+
+        return $mimes;
+    }
+
     private function save_submission($form, $clean_data, $uploaded_files, $page_url) {
         global $wpdb;
 
@@ -408,18 +464,30 @@ class PulseForms_Form_Processor {
             return;
         }
 
+        $plugin_settings = $this->get_plugin_settings();
+
+        $max_attempts = isset($plugin_settings['rate_limit_attempts'])
+            ? max(1, absint($plugin_settings['rate_limit_attempts']))
+            : 5;
+
+        $window_minutes = isset($plugin_settings['rate_limit_window'])
+            ? max(1, absint($plugin_settings['rate_limit_window']))
+            : 10;
+
         $key = 'pulseforms_rate_' . md5($form_id . '_' . $ip_hash);
         $count = (int) get_transient($key);
 
-        if ($count >= 5) {
+        if ($count >= $max_attempts) {
             $this->log_and_fail('warning', 'rate_limit_triggered', 'Submission blocked by rate limiting.', [
-                'form_id'  => $form_id,
-                'page_url' => $page_url,
-                'ip_hash'  => $ip_hash,
+                'form_id'      => $form_id,
+                'page_url'     => $page_url,
+                'ip_hash'      => $ip_hash,
+                'max_attempts' => $max_attempts,
+                'window'       => $window_minutes,
             ], __('Too many attempts. Please try again later.', 'pulseforms'));
         }
 
-        set_transient($key, $count + 1, 10 * MINUTE_IN_SECONDS);
+        set_transient($key, $count + 1, $window_minutes * MINUTE_IN_SECONDS);
     }
 
     private function get_user_ip_hash() {
