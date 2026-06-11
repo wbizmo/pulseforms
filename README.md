@@ -357,8 +357,7 @@ This keeps the profile image current with the GitHub account avatar.
 │   └── uninstall.php
 │
 ├── assets/
-│   └── screenshots/
-│       └── pulseforms-preview.png
+│   └── pulseforms.png
 │
 ├── release/
 │   └── pulseforms.zip
