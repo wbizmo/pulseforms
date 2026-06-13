@@ -849,3 +849,14 @@
     color: var(--pf-muted);
     font-size: 13px;
 }
+
+.pf-icon-btn.is-copied {
+    background: #027a48;
+    color: #ffffff;
+}
+
+.pf-copy-shortcode.is-copied,
+.pf-copy-log.is-copied {
+    background: #027a48;
+    color: #ffffff;
+}
