@@ -191,6 +191,7 @@ class PulseForms_Form_Renderer {
         $label = isset($field['label']) ? sanitize_text_field($field['label']) : ucfirst($id);
         $placeholder = isset($field['placeholder']) ? sanitize_text_field($field['placeholder']) : '';
         $required = !empty($field['required']);
+        $required_attr = $required ? ' required' : '';
         $width = isset($field['width']) ? sanitize_key($field['width']) : 'full';
 
         $name = 'pulseforms_fields[' . $id . ']';
@@ -228,14 +229,14 @@ class PulseForms_Form_Renderer {
 
                 case 'textarea':
                     ?>
-                    <textarea id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>" placeholder="<?php echo esc_attr($placeholder); ?>" <?php required($required); ?>></textarea>
+                    <textarea id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>" placeholder="<?php echo esc_attr($placeholder); ?>"<?php echo esc_attr($required_attr); ?>></textarea>
                     <?php
                     break;
 
                 case 'select':
                     $options = isset($field['options']) && is_array($field['options']) ? $field['options'] : ['Option One', 'Option Two'];
                     ?>
-                    <select id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>" <?php required($required); ?>>
+                    <select id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>"<?php echo esc_attr($required_attr); ?>>
                         <option value=""><?php esc_html_e('Select an option', 'pulseforms'); ?></option>
                         <?php foreach ($options as $option) : ?>
                             <option value="<?php echo esc_attr($option); ?>"><?php echo esc_html($option); ?></option>
@@ -250,7 +251,7 @@ class PulseForms_Form_Renderer {
                     <div class="pulseforms-choice-list">
                         <?php foreach ($options as $index => $option) : ?>
                             <label class="pulseforms-choice">
-                                <input type="checkbox" name="<?php echo esc_attr($name); ?>[]" value="<?php echo esc_attr($option); ?>" <?php echo $required && $index === 0 ? 'required' : ''; ?>>
+                                <input type="checkbox" name="<?php echo esc_attr($name); ?>[]" value="<?php echo esc_attr($option); ?>"<?php echo $required && $index === 0 ? ' required' : ''; ?>>
                                 <span class="pulseforms-checkbox-ui"></span>
                                 <span><?php echo esc_html($option); ?></span>
                             </label>
@@ -265,7 +266,7 @@ class PulseForms_Form_Renderer {
                     <div class="pulseforms-choice-list">
                         <?php foreach ($options as $option) : ?>
                             <label class="pulseforms-choice">
-                                <input type="radio" name="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($option); ?>" <?php required($required); ?>>
+                                <input type="radio" name="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($option); ?>"<?php echo esc_attr($required_attr); ?>>
                                 <span class="pulseforms-radio-ui"></span>
                                 <span><?php echo esc_html($option); ?></span>
                             </label>
@@ -291,7 +292,7 @@ class PulseForms_Form_Renderer {
                 case 'file':
                     ?>
                     <div class="pulseforms-file">
-                        <input type="file" id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>" <?php required($required); ?>>
+                        <input type="file" id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>"<?php echo esc_attr($required_attr); ?>>
                         <label for="<?php echo esc_attr($field_id); ?>">
                             <span class="material-symbols-outlined">upload_file</span>
                             <strong><?php esc_html_e('Choose file', 'pulseforms'); ?></strong>
@@ -328,8 +329,9 @@ class PulseForms_Form_Renderer {
     }
 
     private function input_field($type, $field_id, $name, $placeholder, $required) {
+        $required_attr = $required ? ' required' : '';
         ?>
-        <input type="<?php echo esc_attr($type); ?>" id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>" placeholder="<?php echo esc_attr($placeholder); ?>" <?php required($required); ?>>
+        <input type="<?php echo esc_attr($type); ?>" id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>" placeholder="<?php echo esc_attr($placeholder); ?>"<?php echo esc_attr($required_attr); ?>>
         <?php
     }
 
