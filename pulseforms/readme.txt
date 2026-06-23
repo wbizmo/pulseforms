@@ -2,11 +2,11 @@
 Contributors: wbizmo
 Tags: forms, contact form, form builder, submissions, wordpress forms
 Requires at least: 6.0
-Tested up to: 6.8
+Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.0.0
-License: MIT
-License URI: https://opensource.org/licenses/MIT
+Stable tag: 1.0.1
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 A modern, customizable WordPress form builder plugin with submissions, email notifications, file uploads, logs, shortcodes, custom styling, captcha, and rate limiting.
 
@@ -116,6 +116,10 @@ No. PulseForms uses Material Icons only.
 6. Settings page.
 
 == Changelog ==
+
+= 1.0.1 =
+* Updated WordPress compatibility header.
+* Switched plugin license to GPLv2 or later for WordPress.org compatibility.
 
 = 1.0.0 =
 * Initial release.

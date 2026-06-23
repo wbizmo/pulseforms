@@ -1,0 +1,14 @@
+.replit
+replit.nix
+
+.config/
+.cache/
+.upm/
+
+node_modules/
+vendor/
+
+.DS_Store
+Thumbs.db
+
+*.log

@@ -3,10 +3,11 @@
  * Plugin Name: PulseForms
  * Plugin URI: https://github.com/wbizmo/pulseforms
  * Description: A modern, customizable WordPress form builder plugin with submissions, styled forms, email notifications, logs, and shortcode support.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Williams
  * Author URI: https://github.com/wbizmo
- * License: MIT
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: pulseforms
  * Requires at least: 6.0
  * Requires PHP: 8.0
