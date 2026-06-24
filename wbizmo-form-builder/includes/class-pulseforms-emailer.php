@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Wbizmo Form Builder_Emailer {
+class PulseForms_Emailer {
     public function send_admin_notification($form, $submission_id, $clean_data, $page_url) {
         $to = get_option('admin_email');
 

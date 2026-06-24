@@ -8,7 +8,7 @@
         feedback
             .removeClass("is-success is-error")
             .addClass("is-visible is-" + type)
-            .html('<span class="material-symbols-outlined">' + icon + '</span><span>' + message + '</span>');
+            .html('<span class="dashicons dashicons-info"></span><span>' + message + '</span>');
     }
 
     $(document).on("submit", ".pulseforms-form", function (event) {

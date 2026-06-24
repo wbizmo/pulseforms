@@ -27,11 +27,7 @@ if (!defined('ABSPATH')) {
         </div>
 
         <div class="pf-card pf-creator-card">
-            <img
-                src="https://github.com/wbizmo.png?size=160"
-                alt="Williams GitHub profile picture"
-                class="pf-creator-avatar"
-            >
+            
 
             <div>
                 <p class="pf-eyebrow">Created By</p>
@@ -43,12 +39,12 @@ if (!defined('ABSPATH')) {
 
                 <div class="pf-creator-links">
                     <a href="https://github.com/wbizmo" target="_blank" rel="noopener noreferrer" class="pf-btn pf-btn-primary">
-                        <span class="material-symbols-outlined">code</span>
+                        <span class="dashicons">code</span>
                         GitHub
                     </a>
 
                     <a href="https://github.com/wbizmo/pulseforms" target="_blank" rel="noopener noreferrer" class="pf-btn pf-btn-light">
-                        <span class="material-symbols-outlined">open_in_new</span>
+                        <span class="dashicons">open_in_new</span>
                         Plugin Repository
                     </a>
                 </div>

@@ -15,21 +15,21 @@ if (!defined('ABSPATH')) {
 
     <?php if (isset($_GET['pf_deleted'])) : ?>
         <div class="pf-notice pf-notice-success">
-            <span class="material-symbols-outlined">check_circle</span>
+            <span class="dashicons">check_circle</span>
             Submission deleted successfully.
         </div>
     <?php endif; ?>
 
     <?php if (isset($_GET['pf_read'])) : ?>
         <div class="pf-notice pf-notice-success">
-            <span class="material-symbols-outlined">check_circle</span>
+            <span class="dashicons">check_circle</span>
             Submission marked as read.
         </div>
     <?php endif; ?>
 
     <?php if (isset($_GET['pf_error'])) : ?>
         <div class="pf-notice pf-notice-error">
-            <span class="material-symbols-outlined">error</span>
+            <span class="dashicons">error</span>
             Something went wrong. Check logs for details.
         </div>
     <?php endif; ?>
@@ -80,16 +80,16 @@ if (!defined('ABSPATH')) {
                             <div class="pf-submission-actions">
                                 <?php if ($submission->status === 'unread') : ?>
                                     <a href="<?php echo esc_url($mark_read_url); ?>" class="pf-icon-btn" title="Mark as read">
-                                        <span class="material-symbols-outlined">done_all</span>
+                                        <span class="dashicons">done_all</span>
                                     </a>
                                 <?php endif; ?>
 
                                 <button type="button" class="pf-icon-btn pf-toggle-submission" data-target="pf-submission-<?php echo esc_attr($submission->id); ?>">
-                                    <span class="material-symbols-outlined">visibility</span>
+                                    <span class="dashicons">visibility</span>
                                 </button>
 
                                 <a href="<?php echo esc_url($delete_url); ?>" class="pf-icon-btn pf-danger" onclick="return confirm('Delete this submission? This cannot be undone.');">
-                                    <span class="material-symbols-outlined">delete</span>
+                                    <span class="dashicons">delete</span>
                                 </a>
                             </div>
                         </div>
@@ -158,7 +158,7 @@ if (!defined('ABSPATH')) {
                                     <div class="pf-file-list">
                                         <?php foreach ($files as $file) : ?>
                                             <a class="pf-file-card" href="<?php echo esc_url($file['url']); ?>" target="_blank" rel="noopener noreferrer">
-                                                <span class="material-symbols-outlined">attach_file</span>
+                                                <span class="dashicons">attach_file</span>
                                                 <span>
                                                     <strong><?php echo esc_html($file['label'] ?? 'Uploaded File'); ?></strong>
                                                     <small><?php echo esc_html($file['name'] ?? 'File'); ?></small>
@@ -175,7 +175,7 @@ if (!defined('ABSPATH')) {
         </div>
     <?php else : ?>
         <div class="pf-card pf-empty">
-            <span class="material-symbols-outlined">inbox</span>
+            <span class="dashicons">inbox</span>
             <h2>No submissions yet</h2>
             <p>Once users submit a Wbizmo Form Builder form, their entries will appear here.</p>
         </div>

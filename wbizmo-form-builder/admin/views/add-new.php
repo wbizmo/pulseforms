@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 
     <?php if (isset($_GET['pf_error'])) : ?>
         <div class="pf-notice pf-notice-error">
-            <span class="material-symbols-outlined">error</span>
+            <span class="dashicons">error</span>
             Could not create form. Please check the required fields.
         </div>
     <?php endif; ?>
@@ -95,7 +95,7 @@ if (!defined('ABSPATH')) {
             </a>
 
             <button type="submit" class="pf-btn pf-btn-primary">
-                <span class="material-symbols-outlined">save</span>
+                <span class="dashicons">save</span>
                 Create Form
             </button>
         </div>

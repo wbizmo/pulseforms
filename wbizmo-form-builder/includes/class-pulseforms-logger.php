@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Wbizmo Form Builder_Logger {
+class PulseForms_Logger {
     public static function log($severity, $event_type, $message, $context = []) {
         global $wpdb;
 

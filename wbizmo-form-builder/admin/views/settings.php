@@ -24,7 +24,7 @@ $remove_data_on_uninstall = isset($options['remove_data_on_uninstall']) ? (bool)
 
     <?php if (isset($_GET['pf_saved'])) : ?>
         <div class="pf-notice pf-notice-success">
-            <span class="material-symbols-outlined">check_circle</span>
+            <span class="dashicons">check_circle</span>
             Settings saved successfully.
         </div>
     <?php endif; ?>
@@ -97,7 +97,7 @@ $remove_data_on_uninstall = isset($options['remove_data_on_uninstall']) ? (bool)
 
         <div class="pf-save-bar">
             <button type="submit" class="pf-btn pf-btn-primary">
-                <span class="material-symbols-outlined">save</span>
+                <span class="dashicons">save</span>
                 Save Settings
             </button>
         </div>

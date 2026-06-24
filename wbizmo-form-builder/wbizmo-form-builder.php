@@ -32,17 +32,17 @@ require_once PULSEFORMS_PATH . 'includes/class-pulseforms-emailer.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-form-renderer.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-form-processor.php';
 
-register_activation_hook(__FILE__, ['Wbizmo Form Builder_Activator', 'activate']);
-register_deactivation_hook(__FILE__, ['Wbizmo Form Builder_Deactivator', 'deactivate']);
+register_activation_hook(__FILE__, ['PulseForms_Activator', 'activate']);
+register_deactivation_hook(__FILE__, ['PulseForms_Deactivator', 'deactivate']);
 
 function pulseforms_run() {
-    $admin = new Wbizmo Form Builder_Admin();
+    $admin = new PulseForms_Admin();
     $admin->init();
 
-    $renderer = new Wbizmo Form Builder_Form_Renderer();
+    $renderer = new PulseForms_Form_Renderer();
     $renderer->init();
 
-    $processor = new Wbizmo Form Builder_Form_Processor();
+    $processor = new PulseForms_Form_Processor();
     $processor->init();
 
     add_action('wbizmo_form_builder_daily_cleanup', 'pulseforms_cleanup_old_logs');

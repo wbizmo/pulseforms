@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Wbizmo Form Builder_Form_Processor {
+class PulseForms_Form_Processor {
     public function init() {
         add_action('wp_ajax_pulseforms_submit_form', [$this, 'handle_submission']);
         add_action('wp_ajax_nopriv_pulseforms_submit_form', [$this, 'handle_submission']);
@@ -175,7 +175,7 @@ class Wbizmo Form Builder_Form_Processor {
                 }
             }
 
-            $emailer = new Wbizmo Form Builder_Emailer();
+            $emailer = new PulseForms_Emailer();
 
             if ($admin_email_enabled) {
                 $admin_email_result = $emailer->send_admin_notification($form, $submission_id, $clean_data, $page_url);
@@ -215,7 +215,7 @@ class Wbizmo Form Builder_Form_Processor {
             ]);
 
         } catch (Throwable $e) {
-            Wbizmo Form Builder_Logger::log(
+            PulseForms_Logger::log(
                 'critical',
                 'unexpected_php_error',
                 'Unexpected PHP error during form submission.',
@@ -312,7 +312,7 @@ class Wbizmo Form Builder_Form_Processor {
         $size = isset($_FILES[$input_name]['size'][$field_id]) ? absint($_FILES[$input_name]['size'][$field_id]) : 0;
 
         if ($error !== UPLOAD_ERR_OK) {
-            Wbizmo Form Builder_Logger::log('error', 'file_upload_error', 'File upload failed with PHP upload error.', [
+            PulseForms_Logger::log('error', 'file_upload_error', 'File upload failed with PHP upload error.', [
                 'form_id'      => $form->id,
                 'form_name'    => $form->name,
                 'page_url'     => $page_url,
@@ -356,7 +356,7 @@ class Wbizmo Form Builder_Form_Processor {
         );
 
         if (isset($uploaded['error'])) {
-            Wbizmo Form Builder_Logger::log('error', 'file_upload_failed', 'WordPress file upload handler failed.', [
+            PulseForms_Logger::log('error', 'file_upload_failed', 'WordPress file upload handler failed.', [
                 'form_id'      => $form->id,
                 'form_name'    => $form->name,
                 'page_url'     => $page_url,
@@ -450,7 +450,7 @@ class Wbizmo Form Builder_Form_Processor {
     }
 
     private function log_and_fail($severity, $event_type, $message, $context = [], $public_message = null) {
-        Wbizmo Form Builder_Logger::log($severity, $event_type, $message, $context);
+        PulseForms_Logger::log($severity, $event_type, $message, $context);
 
         wp_send_json_error([
             'message' => $public_message ?: __('Something went wrong. Please try again.', 'wbizmo-form-builder'),

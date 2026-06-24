@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
                 class="pf-btn pf-btn-light"
                 onclick="return confirm('Clear all Wbizmo Form Builder logs?');"
             >
-                <span class="material-symbols-outlined">delete_sweep</span>
+                <span class="dashicons">delete_sweep</span>
                 Clear Logs
             </a>
         <?php endif; ?>
@@ -26,21 +26,21 @@ if (!defined('ABSPATH')) {
 
     <?php if (isset($_GET['pf_deleted'])) : ?>
         <div class="pf-notice pf-notice-success">
-            <span class="material-symbols-outlined">check_circle</span>
+            <span class="dashicons">check_circle</span>
             Log deleted successfully.
         </div>
     <?php endif; ?>
 
     <?php if (isset($_GET['pf_cleared'])) : ?>
         <div class="pf-notice pf-notice-success">
-            <span class="material-symbols-outlined">check_circle</span>
+            <span class="dashicons">check_circle</span>
             Logs cleared successfully.
         </div>
     <?php endif; ?>
 
     <?php if (isset($_GET['pf_error'])) : ?>
         <div class="pf-notice pf-notice-error">
-            <span class="material-symbols-outlined">error</span>
+            <span class="dashicons">error</span>
             Something went wrong while updating logs.
         </div>
     <?php endif; ?>
@@ -87,15 +87,15 @@ if (!defined('ABSPATH')) {
 
                             <div class="pf-submission-actions">
                                 <button type="button" class="pf-icon-btn pf-toggle-submission" data-target="pf-log-<?php echo esc_attr($log->id); ?>">
-                                    <span class="material-symbols-outlined">visibility</span>
+                                    <span class="dashicons">visibility</span>
                                 </button>
 
                                 <button type="button" class="pf-icon-btn pf-copy-log" data-target="pf-log-copy-<?php echo esc_attr($log->id); ?>">
-                                    <span class="material-symbols-outlined">content_copy</span>
+                                    <span class="dashicons">content_copy</span>
                                 </button>
 
                                 <a href="<?php echo esc_url($delete_url); ?>" class="pf-icon-btn pf-danger" onclick="return confirm('Delete this log?');">
-                                    <span class="material-symbols-outlined">delete</span>
+                                    <span class="dashicons">delete</span>
                                 </a>
                             </div>
                         </div>
@@ -155,7 +155,7 @@ if (!defined('ABSPATH')) {
         </div>
     <?php else : ?>
         <div class="pf-card pf-empty">
-            <span class="material-symbols-outlined">receipt_long</span>
+            <span class="dashicons">receipt_long</span>
             <h2>No logs yet</h2>
             <p>Wbizmo Form Builder logs will appear here when errors, warnings, blocked submissions, or system issues occur.</p>
         </div>

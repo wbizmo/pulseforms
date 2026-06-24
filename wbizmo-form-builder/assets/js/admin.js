@@ -11,7 +11,7 @@
 
             button
                 .addClass("is-copied")
-                .html('<span class="material-symbols-outlined">check_circle</span>');
+                .html('<span class="dashicons dashicons-yes-alt"></span>');
 
             setTimeout(function () {
                 button.removeClass("is-copied").html(original);

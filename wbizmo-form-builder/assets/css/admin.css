@@ -242,7 +242,7 @@
     padding: 42px;
 }
 
-.pf-empty > .material-symbols-outlined {
+.pf-empty > .dashicons {
     width: 66px;
     height: 66px;
     display: grid;
@@ -449,7 +449,7 @@
     color: var(--pf-primary);
 }
 
-.material-symbols-outlined {
+.dashicons {
     font-size: 20px;
     line-height: 1;
 }
@@ -802,7 +802,7 @@
     color: var(--pf-primary);
 }
 
-.pf-file-card .material-symbols-outlined {
+.pf-file-card .dashicons {
     color: var(--pf-accent);
 }
 

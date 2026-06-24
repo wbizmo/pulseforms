@@ -47,14 +47,14 @@ $error_message = isset($settings['error_message']) ? $settings['error_message'] 
         <div class="pf-shortcode-copy">
             <code>[pulseform id="<?php echo esc_attr($form->id); ?>"]</code>
             <button type="button" class="pf-icon-btn pf-copy-shortcode" data-shortcode='[pulseform id="<?php echo esc_attr($form->id); ?>"]'>
-                <span class="material-symbols-outlined">content_copy</span>
+                <span class="dashicons">content_copy</span>
             </button>
         </div>
     </div>
 
     <?php if (isset($_GET['pf_error'])) : ?>
         <div class="pf-notice pf-notice-error">
-            <span class="material-symbols-outlined">error</span>
+            <span class="dashicons">error</span>
             Something went wrong while updating the form.
         </div>
     <?php endif; ?>
@@ -202,7 +202,7 @@ $error_message = isset($settings['error_message']) ? $settings['error_message'] 
             <a href="<?php echo esc_url(admin_url('admin.php?page=wbizmo-form-builder')); ?>" class="pf-btn pf-btn-light">Cancel</a>
 
             <button type="submit" class="pf-btn pf-btn-primary">
-                <span class="material-symbols-outlined">save</span>
+                <span class="dashicons">save</span>
                 Save Changes
             </button>
         </div>

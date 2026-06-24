@@ -211,7 +211,7 @@
     background: rgba(197, 165, 114, 0.12);
 }
 
-.pulseforms-file .material-symbols-outlined {
+.pulseforms-file .dashicons {
     color: var(--pf-public-accent);
     font-size: 32px;
 }
@@ -360,7 +360,7 @@
         #ffffff;
 }
 
-.material-symbols-outlined {
+.dashicons {
     font-size: 20px;
     line-height: 1;
 }

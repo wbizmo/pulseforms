@@ -13,25 +13,25 @@ if (!defined('ABSPATH')) {
         </div>
 
         <a href="<?php echo esc_url(admin_url('admin.php?page=wbizmo-form-builder-add-new')); ?>" class="pf-btn pf-btn-primary">
-            <span class="material-symbols-outlined">add</span>
+            <span class="dashicons">add</span>
             Add New Form
         </a>
     </div>
 
     <?php if (isset($_GET['pf_created'])) : ?>
-        <div class="pf-notice pf-notice-success"><span class="material-symbols-outlined">check_circle</span> Form created successfully.</div>
+        <div class="pf-notice pf-notice-success"><span class="dashicons">check_circle</span> Form created successfully.</div>
     <?php endif; ?>
 
     <?php if (isset($_GET['pf_updated'])) : ?>
-        <div class="pf-notice pf-notice-success"><span class="material-symbols-outlined">check_circle</span> Form updated successfully.</div>
+        <div class="pf-notice pf-notice-success"><span class="dashicons">check_circle</span> Form updated successfully.</div>
     <?php endif; ?>
 
     <?php if (isset($_GET['pf_deleted'])) : ?>
-        <div class="pf-notice pf-notice-success"><span class="material-symbols-outlined">check_circle</span> Form deleted successfully.</div>
+        <div class="pf-notice pf-notice-success"><span class="dashicons">check_circle</span> Form deleted successfully.</div>
     <?php endif; ?>
 
     <?php if (isset($_GET['pf_error'])) : ?>
-        <div class="pf-notice pf-notice-error"><span class="material-symbols-outlined">error</span> Something went wrong. Check logs for details.</div>
+        <div class="pf-notice pf-notice-error"><span class="dashicons">error</span> Something went wrong. Check logs for details.</div>
     <?php endif; ?>
 
     <?php if (!empty($forms)) : ?>
@@ -82,7 +82,7 @@ if (!defined('ABSPATH')) {
                                     <div class="pf-shortcode-copy">
                                         <code>[pulseform id="<?php echo esc_attr($form->id); ?>"]</code>
                                         <button type="button" class="pf-icon-btn pf-copy-shortcode" data-shortcode='[pulseform id="<?php echo esc_attr($form->id); ?>"]'>
-                                            <span class="material-symbols-outlined">content_copy</span>
+                                            <span class="dashicons">content_copy</span>
                                         </button>
                                     </div>
                                 </td>
@@ -93,11 +93,11 @@ if (!defined('ABSPATH')) {
 
                                 <td class="pf-table-actions">
                                     <a href="<?php echo esc_url($edit_url); ?>" class="pf-icon-btn" title="Edit form">
-                                        <span class="material-symbols-outlined">edit</span>
+                                        <span class="dashicons">edit</span>
                                     </a>
 
                                     <a href="<?php echo esc_url($delete_url); ?>" class="pf-icon-btn pf-danger" onclick="return confirm('Delete this form? This cannot be undone.');">
-                                        <span class="material-symbols-outlined">delete</span>
+                                        <span class="dashicons">delete</span>
                                     </a>
                                 </td>
                             </tr>
@@ -108,11 +108,11 @@ if (!defined('ABSPATH')) {
         </div>
     <?php else : ?>
         <div class="pf-card pf-empty">
-            <span class="material-symbols-outlined">dynamic_form</span>
+            <span class="dashicons">dynamic_form</span>
             <h2>No forms yet</h2>
             <p>Create your first form and Wbizmo Form Builder will generate a shortcode automatically.</p>
             <a href="<?php echo esc_url(admin_url('admin.php?page=wbizmo-form-builder-add-new')); ?>" class="pf-btn pf-btn-primary">
-                <span class="material-symbols-outlined">add</span>
+                <span class="dashicons">add</span>
                 Create First Form
             </a>
         </div>

@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Wbizmo Form Builder_Activator {
+class PulseForms_Activator {
     public static function activate() {
         global $wpdb;
 

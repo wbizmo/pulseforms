@@ -4,8 +4,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Wbizmo Form Builder_Form_Renderer {
+class PulseForms_Form_Renderer {
     public function init() {
+        add_shortcode('wbizmo_form', [$this, 'render_shortcode']);
         add_shortcode('pulseform', [$this, 'render_shortcode']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_public_assets']);
     }
@@ -55,7 +56,7 @@ class Wbizmo Form Builder_Form_Renderer {
         $style_settings = json_decode($form->style_settings, true);
 
         if (!is_array($fields)) {
-            Wbizmo Form Builder_Logger::log('error', 'form_render_failed', 'Wbizmo Form Builder could not render form because fields JSON is invalid.', [
+            PulseForms_Logger::log('error', 'form_render_failed', 'Wbizmo Form Builder could not render form because fields JSON is invalid.', [
                 'form_id'    => $form_id,
                 'form_name'  => $form->name,
                 'page_url'   => $this->current_page_url(),
@@ -279,7 +280,7 @@ class Wbizmo Form Builder_Form_Renderer {
                     <div class="pulseforms-file">
                         <input type="file" id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>"<?php echo esc_attr($required_attr); ?>>
                         <label for="<?php echo esc_attr($field_id); ?>">
-                            <span class="material-symbols-outlined">upload_file</span>
+                            <span class="dashicons dashicons-upload"></span>
                             <strong><?php esc_html_e('Choose file', 'wbizmo-form-builder'); ?></strong>
                             <small><?php esc_html_e('Click to upload', 'wbizmo-form-builder'); ?></small>
                         </label>
@@ -321,7 +322,7 @@ class Wbizmo Form Builder_Form_Renderer {
     }
 
     private function render_error_notice($message) {
-        return '<div class="pulseforms-wrapper"><div class="pulseforms-system-notice"><span class="material-symbols-outlined">error</span>' . esc_html($message) . '</div></div>';
+        return '<div class="pulseforms-wrapper"><div class="pulseforms-system-notice"><span class="dashicons dashicons-warning"></span>' . esc_html($message) . '</div></div>';
     }
 
     private function current_page_url() {

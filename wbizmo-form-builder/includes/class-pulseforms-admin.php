@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Wbizmo Form Builder_Admin {
+class PulseForms_Admin {
     public function init() {
         add_action('admin_menu', [$this, 'register_admin_menu']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
@@ -159,7 +159,7 @@ class Wbizmo Form Builder_Admin {
         );
 
         if (!$inserted) {
-            Wbizmo Form Builder_Logger::log('error', 'form_create_failed', 'Wbizmo Form Builder could not create the form.', [
+            PulseForms_Logger::log('error', 'form_create_failed', 'Wbizmo Form Builder could not create the form.', [
                 'form_name' => $name,
                 'form_type' => $type,
                 'db_error'  => $wpdb->last_error,
@@ -212,7 +212,7 @@ class Wbizmo Form Builder_Admin {
         $decoded_fields = json_decode($fields_raw, true);
 
         if (!is_array($decoded_fields)) {
-            Wbizmo Form Builder_Logger::log('error', 'form_update_invalid_json', 'Form update failed because fields JSON was invalid.', [
+            PulseForms_Logger::log('error', 'form_update_invalid_json', 'Form update failed because fields JSON was invalid.', [
                 'form_id'    => $form_id,
                 'form_name'  => $name,
                 'json_error' => json_last_error_msg(),
@@ -271,7 +271,7 @@ class Wbizmo Form Builder_Admin {
         );
 
         if ($updated === false) {
-            Wbizmo Form Builder_Logger::log('error', 'form_update_failed', 'Wbizmo Form Builder could not update the form.', [
+            PulseForms_Logger::log('error', 'form_update_failed', 'Wbizmo Form Builder could not update the form.', [
                 'form_id'   => $form_id,
                 'form_name' => $name,
                 'db_error'  => $wpdb->last_error,
@@ -311,7 +311,7 @@ class Wbizmo Form Builder_Admin {
         $deleted = $wpdb->delete($wpdb->prefix . 'wbizmo_form_builder_forms', ['id' => $form_id], ['%d']);
 
         if (!$deleted) {
-            Wbizmo Form Builder_Logger::log('error', 'form_delete_failed', 'Wbizmo Form Builder could not delete the form.', [
+            PulseForms_Logger::log('error', 'form_delete_failed', 'Wbizmo Form Builder could not delete the form.', [
                 'form_id'   => $form_id,
                 'form_name' => $form->name,
                 'db_error'  => $wpdb->last_error,
@@ -351,7 +351,7 @@ class Wbizmo Form Builder_Admin {
         $deleted = $wpdb->delete($wpdb->prefix . 'wbizmo_form_builder_submissions', ['id' => $submission_id], ['%d']);
 
         if (!$deleted) {
-            Wbizmo Form Builder_Logger::log('error', 'submission_delete_failed', 'Wbizmo Form Builder could not delete the submission.', [
+            PulseForms_Logger::log('error', 'submission_delete_failed', 'Wbizmo Form Builder could not delete the submission.', [
                 'submission_id' => $submission_id,
                 'db_error'      => $wpdb->last_error,
             ]);
@@ -389,7 +389,7 @@ class Wbizmo Form Builder_Admin {
         );
 
         if ($updated === false) {
-            Wbizmo Form Builder_Logger::log('error', 'submission_mark_read_failed', 'Wbizmo Form Builder could not mark the submission as read.', [
+            PulseForms_Logger::log('error', 'submission_mark_read_failed', 'Wbizmo Form Builder could not mark the submission as read.', [
                 'submission_id' => $submission_id,
                 'db_error'      => $wpdb->last_error,
             ]);

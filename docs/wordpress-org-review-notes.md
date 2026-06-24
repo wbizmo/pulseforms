@@ -148,3 +148,13 @@ The GitHub repository may remain named `pulseforms` for project continuity and h
 - Added `[wbizmo_form]` shortcode.
 - Kept `[pulseform]` as a legacy alias for development/demo compatibility.
 
+
+## Final Compliance Package Build
+
+- Fixed invalid PHP identifiers caused by branding rename.
+- Confirmed PHP syntax lint passes across the Wbizmo Form Builder package.
+- Removed remaining remote GitHub avatar image.
+- Removed remaining Material Symbols references.
+- Added `[wbizmo_form]` shortcode while preserving `[pulseform]` as a legacy alias.
+- Built resubmission ZIP as `release/wbizmo-form-builder.zip`.
+
