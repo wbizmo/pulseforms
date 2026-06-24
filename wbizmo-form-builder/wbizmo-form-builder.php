@@ -3,7 +3,7 @@
  * Plugin Name: Wbizmo Form Builder
  * Plugin URI: https://github.com/wbizmo/pulseforms
  * Description: A modern, customizable WordPress form builder plugin with submissions, styled forms, email notifications, logs, and shortcode support.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: Williams Ashibuogwu
  * Author URI: https://github.com/wbizmo
  * License: GPLv2 or later
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('PULSEFORMS_VERSION', '1.0.1');
+define('PULSEFORMS_VERSION', '1.0.2');
 define('PULSEFORMS_FILE', __FILE__);
 define('PULSEFORMS_PATH', plugin_dir_path(__FILE__));
 define('PULSEFORMS_URL', plugin_dir_url(__FILE__));
