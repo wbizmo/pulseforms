@@ -12,13 +12,6 @@ class PulseForms_Form_Renderer {
 
     public function enqueue_public_assets() {
         wp_enqueue_style(
-            'pulseforms-material-icons',
-            'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,200,0,0',
-            [],
-            null
-        );
-
-        wp_enqueue_style(
             'pulseforms-public',
             PULSEFORMS_URL . 'assets/css/public.css',
             [],
@@ -95,8 +88,6 @@ class PulseForms_Form_Renderer {
 
         $field_radius = isset($style_settings['field_radius']) ? absint($style_settings['field_radius']) : 14;
         $button_radius = isset($style_settings['button_radius']) ? absint($style_settings['button_radius']) : 14;
-        $custom_css = isset($style_settings['custom_css']) ? wp_strip_all_tags($style_settings['custom_css']) : '';
-
         $inline_style = sprintf(
             '--pf-public-primary:%s;--pf-public-accent:%s;--pf-public-radius:%dpx;--pf-public-button-radius:%dpx;',
             esc_attr($primary_color),
@@ -116,12 +107,6 @@ class PulseForms_Form_Renderer {
             data-form-id="<?php echo esc_attr($form_id); ?>"
             style="<?php echo esc_attr($inline_style); ?>"
         >
-            <?php if (!empty($custom_css)) : ?>
-                <style>
-                    <?php echo esc_html($custom_css); ?>
-                </style>
-            <?php endif; ?>
-
             <form class="pulseforms-form" method="post" enctype="multipart/form-data" novalidate>
                 <input type="hidden" name="action" value="pulseforms_submit_form">
                 <input type="hidden" name="pulseforms_form_id" value="<?php echo esc_attr($form_id); ?>">

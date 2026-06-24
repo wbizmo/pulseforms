@@ -25,7 +25,6 @@ $primary_color = isset($style_settings['primary_color']) ? $style_settings['prim
 $accent_color = isset($style_settings['accent_color']) ? $style_settings['accent_color'] : '#C5A572';
 $field_radius = isset($style_settings['field_radius']) ? $style_settings['field_radius'] : '14';
 $button_radius = isset($style_settings['button_radius']) ? $style_settings['button_radius'] : '14';
-$custom_css = isset($style_settings['custom_css']) ? $style_settings['custom_css'] : '';
 
 $admin_email_enabled = !empty($settings['admin_email_enabled']);
 $user_email_enabled = !empty($settings['user_email_enabled']);
@@ -197,13 +196,7 @@ $error_message = isset($settings['error_message']) ? $settings['error_message'] 
                     <label for="button_radius">Button Radius</label>
                     <input type="number" id="button_radius" name="button_radius" value="<?php echo esc_attr($button_radius); ?>">
                 </div>
-            </div>
-
-            <div class="pf-field">
-                <label for="custom_css">Custom CSS</label>
-                <textarea id="custom_css" name="custom_css" rows="8"><?php echo esc_textarea($custom_css); ?></textarea>
-            </div>
-        </div>
+            </div>        </div>
 
         <div class="pf-save-bar">
             <a href="<?php echo esc_url(admin_url('admin.php?page=pulseforms')); ?>" class="pf-btn pf-btn-light">Cancel</a>

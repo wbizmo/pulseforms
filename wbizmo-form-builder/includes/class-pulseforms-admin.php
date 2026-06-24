@@ -46,14 +46,6 @@ class PulseForms_Admin {
         if (strpos($hook, 'pulseforms') === false) {
             return;
         }
-
-        wp_enqueue_style(
-            'pulseforms-material-icons',
-            'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,200,0,0',
-            [],
-            null
-        );
-
         wp_enqueue_style(
             'pulseforms-admin',
             PULSEFORMS_URL . 'assets/css/admin.css',
@@ -149,9 +141,7 @@ class PulseForms_Admin {
             'primary_color' => '#0E2238',
             'accent_color'  => '#C5A572',
             'button_radius' => '14',
-            'field_radius'  => '14',
-            'custom_css'    => '',
-        ];
+            'field_radius'  => '14',        ];
 
         $inserted = $wpdb->insert(
             $wpdb->prefix . 'pulseforms_forms',
@@ -208,7 +198,7 @@ class PulseForms_Admin {
 
         $name = isset($_POST['form_name']) ? sanitize_text_field(wp_unslash($_POST['form_name'])) : '';
         $status = isset($_POST['form_status']) ? sanitize_key(wp_unslash($_POST['form_status'])) : 'active';
-        $fields_raw = isset($_POST['form_fields']) ? wp_unslash($_POST['form_fields']) : '';
+        $fields_raw = isset($_POST['form_fields']) ? sanitize_textarea_field(wp_unslash($_POST['form_fields'])) : '';
 
         if (empty($name)) {
             wp_safe_redirect(admin_url('admin.php?page=pulseforms-edit-form&form_id=' . $form_id . '&pf_error=missing_name'));
@@ -263,9 +253,7 @@ class PulseForms_Admin {
             'primary_color' => isset($_POST['primary_color']) ? sanitize_hex_color(wp_unslash($_POST['primary_color'])) : '#0E2238',
             'accent_color'  => isset($_POST['accent_color']) ? sanitize_hex_color(wp_unslash($_POST['accent_color'])) : '#C5A572',
             'button_radius' => isset($_POST['button_radius']) ? absint($_POST['button_radius']) : 14,
-            'field_radius'  => isset($_POST['field_radius']) ? absint($_POST['field_radius']) : 14,
-            'custom_css'    => isset($_POST['custom_css']) ? wp_strip_all_tags(wp_unslash($_POST['custom_css'])) : '',
-        ];
+            'field_radius'  => isset($_POST['field_radius']) ? absint($_POST['field_radius']) : 14,        ];
 
         $updated = $wpdb->update(
             $wpdb->prefix . 'pulseforms_forms',

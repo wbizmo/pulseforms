@@ -128,3 +128,13 @@ The GitHub repository may remain named `pulseforms` for project continuity and h
 - Keep form styling system intact through controlled settings and built-in themes.
 - Rebuild ZIP as `release/wbizmo-form-builder.zip`.
 
+
+## Sprint 2 Compliance Updates
+
+- Removed arbitrary Custom CSS feature.
+- Removed Custom CSS storage.
+- Removed frontend inline style output.
+- Removed Google Fonts / Material Symbols remote asset loading.
+- Sanitized form_fields before JSON decoding and logging.
+- Preparing package for WordPress.org compliance review.
+
