@@ -4,7 +4,7 @@ Tags: forms, contact form, form builder, submissions, wordpress forms
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,7 +16,7 @@ Wbizmo Form Builder is a lightweight and customizable WordPress form builder plu
 
 The plugin includes form creation, shortcode embedding, styled frontend forms, email notifications, submission storage, file uploads, custom captcha, honeypot protection, rate limiting, error logs, and admin-friendly submission viewing.
 
-Wbizmo Form Builder was originally developed under the working name Wbizmo Form Builder and was renamed before WordPress.org resubmission to provide a clearer, more distinctive plugin identity.
+Wbizmo Form Builder was originally developed under the working name PulseForms and was renamed before WordPress.org resubmission to provide a clearer, more distinctive plugin identity.
 
 == Features ==
 
@@ -114,9 +114,9 @@ Yes. Forms can use built-in styling, inherit theme styling, use preset themes, c
 == Changelog ==
 
 = 1.0.1 =
-* Renamed plugin from Wbizmo Form Builder to Wbizmo Form Builder for WordPress.org compliance and clearer public identity.
+* Renamed submitted package from PulseForms to Wbizmo Form Builder for WordPress.org compliance and clearer public identity.
 * Updated plugin headers, readme metadata, and GPL license references.
 * Prepared package folder for WordPress.org resubmission.
 
 = 1.0.0 =
-* Initial development release under the Wbizmo Form Builder working name.
+* Initial development release under the PulseForms working name.
