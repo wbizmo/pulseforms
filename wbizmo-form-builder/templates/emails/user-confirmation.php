@@ -4,13 +4,13 @@ if (!defined('ABSPATH')) {
 }
 
 $site_name     = isset($site_name) ? $site_name : get_bloginfo('name');
-$title         = isset($title) ? $title : __('Submission Received', 'pulseforms');
-$intro         = isset($intro) ? $intro : __('Thank you. Your submission has been received successfully.', 'pulseforms');
+$title         = isset($title) ? $title : __('Submission Received', 'wbizmo-form-builder');
+$intro         = isset($intro) ? $intro : __('Thank you. Your submission has been received successfully.', 'wbizmo-form-builder');
 $form          = isset($form) ? $form : null;
 $submission_id = isset($submission_id) ? absint($submission_id) : 0;
 $clean_data    = isset($clean_data) && is_array($clean_data) ? $clean_data : [];
 $page_url      = isset($page_url) ? esc_url($page_url) : '';
-$footer        = isset($footer) ? $footer : sprintf(__('Sent from %s using PulseForms.', 'pulseforms'), $site_name);
+$footer        = isset($footer) ? $footer : sprintf(__('Sent from %s using Wbizmo Form Builder.', 'wbizmo-form-builder'), $site_name);
 ?>
 
 <!doctype html>

@@ -32,32 +32,32 @@ require_once PULSEFORMS_PATH . 'includes/class-pulseforms-emailer.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-form-renderer.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-form-processor.php';
 
-register_activation_hook(__FILE__, ['PulseForms_Activator', 'activate']);
-register_deactivation_hook(__FILE__, ['PulseForms_Deactivator', 'deactivate']);
+register_activation_hook(__FILE__, ['Wbizmo Form Builder_Activator', 'activate']);
+register_deactivation_hook(__FILE__, ['Wbizmo Form Builder_Deactivator', 'deactivate']);
 
 function pulseforms_run() {
-    $admin = new PulseForms_Admin();
+    $admin = new Wbizmo Form Builder_Admin();
     $admin->init();
 
-    $renderer = new PulseForms_Form_Renderer();
+    $renderer = new Wbizmo Form Builder_Form_Renderer();
     $renderer->init();
 
-    $processor = new PulseForms_Form_Processor();
+    $processor = new Wbizmo Form Builder_Form_Processor();
     $processor->init();
 
-    add_action('pulseforms_daily_cleanup', 'pulseforms_cleanup_old_logs');
+    add_action('wbizmo_form_builder_daily_cleanup', 'pulseforms_cleanup_old_logs');
 }
 
 function pulseforms_cleanup_old_logs() {
     global $wpdb;
 
-    $settings = get_option('pulseforms_settings', []);
+    $settings = get_option('wbizmo_form_builder_settings', []);
     $days = isset($settings['log_retention_days']) ? absint($settings['log_retention_days']) : 30;
     $days = max(1, min(365, $days));
 
     $wpdb->query(
         $wpdb->prepare(
-            "DELETE FROM {$wpdb->prefix}pulseforms_logs WHERE created_at < DATE_SUB(%s, INTERVAL %d DAY)",
+            "DELETE FROM {$wpdb->prefix}wbizmo_form_builder_logs WHERE created_at < DATE_SUB(%s, INTERVAL %d DAY)",
             current_time('mysql'),
             $days
         )

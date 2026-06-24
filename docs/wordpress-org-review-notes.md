@@ -138,3 +138,13 @@ The GitHub repository may remain named `pulseforms` for project continuity and h
 - Sanitized form_fields before JSON decoding and logging.
 - Preparing package for WordPress.org compliance review.
 
+
+## Sprint 3 Package Identity Updates
+
+- Updated compliant package branding to Wbizmo Form Builder.
+- Updated WordPress admin page slugs in the package folder.
+- Updated text domain references in the package folder.
+- Updated plugin option names, scheduled cleanup hook, and database table names for the compliant package.
+- Added `[wbizmo_form]` shortcode.
+- Kept `[pulseform]` as a legacy alias for development/demo compatibility.
+

@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class PulseForms_Form_Renderer {
+class Wbizmo Form Builder_Form_Renderer {
     public function init() {
         add_shortcode('pulseform', [$this, 'render_shortcode']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_public_assets']);
@@ -28,7 +28,7 @@ class PulseForms_Form_Renderer {
 
         wp_localize_script(
             'pulseforms-public',
-            'PulseFormsPublic',
+            'Wbizmo Form BuilderPublic',
             [
                 'ajaxUrl' => admin_url('admin-ajax.php'),
                 'nonce'   => wp_create_nonce('pulseforms_public_nonce'),
@@ -41,13 +41,13 @@ class PulseForms_Form_Renderer {
         $form_id = absint($atts['id']);
 
         if (!$form_id) {
-            return $this->render_error_notice(__('Form ID is missing.', 'pulseforms'));
+            return $this->render_error_notice(__('Form ID is missing.', 'wbizmo-form-builder'));
         }
 
         $form = $this->get_form($form_id);
 
         if (!$form || $form->status !== 'active') {
-            return $this->render_error_notice(__('This form is unavailable.', 'pulseforms'));
+            return $this->render_error_notice(__('This form is unavailable.', 'wbizmo-form-builder'));
         }
 
         $fields = json_decode($form->fields, true);
@@ -55,14 +55,14 @@ class PulseForms_Form_Renderer {
         $style_settings = json_decode($form->style_settings, true);
 
         if (!is_array($fields)) {
-            PulseForms_Logger::log('error', 'form_render_failed', 'PulseForms could not render form because fields JSON is invalid.', [
+            Wbizmo Form Builder_Logger::log('error', 'form_render_failed', 'Wbizmo Form Builder could not render form because fields JSON is invalid.', [
                 'form_id'    => $form_id,
                 'form_name'  => $form->name,
                 'page_url'   => $this->current_page_url(),
                 'raw_fields' => $form->fields,
             ]);
 
-            return $this->render_error_notice(__('Something went wrong. Please try again later.', 'pulseforms'));
+            return $this->render_error_notice(__('Something went wrong. Please try again later.', 'wbizmo-form-builder'));
         }
 
         if (!is_array($settings)) {
@@ -75,7 +75,7 @@ class PulseForms_Form_Renderer {
 
         $theme = isset($style_settings['theme']) ? sanitize_key($style_settings['theme']) : 'aurora';
         $style_mode = isset($style_settings['style_mode']) ? sanitize_key($style_settings['style_mode']) : 'pulse';
-        $submit_text = isset($settings['submit_text']) ? sanitize_text_field($settings['submit_text']) : __('Submit', 'pulseforms');
+        $submit_text = isset($settings['submit_text']) ? sanitize_text_field($settings['submit_text']) : __('Submit', 'wbizmo-form-builder');
         $captcha_enabled = !empty($settings['captcha_enabled']);
 
         $primary_color = isset($style_settings['primary_color']) && $style_settings['primary_color']
@@ -119,7 +119,7 @@ class PulseForms_Form_Renderer {
 
                 <div class="pulseforms-hp-field" aria-hidden="true">
                     <label>
-                        <?php esc_html_e('Leave this field empty', 'pulseforms'); ?>
+                        <?php esc_html_e('Leave this field empty', 'wbizmo-form-builder'); ?>
                         <input type="text" name="pulseforms_website" tabindex="-1" autocomplete="off">
                     </label>
                 </div>
@@ -132,7 +132,7 @@ class PulseForms_Form_Renderer {
                     <?php if ($captcha_enabled) : ?>
                         <div class="pulseforms-field pulseforms-field-captcha pulseforms-width-full">
                             <label for="pulseforms_captcha_<?php echo esc_attr($form_id); ?>">
-                                <?php echo esc_html(sprintf(__('Security check: What is %d + %d?', 'pulseforms'), $captcha_a, $captcha_b)); ?>
+                                <?php echo esc_html(sprintf(__('Security check: What is %d + %d?', 'wbizmo-form-builder'), $captcha_a, $captcha_b)); ?>
                                 <span class="pulseforms-required">*</span>
                             </label>
 
@@ -140,7 +140,7 @@ class PulseForms_Form_Renderer {
                                 type="number"
                                 id="pulseforms_captcha_<?php echo esc_attr($form_id); ?>"
                                 name="pulseforms_captcha_answer"
-                                placeholder="<?php esc_attr_e('Enter answer', 'pulseforms'); ?>"
+                                placeholder="<?php esc_attr_e('Enter answer', 'wbizmo-form-builder'); ?>"
                                 required
                             >
                         </div>
@@ -166,7 +166,7 @@ class PulseForms_Form_Renderer {
         global $wpdb;
 
         return $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_forms WHERE id = %d", $form_id)
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_forms WHERE id = %d", $form_id)
         );
     }
 
@@ -222,7 +222,7 @@ class PulseForms_Form_Renderer {
                     $options = isset($field['options']) && is_array($field['options']) ? $field['options'] : ['Option One', 'Option Two'];
                     ?>
                     <select id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>"<?php echo esc_attr($required_attr); ?>>
-                        <option value=""><?php esc_html_e('Select an option', 'pulseforms'); ?></option>
+                        <option value=""><?php esc_html_e('Select an option', 'wbizmo-form-builder'); ?></option>
                         <?php foreach ($options as $option) : ?>
                             <option value="<?php echo esc_attr($option); ?>"><?php echo esc_html($option); ?></option>
                         <?php endforeach; ?>
@@ -265,7 +265,7 @@ class PulseForms_Form_Renderer {
                     <label class="pulseforms-toggle">
                         <input type="checkbox" name="<?php echo esc_attr($name); ?>" value="1">
                         <span class="pulseforms-toggle-ui"></span>
-                        <span><?php echo esc_html($placeholder ?: __('Enable option', 'pulseforms')); ?></span>
+                        <span><?php echo esc_html($placeholder ?: __('Enable option', 'wbizmo-form-builder')); ?></span>
                     </label>
                     <?php
                     break;
@@ -280,8 +280,8 @@ class PulseForms_Form_Renderer {
                         <input type="file" id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>"<?php echo esc_attr($required_attr); ?>>
                         <label for="<?php echo esc_attr($field_id); ?>">
                             <span class="material-symbols-outlined">upload_file</span>
-                            <strong><?php esc_html_e('Choose file', 'pulseforms'); ?></strong>
-                            <small><?php esc_html_e('Click to upload', 'pulseforms'); ?></small>
+                            <strong><?php esc_html_e('Choose file', 'wbizmo-form-builder'); ?></strong>
+                            <small><?php esc_html_e('Click to upload', 'wbizmo-form-builder'); ?></small>
                         </label>
                     </div>
                     <?php

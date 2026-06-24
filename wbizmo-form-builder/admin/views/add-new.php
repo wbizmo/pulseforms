@@ -51,7 +51,7 @@ if (!defined('ABSPATH')) {
 
         <div class="pf-card">
             <h2>Choose Form Theme</h2>
-            <p>PulseForms ships with polished default form themes. You can customize colors later.</p>
+            <p>Wbizmo Form Builder ships with polished default form themes. You can customize colors later.</p>
 
             <div class="pf-theme-grid">
                 <label class="pf-theme-option pf-theme-aurora">
@@ -90,7 +90,7 @@ if (!defined('ABSPATH')) {
         </div>
 
         <div class="pf-save-bar">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=pulseforms')); ?>" class="pf-btn pf-btn-light">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=wbizmo-form-builder')); ?>" class="pf-btn pf-btn-light">
                 Cancel
             </a>
 

@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class PulseForms_Form_Processor {
+class Wbizmo Form Builder_Form_Processor {
     public function init() {
         add_action('wp_ajax_pulseforms_submit_form', [$this, 'handle_submission']);
         add_action('wp_ajax_nopriv_pulseforms_submit_form', [$this, 'handle_submission']);
@@ -75,7 +75,7 @@ class PulseForms_Form_Processor {
                         'form_id'   => $form_id,
                         'form_name' => $form->name,
                         'page_url'  => $page_url,
-                    ], __('Please complete the security check and try again.', 'pulseforms'));
+                    ], __('Please complete the security check and try again.', 'wbizmo-form-builder'));
                 }
             }
 
@@ -151,7 +151,7 @@ class PulseForms_Form_Processor {
                     'form_name'         => $form->name,
                     'page_url'          => $page_url,
                     'validation_errors' => $validation_errors,
-                ], __('Please check the form and try again.', 'pulseforms'));
+                ], __('Please check the form and try again.', 'wbizmo-form-builder'));
             }
 
             $save_submissions = isset($settings['save_submissions']) ? (bool) $settings['save_submissions'] : true;
@@ -175,7 +175,7 @@ class PulseForms_Form_Processor {
                 }
             }
 
-            $emailer = new PulseForms_Emailer();
+            $emailer = new Wbizmo Form Builder_Emailer();
 
             if ($admin_email_enabled) {
                 $admin_email_result = $emailer->send_admin_notification($form, $submission_id, $clean_data, $page_url);
@@ -210,12 +210,12 @@ class PulseForms_Form_Processor {
             wp_send_json_success([
                 'message' => isset($settings['success_message'])
                     ? sanitize_text_field($settings['success_message'])
-                    : __('Thank you. Your submission has been received.', 'pulseforms'),
+                    : __('Thank you. Your submission has been received.', 'wbizmo-form-builder'),
                 'submission_id' => $submission_id,
             ]);
 
         } catch (Throwable $e) {
-            PulseForms_Logger::log(
+            Wbizmo Form Builder_Logger::log(
                 'critical',
                 'unexpected_php_error',
                 'Unexpected PHP error during form submission.',
@@ -230,7 +230,7 @@ class PulseForms_Form_Processor {
             );
 
             wp_send_json_error([
-                'message' => __('Something unexpected went wrong. Please try again later.', 'pulseforms'),
+                'message' => __('Something unexpected went wrong. Please try again later.', 'wbizmo-form-builder'),
             ], 500);
         }
     }
@@ -240,7 +240,7 @@ class PulseForms_Form_Processor {
 
         return $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}pulseforms_forms WHERE id = %d",
+                "SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_forms WHERE id = %d",
                 $form_id
             )
         );
@@ -255,7 +255,7 @@ class PulseForms_Form_Processor {
             'log_retention_days'  => 30,
         ];
 
-        $settings = get_option('pulseforms_settings', []);
+        $settings = get_option('wbizmo_form_builder_settings', []);
 
         if (!is_array($settings)) {
             $settings = [];
@@ -312,7 +312,7 @@ class PulseForms_Form_Processor {
         $size = isset($_FILES[$input_name]['size'][$field_id]) ? absint($_FILES[$input_name]['size'][$field_id]) : 0;
 
         if ($error !== UPLOAD_ERR_OK) {
-            PulseForms_Logger::log('error', 'file_upload_error', 'File upload failed with PHP upload error.', [
+            Wbizmo Form Builder_Logger::log('error', 'file_upload_error', 'File upload failed with PHP upload error.', [
                 'form_id'      => $form->id,
                 'form_name'    => $form->name,
                 'page_url'     => $page_url,
@@ -356,7 +356,7 @@ class PulseForms_Form_Processor {
         );
 
         if (isset($uploaded['error'])) {
-            PulseForms_Logger::log('error', 'file_upload_failed', 'WordPress file upload handler failed.', [
+            Wbizmo Form Builder_Logger::log('error', 'file_upload_failed', 'WordPress file upload handler failed.', [
                 'form_id'      => $form->id,
                 'form_name'    => $form->name,
                 'page_url'     => $page_url,
@@ -426,7 +426,7 @@ class PulseForms_Form_Processor {
         global $wpdb;
 
         $inserted = $wpdb->insert(
-            $wpdb->prefix . 'pulseforms_submissions',
+            $wpdb->prefix . 'wbizmo_form_builder_submissions',
             [
                 'form_id'         => absint($form->id),
                 'form_name'       => sanitize_text_field($form->name),
@@ -450,10 +450,10 @@ class PulseForms_Form_Processor {
     }
 
     private function log_and_fail($severity, $event_type, $message, $context = [], $public_message = null) {
-        PulseForms_Logger::log($severity, $event_type, $message, $context);
+        Wbizmo Form Builder_Logger::log($severity, $event_type, $message, $context);
 
         wp_send_json_error([
-            'message' => $public_message ?: __('Something went wrong. Please try again.', 'pulseforms'),
+            'message' => $public_message ?: __('Something went wrong. Please try again.', 'wbizmo-form-builder'),
         ], 400);
     }
 
@@ -484,7 +484,7 @@ class PulseForms_Form_Processor {
                 'ip_hash'      => $ip_hash,
                 'max_attempts' => $max_attempts,
                 'window'       => $window_minutes,
-            ], __('Too many attempts. Please try again later.', 'pulseforms'));
+            ], __('Too many attempts. Please try again later.', 'wbizmo-form-builder'));
         }
 
         set_transient($key, $count + 1, $window_minutes * MINUTE_IN_SECONDS);

@@ -22,7 +22,7 @@
         form.find(".pulseforms-feedback").removeClass("is-visible is-success is-error").empty();
 
         $.ajax({
-            url: PulseFormsPublic.ajaxUrl,
+            url: Wbizmo Form BuilderPublic.ajaxUrl,
             method: "POST",
             data: formData,
             processData: false,

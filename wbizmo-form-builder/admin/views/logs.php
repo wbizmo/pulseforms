@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
             <a
                 href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=pulseforms_clear_logs'), 'pulseforms_clear_logs')); ?>"
                 class="pf-btn pf-btn-light"
-                onclick="return confirm('Clear all PulseForms logs?');"
+                onclick="return confirm('Clear all Wbizmo Form Builder logs?');"
             >
                 <span class="material-symbols-outlined">delete_sweep</span>
                 Clear Logs
@@ -81,7 +81,7 @@ if (!defined('ABSPATH')) {
                                     <span><?php echo esc_html(mysql2date('M j, Y g:i A', $log->created_at)); ?></span>
                                     <span>PHP <?php echo esc_html($log->php_version ?: '—'); ?></span>
                                     <span>WP <?php echo esc_html($log->wp_version ?: '—'); ?></span>
-                                    <span>PulseForms <?php echo esc_html($log->plugin_version ?: '—'); ?></span>
+                                    <span>Wbizmo Form Builder <?php echo esc_html($log->plugin_version ?: '—'); ?></span>
                                 </div>
                             </div>
 
@@ -157,7 +157,7 @@ if (!defined('ABSPATH')) {
         <div class="pf-card pf-empty">
             <span class="material-symbols-outlined">receipt_long</span>
             <h2>No logs yet</h2>
-            <p>PulseForms logs will appear here when errors, warnings, blocked submissions, or system issues occur.</p>
+            <p>Wbizmo Form Builder logs will appear here when errors, warnings, blocked submissions, or system issues occur.</p>
         </div>
     <?php endif; ?>
 </div>

@@ -7,12 +7,12 @@ if (!defined('ABSPATH')) {
 <div class="pf-admin-wrap">
     <div class="pf-hero">
         <div>
-            <p class="pf-eyebrow">PulseForms</p>
+            <p class="pf-eyebrow">Wbizmo Form Builder</p>
             <h1>All Forms</h1>
             <p>Create, edit, customize, and embed beautiful WordPress forms.</p>
         </div>
 
-        <a href="<?php echo esc_url(admin_url('admin.php?page=pulseforms-add-new')); ?>" class="pf-btn pf-btn-primary">
+        <a href="<?php echo esc_url(admin_url('admin.php?page=wbizmo-form-builder-add-new')); ?>" class="pf-btn pf-btn-primary">
             <span class="material-symbols-outlined">add</span>
             Add New Form
         </a>
@@ -63,7 +63,7 @@ if (!defined('ABSPATH')) {
                             $style_settings = json_decode($form->style_settings, true);
                             $theme = isset($style_settings['theme']) ? $style_settings['theme'] : 'aurora';
 
-                            $edit_url = admin_url('admin.php?page=pulseforms-edit-form&form_id=' . absint($form->id));
+                            $edit_url = admin_url('admin.php?page=wbizmo-form-builder-edit-form&form_id=' . absint($form->id));
 
                             $delete_url = wp_nonce_url(
                                 admin_url('admin-post.php?action=pulseforms_delete_form&form_id=' . absint($form->id)),
@@ -110,8 +110,8 @@ if (!defined('ABSPATH')) {
         <div class="pf-card pf-empty">
             <span class="material-symbols-outlined">dynamic_form</span>
             <h2>No forms yet</h2>
-            <p>Create your first form and PulseForms will generate a shortcode automatically.</p>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=pulseforms-add-new')); ?>" class="pf-btn pf-btn-primary">
+            <p>Create your first form and Wbizmo Form Builder will generate a shortcode automatically.</p>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=wbizmo-form-builder-add-new')); ?>" class="pf-btn pf-btn-primary">
                 <span class="material-symbols-outlined">add</span>
                 Create First Form
             </a>

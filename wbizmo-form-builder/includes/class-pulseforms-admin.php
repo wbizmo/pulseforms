@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class PulseForms_Admin {
+class Wbizmo Form Builder_Admin {
     public function init() {
         add_action('admin_menu', [$this, 'register_admin_menu']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
@@ -24,26 +24,26 @@ class PulseForms_Admin {
 
     public function register_admin_menu() {
         add_menu_page(
-            __('PulseForms', 'pulseforms'),
-            __('PulseForms', 'pulseforms'),
+            __('Wbizmo Form Builder', 'wbizmo-form-builder'),
+            __('Wbizmo Form Builder', 'wbizmo-form-builder'),
             'manage_options',
-            'pulseforms',
+            'wbizmo-form-builder',
             [$this, 'render_forms_page'],
             'dashicons-feedback',
             26
         );
 
-        add_submenu_page('pulseforms', __('All Forms', 'pulseforms'), __('All Forms', 'pulseforms'), 'manage_options', 'pulseforms', [$this, 'render_forms_page']);
-        add_submenu_page('pulseforms', __('Add New', 'pulseforms'), __('Add New', 'pulseforms'), 'manage_options', 'pulseforms-add-new', [$this, 'render_add_new_page']);
-        add_submenu_page('pulseforms', __('Edit Form', 'pulseforms'), __('Edit Form', 'pulseforms'), 'manage_options', 'pulseforms-edit-form', [$this, 'render_edit_form_page']);
-        add_submenu_page('pulseforms', __('Submissions', 'pulseforms'), __('Submissions', 'pulseforms'), 'manage_options', 'pulseforms-submissions', [$this, 'render_submissions_page']);
-        add_submenu_page('pulseforms', __('Logs', 'pulseforms'), __('Logs', 'pulseforms'), 'manage_options', 'pulseforms-logs', [$this, 'render_logs_page']);
-        add_submenu_page('pulseforms', __('Settings', 'pulseforms'), __('Settings', 'pulseforms'), 'manage_options', 'pulseforms-settings', [$this, 'render_settings_page']);
-        add_submenu_page('pulseforms', __('Support', 'pulseforms'), __('Support', 'pulseforms'), 'manage_options', 'pulseforms-support', [$this, 'render_support_page']);
+        add_submenu_page('wbizmo-form-builder', __('All Forms', 'wbizmo-form-builder'), __('All Forms', 'wbizmo-form-builder'), 'manage_options', 'wbizmo-form-builder', [$this, 'render_forms_page']);
+        add_submenu_page('wbizmo-form-builder', __('Add New', 'wbizmo-form-builder'), __('Add New', 'wbizmo-form-builder'), 'manage_options', 'wbizmo-form-builder-add-new', [$this, 'render_add_new_page']);
+        add_submenu_page('wbizmo-form-builder', __('Edit Form', 'wbizmo-form-builder'), __('Edit Form', 'wbizmo-form-builder'), 'manage_options', 'wbizmo-form-builder-edit-form', [$this, 'render_edit_form_page']);
+        add_submenu_page('wbizmo-form-builder', __('Submissions', 'wbizmo-form-builder'), __('Submissions', 'wbizmo-form-builder'), 'manage_options', 'wbizmo-form-builder-submissions', [$this, 'render_submissions_page']);
+        add_submenu_page('wbizmo-form-builder', __('Logs', 'wbizmo-form-builder'), __('Logs', 'wbizmo-form-builder'), 'manage_options', 'wbizmo-form-builder-logs', [$this, 'render_logs_page']);
+        add_submenu_page('wbizmo-form-builder', __('Settings', 'wbizmo-form-builder'), __('Settings', 'wbizmo-form-builder'), 'manage_options', 'wbizmo-form-builder-settings', [$this, 'render_settings_page']);
+        add_submenu_page('wbizmo-form-builder', __('Support', 'wbizmo-form-builder'), __('Support', 'wbizmo-form-builder'), 'manage_options', 'wbizmo-form-builder-support', [$this, 'render_support_page']);
     }
 
     public function enqueue_admin_assets($hook) {
-        if (strpos($hook, 'pulseforms') === false) {
+        if (strpos($hook, 'wbizmo-form-builder') === false) {
             return;
         }
         wp_enqueue_style(
@@ -65,40 +65,40 @@ class PulseForms_Admin {
     public function get_forms() {
         global $wpdb;
 
-        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pulseforms_forms ORDER BY created_at DESC");
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_forms ORDER BY created_at DESC");
     }
 
     public function get_form($id) {
         global $wpdb;
 
         return $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_forms WHERE id = %d", absint($id))
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_forms WHERE id = %d", absint($id))
         );
     }
 
     public function get_submissions() {
         global $wpdb;
 
-        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pulseforms_submissions ORDER BY created_at DESC LIMIT 200");
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_submissions ORDER BY created_at DESC LIMIT 200");
     }
 
     public function get_submission($id) {
         global $wpdb;
 
         return $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}pulseforms_submissions WHERE id = %d", absint($id))
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_submissions WHERE id = %d", absint($id))
         );
     }
 
     public function get_logs() {
         global $wpdb;
 
-        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pulseforms_logs ORDER BY created_at DESC LIMIT 300");
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_logs ORDER BY created_at DESC LIMIT 300");
     }
 
     public function handle_create_form() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You do not have permission to create forms.', 'pulseforms'));
+            wp_die(esc_html__('You do not have permission to create forms.', 'wbizmo-form-builder'));
         }
 
         check_admin_referer('pulseforms_create_form');
@@ -110,7 +110,7 @@ class PulseForms_Admin {
         $theme = isset($_POST['form_theme']) ? sanitize_key(wp_unslash($_POST['form_theme'])) : 'aurora';
 
         if (empty($name)) {
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms-add-new&pf_error=missing_name'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-add-new&pf_error=missing_name'));
             exit;
         }
 
@@ -130,8 +130,8 @@ class PulseForms_Admin {
             'save_submissions'    => true,
             'honeypot_enabled'    => true,
             'captcha_enabled'     => false,
-            'success_message'     => __('Thank you. Your submission has been received.', 'pulseforms'),
-            'error_message'       => __('Something went wrong. Please try again.', 'pulseforms'),
+            'success_message'     => __('Thank you. Your submission has been received.', 'wbizmo-form-builder'),
+            'error_message'       => __('Something went wrong. Please try again.', 'wbizmo-form-builder'),
             'submit_text'         => $this->get_default_submit_text($type),
         ];
 
@@ -144,7 +144,7 @@ class PulseForms_Admin {
             'field_radius'  => '14',        ];
 
         $inserted = $wpdb->insert(
-            $wpdb->prefix . 'pulseforms_forms',
+            $wpdb->prefix . 'wbizmo_form_builder_forms',
             [
                 'name'           => $name,
                 'type'           => $type,
@@ -159,29 +159,29 @@ class PulseForms_Admin {
         );
 
         if (!$inserted) {
-            PulseForms_Logger::log('error', 'form_create_failed', 'PulseForms could not create the form.', [
+            Wbizmo Form Builder_Logger::log('error', 'form_create_failed', 'Wbizmo Form Builder could not create the form.', [
                 'form_name' => $name,
                 'form_type' => $type,
                 'db_error'  => $wpdb->last_error,
             ]);
 
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms-add-new&pf_error=create_failed'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-add-new&pf_error=create_failed'));
             exit;
         }
 
-        wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_created=1'));
+        wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder&pf_created=1'));
         exit;
     }
 
     public function handle_update_form() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You do not have permission to update forms.', 'pulseforms'));
+            wp_die(esc_html__('You do not have permission to update forms.', 'wbizmo-form-builder'));
         }
 
         $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : 0;
 
         if (!$form_id) {
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_error=missing_form'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder&pf_error=missing_form'));
             exit;
         }
 
@@ -190,7 +190,7 @@ class PulseForms_Admin {
         $form = $this->get_form($form_id);
 
         if (!$form) {
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_error=form_not_found'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder&pf_error=form_not_found'));
             exit;
         }
 
@@ -201,7 +201,7 @@ class PulseForms_Admin {
         $fields_raw = isset($_POST['form_fields']) ? sanitize_textarea_field(wp_unslash($_POST['form_fields'])) : '';
 
         if (empty($name)) {
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms-edit-form&form_id=' . $form_id . '&pf_error=missing_name'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-edit-form&form_id=' . $form_id . '&pf_error=missing_name'));
             exit;
         }
 
@@ -212,14 +212,14 @@ class PulseForms_Admin {
         $decoded_fields = json_decode($fields_raw, true);
 
         if (!is_array($decoded_fields)) {
-            PulseForms_Logger::log('error', 'form_update_invalid_json', 'Form update failed because fields JSON was invalid.', [
+            Wbizmo Form Builder_Logger::log('error', 'form_update_invalid_json', 'Form update failed because fields JSON was invalid.', [
                 'form_id'    => $form_id,
                 'form_name'  => $name,
                 'json_error' => json_last_error_msg(),
                 'raw_fields' => $fields_raw,
             ]);
 
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms-edit-form&form_id=' . $form_id . '&pf_error=invalid_json'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-edit-form&form_id=' . $form_id . '&pf_error=invalid_json'));
             exit;
         }
 
@@ -231,9 +231,9 @@ class PulseForms_Admin {
             'save_submissions'    => isset($_POST['save_submissions']),
             'honeypot_enabled'    => isset($_POST['honeypot_enabled']),
             'captcha_enabled'     => isset($_POST['captcha_enabled']),
-            'success_message'     => isset($_POST['success_message']) ? sanitize_text_field(wp_unslash($_POST['success_message'])) : __('Thank you. Your submission has been received.', 'pulseforms'),
-            'error_message'       => isset($_POST['error_message']) ? sanitize_text_field(wp_unslash($_POST['error_message'])) : __('Something went wrong. Please try again.', 'pulseforms'),
-            'submit_text'         => isset($_POST['submit_text']) ? sanitize_text_field(wp_unslash($_POST['submit_text'])) : __('Submit', 'pulseforms'),
+            'success_message'     => isset($_POST['success_message']) ? sanitize_text_field(wp_unslash($_POST['success_message'])) : __('Thank you. Your submission has been received.', 'wbizmo-form-builder'),
+            'error_message'       => isset($_POST['error_message']) ? sanitize_text_field(wp_unslash($_POST['error_message'])) : __('Something went wrong. Please try again.', 'wbizmo-form-builder'),
+            'submit_text'         => isset($_POST['submit_text']) ? sanitize_text_field(wp_unslash($_POST['submit_text'])) : __('Submit', 'wbizmo-form-builder'),
         ];
 
         $theme = isset($_POST['form_theme']) ? sanitize_key(wp_unslash($_POST['form_theme'])) : 'aurora';
@@ -256,7 +256,7 @@ class PulseForms_Admin {
             'field_radius'  => isset($_POST['field_radius']) ? absint($_POST['field_radius']) : 14,        ];
 
         $updated = $wpdb->update(
-            $wpdb->prefix . 'pulseforms_forms',
+            $wpdb->prefix . 'wbizmo_form_builder_forms',
             [
                 'name'           => $name,
                 'fields'         => wp_json_encode($sanitized_fields),
@@ -271,29 +271,29 @@ class PulseForms_Admin {
         );
 
         if ($updated === false) {
-            PulseForms_Logger::log('error', 'form_update_failed', 'PulseForms could not update the form.', [
+            Wbizmo Form Builder_Logger::log('error', 'form_update_failed', 'Wbizmo Form Builder could not update the form.', [
                 'form_id'   => $form_id,
                 'form_name' => $name,
                 'db_error'  => $wpdb->last_error,
             ]);
 
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms-edit-form&form_id=' . $form_id . '&pf_error=update_failed'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-edit-form&form_id=' . $form_id . '&pf_error=update_failed'));
             exit;
         }
 
-        wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_updated=1'));
+        wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder&pf_updated=1'));
         exit;
     }
 
     public function handle_delete_form() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You do not have permission to delete forms.', 'pulseforms'));
+            wp_die(esc_html__('You do not have permission to delete forms.', 'wbizmo-form-builder'));
         }
 
         $form_id = isset($_GET['form_id']) ? absint($_GET['form_id']) : 0;
 
         if (!$form_id) {
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_error=missing_form'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder&pf_error=missing_form'));
             exit;
         }
 
@@ -304,36 +304,36 @@ class PulseForms_Admin {
         $form = $this->get_form($form_id);
 
         if (!$form) {
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_error=form_not_found'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder&pf_error=form_not_found'));
             exit;
         }
 
-        $deleted = $wpdb->delete($wpdb->prefix . 'pulseforms_forms', ['id' => $form_id], ['%d']);
+        $deleted = $wpdb->delete($wpdb->prefix . 'wbizmo_form_builder_forms', ['id' => $form_id], ['%d']);
 
         if (!$deleted) {
-            PulseForms_Logger::log('error', 'form_delete_failed', 'PulseForms could not delete the form.', [
+            Wbizmo Form Builder_Logger::log('error', 'form_delete_failed', 'Wbizmo Form Builder could not delete the form.', [
                 'form_id'   => $form_id,
                 'form_name' => $form->name,
                 'db_error'  => $wpdb->last_error,
             ]);
 
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_error=delete_failed'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder&pf_error=delete_failed'));
             exit;
         }
 
-        wp_safe_redirect(admin_url('admin.php?page=pulseforms&pf_deleted=1'));
+        wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder&pf_deleted=1'));
         exit;
     }
 
     public function handle_delete_submission() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You do not have permission to delete submissions.', 'pulseforms'));
+            wp_die(esc_html__('You do not have permission to delete submissions.', 'wbizmo-form-builder'));
         }
 
         $submission_id = isset($_GET['submission_id']) ? absint($_GET['submission_id']) : 0;
 
         if (!$submission_id) {
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_error=missing_submission'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-submissions&pf_error=missing_submission'));
             exit;
         }
 
@@ -344,35 +344,35 @@ class PulseForms_Admin {
         $submission = $this->get_submission($submission_id);
 
         if (!$submission) {
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_error=submission_not_found'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-submissions&pf_error=submission_not_found'));
             exit;
         }
 
-        $deleted = $wpdb->delete($wpdb->prefix . 'pulseforms_submissions', ['id' => $submission_id], ['%d']);
+        $deleted = $wpdb->delete($wpdb->prefix . 'wbizmo_form_builder_submissions', ['id' => $submission_id], ['%d']);
 
         if (!$deleted) {
-            PulseForms_Logger::log('error', 'submission_delete_failed', 'PulseForms could not delete the submission.', [
+            Wbizmo Form Builder_Logger::log('error', 'submission_delete_failed', 'Wbizmo Form Builder could not delete the submission.', [
                 'submission_id' => $submission_id,
                 'db_error'      => $wpdb->last_error,
             ]);
 
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_error=delete_failed'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-submissions&pf_error=delete_failed'));
             exit;
         }
 
-        wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_deleted=1'));
+        wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-submissions&pf_deleted=1'));
         exit;
     }
 
     public function handle_mark_submission_read() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You do not have permission to update submissions.', 'pulseforms'));
+            wp_die(esc_html__('You do not have permission to update submissions.', 'wbizmo-form-builder'));
         }
 
         $submission_id = isset($_GET['submission_id']) ? absint($_GET['submission_id']) : 0;
 
         if (!$submission_id) {
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_error=missing_submission'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-submissions&pf_error=missing_submission'));
             exit;
         }
 
@@ -381,7 +381,7 @@ class PulseForms_Admin {
         global $wpdb;
 
         $updated = $wpdb->update(
-            $wpdb->prefix . 'pulseforms_submissions',
+            $wpdb->prefix . 'wbizmo_form_builder_submissions',
             ['status' => 'read'],
             ['id' => $submission_id],
             ['%s'],
@@ -389,28 +389,28 @@ class PulseForms_Admin {
         );
 
         if ($updated === false) {
-            PulseForms_Logger::log('error', 'submission_mark_read_failed', 'PulseForms could not mark the submission as read.', [
+            Wbizmo Form Builder_Logger::log('error', 'submission_mark_read_failed', 'Wbizmo Form Builder could not mark the submission as read.', [
                 'submission_id' => $submission_id,
                 'db_error'      => $wpdb->last_error,
             ]);
 
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_error=mark_read_failed'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-submissions&pf_error=mark_read_failed'));
             exit;
         }
 
-        wp_safe_redirect(admin_url('admin.php?page=pulseforms-submissions&pf_read=1'));
+        wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-submissions&pf_read=1'));
         exit;
     }
 
     public function handle_delete_log() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You do not have permission to delete logs.', 'pulseforms'));
+            wp_die(esc_html__('You do not have permission to delete logs.', 'wbizmo-form-builder'));
         }
 
         $log_id = isset($_GET['log_id']) ? absint($_GET['log_id']) : 0;
 
         if (!$log_id) {
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms-logs&pf_error=missing_log'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-logs&pf_error=missing_log'));
             exit;
         }
 
@@ -418,35 +418,35 @@ class PulseForms_Admin {
 
         global $wpdb;
 
-        $deleted = $wpdb->delete($wpdb->prefix . 'pulseforms_logs', ['id' => $log_id], ['%d']);
+        $deleted = $wpdb->delete($wpdb->prefix . 'wbizmo_form_builder_logs', ['id' => $log_id], ['%d']);
 
         if (!$deleted) {
-            wp_safe_redirect(admin_url('admin.php?page=pulseforms-logs&pf_error=delete_failed'));
+            wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-logs&pf_error=delete_failed'));
             exit;
         }
 
-        wp_safe_redirect(admin_url('admin.php?page=pulseforms-logs&pf_deleted=1'));
+        wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-logs&pf_deleted=1'));
         exit;
     }
 
     public function handle_clear_logs() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You do not have permission to clear logs.', 'pulseforms'));
+            wp_die(esc_html__('You do not have permission to clear logs.', 'wbizmo-form-builder'));
         }
 
         check_admin_referer('pulseforms_clear_logs');
 
         global $wpdb;
 
-        $wpdb->query("TRUNCATE TABLE {$wpdb->prefix}pulseforms_logs");
+        $wpdb->query("TRUNCATE TABLE {$wpdb->prefix}wbizmo_form_builder_logs");
 
-        wp_safe_redirect(admin_url('admin.php?page=pulseforms-logs&pf_cleared=1'));
+        wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-logs&pf_cleared=1'));
         exit;
     }
 
     public function handle_save_settings() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You do not have permission to save settings.', 'pulseforms'));
+            wp_die(esc_html__('You do not have permission to save settings.', 'wbizmo-form-builder'));
         }
 
         check_admin_referer('pulseforms_save_settings');
@@ -477,9 +477,9 @@ class PulseForms_Admin {
             'remove_data_on_uninstall' => isset($_POST['remove_data_on_uninstall']),
         ];
 
-        update_option('pulseforms_settings', $settings);
+        update_option('wbizmo_form_builder_settings', $settings);
 
-        wp_safe_redirect(admin_url('admin.php?page=pulseforms-settings&pf_saved=1'));
+        wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-settings&pf_saved=1'));
         exit;
     }
 
@@ -540,16 +540,16 @@ class PulseForms_Admin {
 
     private function get_default_submit_text($type) {
         $map = [
-            'contact'      => __('Send Message', 'pulseforms'),
-            'newsletter'   => __('Subscribe', 'pulseforms'),
-            'subscription' => __('Subscribe', 'pulseforms'),
-            'multi_step'   => __('Submit Form', 'pulseforms'),
-            'registration' => __('Create Account', 'pulseforms'),
-            'login'        => __('Login', 'pulseforms'),
-            'custom'       => __('Submit', 'pulseforms'),
+            'contact'      => __('Send Message', 'wbizmo-form-builder'),
+            'newsletter'   => __('Subscribe', 'wbizmo-form-builder'),
+            'subscription' => __('Subscribe', 'wbizmo-form-builder'),
+            'multi_step'   => __('Submit Form', 'wbizmo-form-builder'),
+            'registration' => __('Create Account', 'wbizmo-form-builder'),
+            'login'        => __('Login', 'wbizmo-form-builder'),
+            'custom'       => __('Submit', 'wbizmo-form-builder'),
         ];
 
-        return $map[$type] ?? __('Submit', 'pulseforms');
+        return $map[$type] ?? __('Submit', 'wbizmo-form-builder');
     }
 
     private function get_default_fields_for_type($type) {
@@ -557,8 +557,8 @@ class PulseForms_Admin {
             [
                 'id'          => 'name',
                 'type'        => 'text',
-                'label'       => __('Name', 'pulseforms'),
-                'placeholder' => __('Enter your name', 'pulseforms'),
+                'label'       => __('Name', 'wbizmo-form-builder'),
+                'placeholder' => __('Enter your name', 'wbizmo-form-builder'),
                 'required'    => true,
                 'width'       => 'full',
             ],
@@ -568,8 +568,8 @@ class PulseForms_Admin {
             [
                 'id'          => 'email',
                 'type'        => 'email',
-                'label'       => __('Email Address', 'pulseforms'),
-                'placeholder' => __('Enter your email address', 'pulseforms'),
+                'label'       => __('Email Address', 'wbizmo-form-builder'),
+                'placeholder' => __('Enter your email address', 'wbizmo-form-builder'),
                 'required'    => true,
                 'width'       => 'full',
             ],
@@ -580,8 +580,8 @@ class PulseForms_Admin {
                 [
                     'id'          => 'message',
                     'type'        => 'textarea',
-                    'label'       => __('Message', 'pulseforms'),
-                    'placeholder' => __('Write your message', 'pulseforms'),
+                    'label'       => __('Message', 'wbizmo-form-builder'),
+                    'placeholder' => __('Write your message', 'wbizmo-form-builder'),
                     'required'    => true,
                     'width'       => 'full',
                 ],
@@ -597,8 +597,8 @@ class PulseForms_Admin {
                 [
                     'id'          => 'password',
                     'type'        => 'password',
-                    'label'       => __('Password', 'pulseforms'),
-                    'placeholder' => __('Create a password', 'pulseforms'),
+                    'label'       => __('Password', 'wbizmo-form-builder'),
+                    'placeholder' => __('Create a password', 'wbizmo-form-builder'),
                     'required'    => true,
                     'width'       => 'full',
                 ],
@@ -610,16 +610,16 @@ class PulseForms_Admin {
                 [
                     'id'          => 'username',
                     'type'        => 'text',
-                    'label'       => __('Username or Email', 'pulseforms'),
-                    'placeholder' => __('Enter username or email', 'pulseforms'),
+                    'label'       => __('Username or Email', 'wbizmo-form-builder'),
+                    'placeholder' => __('Enter username or email', 'wbizmo-form-builder'),
                     'required'    => true,
                     'width'       => 'full',
                 ],
                 [
                     'id'          => 'password',
                     'type'        => 'password',
-                    'label'       => __('Password', 'pulseforms'),
-                    'placeholder' => __('Enter password', 'pulseforms'),
+                    'label'       => __('Password', 'wbizmo-form-builder'),
+                    'placeholder' => __('Enter password', 'wbizmo-form-builder'),
                     'required'    => true,
                     'width'       => 'full',
                 ],

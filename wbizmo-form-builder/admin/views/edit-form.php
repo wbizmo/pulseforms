@@ -172,7 +172,7 @@ $error_message = isset($settings['error_message']) ? $settings['error_message'] 
                 <div class="pf-field">
                     <label for="style_mode">Style Mode</label>
                     <select id="style_mode" name="style_mode">
-                        <option value="pulse" <?php selected($style_mode, 'pulse'); ?>>PulseForms styling</option>
+                        <option value="pulse" <?php selected($style_mode, 'pulse'); ?>>Wbizmo Form Builder styling</option>
                         <option value="inherit" <?php selected($style_mode, 'inherit'); ?>>Inherit theme styling</option>
                     </select>
                 </div>
@@ -199,7 +199,7 @@ $error_message = isset($settings['error_message']) ? $settings['error_message'] 
             </div>        </div>
 
         <div class="pf-save-bar">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=pulseforms')); ?>" class="pf-btn pf-btn-light">Cancel</a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=wbizmo-form-builder')); ?>" class="pf-btn pf-btn-light">Cancel</a>
 
             <button type="submit" class="pf-btn pf-btn-primary">
                 <span class="material-symbols-outlined">save</span>

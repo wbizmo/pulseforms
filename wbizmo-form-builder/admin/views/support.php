@@ -8,8 +8,8 @@ if (!defined('ABSPATH')) {
     <div class="pf-hero">
         <div>
             <p class="pf-eyebrow">Support</p>
-            <h1>About PulseForms</h1>
-            <p>PulseForms is an open-source WordPress form builder created to make polished, customizable forms freely available.</p>
+            <h1>About Wbizmo Form Builder</h1>
+            <p>Wbizmo Form Builder is an open-source WordPress form builder created to make polished, customizable forms freely available.</p>
         </div>
     </div>
 
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
         <div class="pf-card">
             <h2>About the Plugin</h2>
             <p>
-                PulseForms is built for WordPress users who want beautiful forms, clean customization,
+                Wbizmo Form Builder is built for WordPress users who want beautiful forms, clean customization,
                 secure submissions, email notifications, logs, shortcodes, and a better form ownership experience.
             </p>
 

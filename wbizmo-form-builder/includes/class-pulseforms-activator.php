@@ -4,15 +4,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class PulseForms_Activator {
+class Wbizmo Form Builder_Activator {
     public static function activate() {
         global $wpdb;
 
         $charset_collate = $wpdb->get_charset_collate();
 
-        $forms_table = $wpdb->prefix . 'pulseforms_forms';
-        $submissions_table = $wpdb->prefix . 'pulseforms_submissions';
-        $logs_table = $wpdb->prefix . 'pulseforms_logs';
+        $forms_table = $wpdb->prefix . 'wbizmo_form_builder_forms';
+        $submissions_table = $wpdb->prefix . 'wbizmo_form_builder_submissions';
+        $logs_table = $wpdb->prefix . 'wbizmo_form_builder_logs';
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
@@ -72,10 +72,10 @@ class PulseForms_Activator {
         dbDelta($sql_submissions);
         dbDelta($sql_logs);
 
-        add_option('pulseforms_version', PULSEFORMS_VERSION);
+        add_option('wbizmo_form_builder_version', PULSEFORMS_VERSION);
 
-        if (!get_option('pulseforms_settings')) {
-            add_option('pulseforms_settings', [
+        if (!get_option('wbizmo_form_builder_settings')) {
+            add_option('wbizmo_form_builder_settings', [
                 'upload_max_size'     => 5,
                 'allowed_file_types'  => 'jpg,jpeg,png,gif,pdf,doc,docx,txt',
                 'rate_limit_attempts' => 5,
@@ -84,8 +84,8 @@ class PulseForms_Activator {
             ]);
         }
 
-        if (!wp_next_scheduled('pulseforms_daily_cleanup')) {
-            wp_schedule_event(time(), 'daily', 'pulseforms_daily_cleanup');
+        if (!wp_next_scheduled('wbizmo_form_builder_daily_cleanup')) {
+            wp_schedule_event(time(), 'daily', 'wbizmo_form_builder_daily_cleanup');
         }
     }
 }

@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$options = get_option('pulseforms_settings', []);
+$options = get_option('wbizmo_form_builder_settings', []);
 
 $log_retention_days = isset($options['log_retention_days']) ? absint($options['log_retention_days']) : 30;
 $upload_max_size = isset($options['upload_max_size']) ? absint($options['upload_max_size']) : 5;
@@ -17,7 +17,7 @@ $remove_data_on_uninstall = isset($options['remove_data_on_uninstall']) ? (bool)
     <div class="pf-hero">
         <div>
             <p class="pf-eyebrow">Settings</p>
-            <h1>PulseForms Settings</h1>
+            <h1>Wbizmo Form Builder Settings</h1>
             <p>Manage global security, upload, logging, rate-limit, and uninstall behavior.</p>
         </div>
     </div>
@@ -70,7 +70,7 @@ $remove_data_on_uninstall = isset($options['remove_data_on_uninstall']) ? (bool)
 
         <div class="pf-card">
             <h2>Logs</h2>
-            <p>Control how long PulseForms should keep log records.</p>
+            <p>Control how long Wbizmo Form Builder should keep log records.</p>
 
             <div class="pf-form-grid">
                 <div class="pf-field">
@@ -82,12 +82,12 @@ $remove_data_on_uninstall = isset($options['remove_data_on_uninstall']) ? (bool)
 
         <div class="pf-card">
             <h2>Uninstall Behavior</h2>
-            <p>Choose whether PulseForms should preserve or remove plugin data when the plugin is uninstalled.</p>
+            <p>Choose whether Wbizmo Form Builder should preserve or remove plugin data when the plugin is uninstalled.</p>
 
             <label class="pf-switch-row">
                 <input type="checkbox" name="remove_data_on_uninstall" value="1" <?php checked($remove_data_on_uninstall); ?>>
                 <span class="pf-switch-ui"></span>
-                <span>Remove all PulseForms forms, submissions, logs, and settings when plugin is uninstalled</span>
+                <span>Remove all Wbizmo Form Builder forms, submissions, logs, and settings when plugin is uninstalled</span>
             </label>
 
             <p class="pf-help">

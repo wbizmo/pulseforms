@@ -177,7 +177,7 @@ if (!defined('ABSPATH')) {
         <div class="pf-card pf-empty">
             <span class="material-symbols-outlined">inbox</span>
             <h2>No submissions yet</h2>
-            <p>Once users submit a PulseForms form, their entries will appear here.</p>
+            <p>Once users submit a Wbizmo Form Builder form, their entries will appear here.</p>
         </div>
     <?php endif; ?>
 </div>
