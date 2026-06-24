@@ -1,15 +1,16 @@
 <?php
 /**
- * Plugin Name: PulseForms
+ * Plugin Name: Wbizmo Form Builder
  * Plugin URI: https://github.com/wbizmo/pulseforms
  * Description: A modern, customizable WordPress form builder plugin with submissions, styled forms, email notifications, logs, and shortcode support.
  * Version: 1.0.1
- * Author: Williams
+ * Author: Williams Ashibuogwu
  * Author URI: https://github.com/wbizmo
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: pulseforms
+ * Text Domain: wbizmo-form-builder
  * Requires at least: 6.0
+ * Tested up to: 7.0
  * Requires PHP: 8.0
  */
 
@@ -17,7 +18,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('PULSEFORMS_VERSION', '1.0.0');
+define('PULSEFORMS_VERSION', '1.0.1');
 define('PULSEFORMS_FILE', __FILE__);
 define('PULSEFORMS_PATH', plugin_dir_path(__FILE__));
 define('PULSEFORMS_URL', plugin_dir_url(__FILE__));
