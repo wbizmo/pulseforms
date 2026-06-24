@@ -13,54 +13,6 @@ Automated Scan Result: PASS
 
 ---
 
-## Review Round 1
-
-### Reviewer Feedback
-
-Pending
-
-### Fixes Applied
-
-Pending
-
-### Commit Reference
-
-Pending
-
----
-
-## Review Round 2
-
-### Reviewer Feedback
-
-Pending
-
-### Fixes Applied
-
-Pending
-
-### Commit Reference
-
-Pending
-
----
-
-## Review Round 3
-
-### Reviewer Feedback
-
-Pending
-
-### Fixes Applied
-
-Pending
-
-### Commit Reference
-
-Pending
-
----
-
 ## Notes
 
 This file tracks all WordPress.org review feedback, fixes, commits, and release updates related to the PulseForms plugin approval process.
@@ -157,4 +109,65 @@ The GitHub repository may remain named `pulseforms` for project continuity and h
 - Removed remaining Material Symbols references.
 - Added `[wbizmo_form]` shortcode while preserving `[pulseform]` as a legacy alias.
 - Built resubmission ZIP as `release/wbizmo-form-builder.zip`.
+
+
+---
+
+## Release v1.0.1
+
+Release Date: 2026-06-24
+
+Status:
+Ready for WordPress.org Resubmission
+
+Release Title:
+Wbizmo Form Builder 1.0.1 – WordPress.org Compliance Release
+
+Summary
+
+This release completes the first WordPress.org compliance remediation cycle.
+
+The project transitions from the original PulseForms working identity to the public WordPress.org package identity:
+
+Wbizmo Form Builder
+
+Completed During Review Cycle
+
+- Removed arbitrary Custom CSS functionality.
+- Removed frontend Custom CSS rendering.
+- Removed remote GitHub avatar loading.
+- Removed Google Fonts dependency.
+- Removed Material Symbols dependency.
+- Improved sanitization around form builder JSON processing.
+- Added WordPress.org compliant package branding.
+- Added [wbizmo_form] shortcode.
+- Preserved [pulseform] shortcode for backwards compatibility.
+- Updated package namespace references.
+- Updated option namespace references.
+- Updated scheduled cleanup namespace references.
+- Updated database table namespace references.
+
+Validation
+
+- PHP lint passed.
+- Remote asset scan passed.
+- Compliance audit passed.
+- Shortcode validation passed.
+- Package validation passed.
+
+Generated Package
+
+release/wbizmo-form-builder.zip
+
+Repository
+
+https://github.com/wbizmo/pulseforms
+
+Notes
+
+The GitHub repository intentionally remains named "pulseforms" for project continuity and historical traceability.
+
+The WordPress.org package and public plugin identity use:
+
+wbizmo-form-builder
 

@@ -1,67 +1,77 @@
-# PulseForms
+# Wbizmo Form Builder
 
-![PulseForms Preview](assets/pulseforms.png)
+**Wbizmo Form Builder** is a modern WordPress form builder plugin focused on clean form creation, secure submissions, frontend styling, email notifications, file uploads, observability, and full ownership of collected data.
 
-**PulseForms** is a modern, customizable WordPress form builder plugin built for clean forms, secure submissions, beautiful styling, email notifications, file uploads, logs, shortcodes, and full form ownership.
+This package is the WordPress.org compliance edition of the original PulseForms project.
 
-PulseForms was created to provide premium-style form plugin features without locking useful functionality behind a paid version.
+The project was renamed during the WordPress.org review process to ensure a distinctive and compliant plugin identity.
 
-> Installable plugin package is available in:
->
-> `release/pulseforms.zip`
+---
+
+## Package
+
+Installable package:
+
+release/wbizmo-form-builder.zip
+
+---
+
+## WordPress.org Review History
+
+Documentation for all compliance updates, review notes, fixes, and migration history is available at:
+
+docs/wordpress-org-review-notes.md
+
+This document tracks the transition from PulseForms to Wbizmo Form Builder and records changes made during the WordPress.org approval process.
 
 ---
 
 ## Overview
 
-PulseForms is a lightweight WordPress form builder designed for users who want complete control over how their forms look, behave, and integrate with their websites.
+Wbizmo Form Builder is designed for site owners who want complete control over their forms without relying on external services.
 
-It combines secure form processing, modern styling, submission management, file uploads, email notifications, spam protection, and observability features into a single plugin architecture.
+The plugin combines:
 
-The goal is simple:
+* Form creation
+* Frontend rendering
+* Secure submission processing
+* Submission storage
+* Email notifications
+* File uploads
+* Logging
+* Spam protection
+* Administrative observability
 
-**Users should feel like the form belongs to their website, not to a plugin.**
+into a single WordPress-native architecture.
 
 ---
 
 ## Core Features
 
 * Form creation from WordPress admin
-* Shortcode support
 * Frontend form rendering
-* Contact form template
-* Newsletter form template
-* Subscription form template
-* Multi-step form foundation
-* Login form template
-* Registration form template
-* Custom form template
 * Submission storage
 * Submission viewer
-* Uploaded file display
 * Email notifications
 * Admin notification emails
 * User confirmation emails
 * Responsive HTML email templates
-* Custom frontend success and error feedback
-* User-safe frontend error messages
-* Detailed admin error logs
-* PHP error logging where capturable
+* Secure file uploads
 * File upload validation
-* Custom captcha
 * Honeypot spam protection
-* Basic rate limiting
+* Custom captcha support
+* Rate limiting
+* Detailed logging
+* PHP error capture where available
+* Log retention controls
 * Global plugin settings
-* Log retention cleanup
-* Optional uninstall data cleanup
-* Material Icons integration
-* Lightweight plugin architecture
+* Secure shortcode embedding
+* Responsive frontend styling
+* Multiple form templates
 
 ---
 
-## Form Types
-
-PulseForms currently supports:
+## Supported Form Types
 
 * Contact Forms
 * Newsletter Forms
@@ -71,19 +81,25 @@ PulseForms currently supports:
 * Login Forms
 * Custom Forms
 
-Each form can be edited and embedded anywhere using a shortcode.
+---
 
-Example:
+## Shortcodes
 
-```text
+Preferred shortcode:
+
+[wbizmo_form id="1"]
+
+Legacy shortcode:
+
 [pulseform id="1"]
-```
+
+The legacy shortcode is maintained for backward compatibility.
 
 ---
 
 ## Form Builder
 
-PulseForms includes a lightweight V1 form builder powered by structured JSON field definitions.
+The plugin uses structured field definitions that support future builder enhancements without requiring major architectural changes.
 
 Supported field types:
 
@@ -95,78 +111,52 @@ Supported field types:
 * Select
 * Radio
 * Checkbox
-* Toggle Switch
+* Toggle
 * Date
 * File Upload
 * Hidden Field
 * HTML Block
 * Password
 
-The current architecture was intentionally designed to support future drag-and-drop functionality without requiring a rewrite of the form processing engine.
-
 ---
 
 ## Styling System
 
-PulseForms includes three built-in frontend form themes:
+Built-in themes:
 
 ### Aurora
 
-Clean, modern, bright, and minimal.
+Clean and modern.
 
 ### Noir
 
-Dark, premium, elegant, and high-contrast.
+Dark and premium.
 
 ### Solace
 
-Warm, business-oriented, and professional.
+Business-oriented and professional.
 
-Forms can also inherit styling directly from the active WordPress theme.
-
----
-
-## Customization Options
-
-Every form supports:
-
-* Form theme selection
-* Style mode selection
-* Primary color
-* Accent color
-* Field radius
-* Button radius
-* Submit button text
-* Success message
-* Error message
-* Custom CSS
-
-PulseForms replaces default browser styling with consistent, modern form controls including custom checkboxes, radios, toggles, uploads, buttons, and feedback states.
+Forms may also inherit styles from the active WordPress theme.
 
 ---
 
 ## Submission Handling
 
-PulseForms can store form submissions directly inside WordPress.
-
-Submission records include:
+Submission records may include:
 
 * Form name
 * Submission ID
 * Submission status
 * Submitted values
 * Source page URL
-* User ID or guest label
+* User ID
 * Browser information
-* Uploaded file links
+* Uploaded file references
 * Read/unread status
-* Deletion controls
 
 ---
 
 ## File Uploads
-
-PulseForms includes secure file upload support.
 
 Global controls include:
 
@@ -174,104 +164,74 @@ Global controls include:
 * Allowed file types
 * Upload validation
 * WordPress media handling
-* Uploaded file viewing inside submissions
 
 Default file types:
 
-```text
-jpg, jpeg, png, gif, pdf, doc, docx, txt
-```
+jpg,jpeg,png,gif,pdf,doc,docx,txt
 
 ---
 
 ## Email Notifications
 
-PulseForms supports:
+Supported notification types:
 
-* Admin notification emails
-* User confirmation emails
-* Responsive HTML email templates
-* Submission detail summaries
-* Form name references
+* Admin notifications
+* User confirmations
+* HTML email templates
+* Submission summaries
+* Form references
 * Submission references
-* Source page tracking
 
-Login and registration forms do not enable standard submission emails by default.
-
-PulseForms only reports success when all enabled processing actions complete successfully.
-
-If email delivery fails, users receive a safe message while administrators receive full technical details through the logging system.
+Users only receive success feedback when enabled processing completes successfully.
 
 ---
 
-## Error Handling & Logs
+## Logging & Observability
 
-PulseForms includes a dedicated admin log viewer.
+The plugin includes a dedicated log viewer.
 
 Logged events may include:
 
-* Severity level
+* Severity
 * Event type
-* Technical message
+* Message
 * Form ID
 * Form name
 * Submission ID
 * Page URL
 * User ID
-* Hashed IP
 * Browser information
 * PHP version
 * WordPress version
-* PulseForms version
+* Plugin version
 * Timestamp
 
-Frontend visitors never see raw technical errors.
-
-Examples:
-
-```text
-Something went wrong. Please try again.
-```
-
-```text
-Something unexpected went wrong. Please try again later.
-```
-
-Full diagnostic details are stored inside:
-
-```text
-PulseForms → Logs
-```
+Frontend visitors never receive raw technical error details.
 
 ---
 
 ## Security Features
 
-PulseForms includes:
-
 * WordPress nonces
-* Honeypot protection
-* Custom captcha
-* Rate limiting
 * Server-side validation
-* Sanitized inputs
-* Escaped output
+* Input sanitization
+* Output escaping
+* Honeypot protection
+* Custom captcha support
+* Rate limiting
 * Upload validation
-* File type validation
-* Upload size validation
-* Hashed IP logging
 * Permission checks
+* Hashed IP logging
 
 ---
 
 ## Global Settings
 
-The settings area provides controls for:
+Configurable settings include:
 
-* Maximum upload size
+* Upload limits
 * Allowed file types
-* Rate limit attempts
-* Rate limit windows
+* Rate limiting
 * Log retention
 * Optional uninstall cleanup
 
@@ -279,8 +239,8 @@ The settings area provides controls for:
 
 ## Admin Pages
 
-```text
-PulseForms
+Wbizmo Form Builder
+
 ├── All Forms
 ├── Add New
 ├── Edit Form
@@ -288,53 +248,6 @@ PulseForms
 ├── Logs
 ├── Settings
 └── Support
-```
-
----
-
-## Support & Creator
-
-PulseForms includes a dedicated creator and support page.
-
-The creator profile image is dynamically loaded from:
-
-```text
-https://github.com/wbizmo.png?size=160
-```
-
-This ensures the displayed profile image always matches the GitHub account avatar.
-
----
-
-## Installation
-
-1. Download:
-
-```text
-release/pulseforms.zip
-```
-
-2. Open WordPress Admin.
-3. Navigate to:
-
-```text
-Plugins → Add New → Upload Plugin
-```
-
-4. Upload `pulseforms.zip`.
-5. Activate PulseForms.
-6. Create your first form.
-7. Copy the generated shortcode into any page, post, or page builder.
-
----
-
-## Shortcode Usage
-
-```text
-[pulseform id="1"]
-```
-
-Replace `1` with the actual form ID.
 
 ---
 
@@ -345,51 +258,23 @@ Replace `1` with the actual form ID.
 * Activation Hooks
 * Deactivation Hooks
 * Uninstall Handler
-* Admin Menu System
-* Frontend Renderer
 * AJAX Submission Processing
-* File Upload Handling
 * HTML Email System
-* Settings Persistence
 * Log Management
-* Error Observability
 * Secure Form Processing
-
----
-
-## Why This Project Matters
-
-PulseForms demonstrates practical experience across:
-
-* WordPress Plugin Development
-* Form Rendering
-* Backend Processing
-* Database Design
-* Email Systems
-* File Uploads
-* Security Controls
-* Logging Systems
-* Admin Interfaces
-* Plugin Packaging
-* WordPress Standards
-
-The project was designed as a genuine plugin foundation rather than a simple demonstration project.
+* WordPress Standards Compliance
 
 ---
 
 ## Roadmap
 
-Planned future enhancements include:
+Planned enhancements:
 
 * Visual Drag-and-Drop Builder
-* Field Duplication
 * Conditional Logic
-* Multi-Step Progress Navigation
 * CSV Export
-* Submission Search & Filtering
+* Submission Search
 * Email Template Editor
-* Custom Email Subjects & Bodies
-* Google reCAPTCHA
 * Webhooks
 * Zapier Integration
 * Stripe Integration
@@ -399,13 +284,12 @@ Planned future enhancements include:
 * Gutenberg Block
 * Elementor Widget
 * Popup Forms
-* Donation Forms
 * Survey Forms
 * Advanced Analytics
 
 ---
 
-## Tech Stack
+## Technology
 
 * WordPress
 * PHP
@@ -414,7 +298,6 @@ Planned future enhancements include:
 * HTML
 * CSS
 * MySQL
-* Material Symbols
 
 ---
 
@@ -426,14 +309,16 @@ GPL v2 or later
 
 ## Author
 
-**Williams Ashibuogwu (wbizmo)**
+Williams Ashibuogwu (wbizmo)
 
-GitHub: https://github.com/wbizmo
+GitHub:
+https://github.com/wbizmo
 
-Repository: https://github.com/wbizmo/pulseforms
+Repository:
+https://github.com/wbizmo/pulseforms
 
 ---
 
 ## Version
 
-Current Version: **1.0.1**
+Current Version: 1.0.1
