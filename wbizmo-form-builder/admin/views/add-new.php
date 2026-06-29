@@ -21,8 +21,8 @@ if (!defined('ABSPATH')) {
     <?php endif; ?>
 
     <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="pf-builder-shell">
-        <?php wp_nonce_field('pulseforms_create_form'); ?>
-        <input type="hidden" name="action" value="pulseforms_create_form">
+        <?php wp_nonce_field('wbizfobu_create_form'); ?>
+        <input type="hidden" name="action" value="wbizfobu_create_form">
 
         <div class="pf-card">
             <h2>Form Details</h2>

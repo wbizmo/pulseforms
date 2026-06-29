@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class PulseForms_Emailer {
+class WBIZFOBU_Emailer {
     public function send_admin_notification($form, $submission_id, $clean_data, $page_url) {
         $to = get_option('admin_email');
 
@@ -72,7 +72,7 @@ class PulseForms_Emailer {
     }
 
     private function render_template($template, $args = []) {
-        $template_path = PULSEFORMS_PATH . 'templates/emails/' . $template;
+        $template_path = WBIZFOBU_PATH . 'templates/emails/' . $template;
 
         if (!file_exists($template_path)) {
             return '';

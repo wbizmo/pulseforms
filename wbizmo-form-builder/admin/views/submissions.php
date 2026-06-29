@@ -50,13 +50,13 @@ if (!defined('ABSPATH')) {
                     $files = json_decode($submission->files, true);
 
                     $delete_url = wp_nonce_url(
-                        admin_url('admin-post.php?action=pulseforms_delete_submission&submission_id=' . absint($submission->id)),
-                        'pulseforms_delete_submission_' . absint($submission->id)
+                        admin_url('admin-post.php?action=wbizfobu_delete_submission&submission_id=' . absint($submission->id)),
+                        'wbizfobu_delete_submission_' . absint($submission->id)
                     );
 
                     $mark_read_url = wp_nonce_url(
-                        admin_url('admin-post.php?action=pulseforms_mark_submission_read&submission_id=' . absint($submission->id)),
-                        'pulseforms_mark_submission_read_' . absint($submission->id)
+                        admin_url('admin-post.php?action=wbizfobu_mark_submission_read&submission_id=' . absint($submission->id)),
+                        'wbizfobu_mark_submission_read_' . absint($submission->id)
                     );
                     ?>
 

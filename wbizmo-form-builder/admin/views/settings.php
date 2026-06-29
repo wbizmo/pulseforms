@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$options = get_option('wbizmo_form_builder_settings', []);
+$options = get_option('wbizfobu_settings', []);
 
 $log_retention_days = isset($options['log_retention_days']) ? absint($options['log_retention_days']) : 30;
 $upload_max_size = isset($options['upload_max_size']) ? absint($options['upload_max_size']) : 5;
@@ -30,8 +30,8 @@ $remove_data_on_uninstall = isset($options['remove_data_on_uninstall']) ? (bool)
     <?php endif; ?>
 
     <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="pf-builder-shell">
-        <?php wp_nonce_field('pulseforms_save_settings'); ?>
-        <input type="hidden" name="action" value="pulseforms_save_settings">
+        <?php wp_nonce_field('wbizfobu_save_settings'); ?>
+        <input type="hidden" name="action" value="wbizfobu_save_settings">
 
         <div class="pf-card">
             <h2>Uploads</h2>

@@ -66,8 +66,8 @@ if (!defined('ABSPATH')) {
                             $edit_url = admin_url('admin.php?page=wbizmo-form-builder-edit-form&form_id=' . absint($form->id));
 
                             $delete_url = wp_nonce_url(
-                                admin_url('admin-post.php?action=pulseforms_delete_form&form_id=' . absint($form->id)),
-                                'pulseforms_delete_form_' . absint($form->id)
+                                admin_url('admin-post.php?action=wbizfobu_delete_form&form_id=' . absint($form->id)),
+                                'wbizfobu_delete_form_' . absint($form->id)
                             );
                             ?>
 
@@ -80,8 +80,8 @@ if (!defined('ABSPATH')) {
 
                                 <td>
                                     <div class="pf-shortcode-copy">
-                                        <code>[pulseform id="<?php echo esc_attr($form->id); ?>"]</code>
-                                        <button type="button" class="pf-icon-btn pf-copy-shortcode" data-shortcode='[pulseform id="<?php echo esc_attr($form->id); ?>"]'>
+                                        <code>[wbizfobu id="<?php echo esc_attr($form->id); ?>"]</code>
+                                        <button type="button" class="pf-icon-btn pf-copy-shortcode" data-shortcode='[wbizfobu id="<?php echo esc_attr($form->id); ?>"]'>
                                             <span class="dashicons">content_copy</span>
                                         </button>
                                     </div>

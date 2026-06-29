@@ -4,11 +4,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class PulseForms_Logger {
+class WBIZFOBU_Logger {
     public static function log($severity, $event_type, $message, $context = []) {
         global $wpdb;
 
-        $table = $wpdb->prefix . 'wbizmo_form_builder_logs';
+        $table = $wpdb->prefix . 'wbizfobu_logs';
 
         $wpdb->insert(
             $table,
@@ -26,7 +26,7 @@ class PulseForms_Logger {
                 'user_agent'        => isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_textarea_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : null,
                 'php_version'       => PHP_VERSION,
                 'wp_version'        => get_bloginfo('version'),
-                'plugin_version'    => PULSEFORMS_VERSION,
+                'plugin_version'    => WBIZFOBU_VERSION,
                 'created_at'        => current_time('mysql'),
             ],
             [

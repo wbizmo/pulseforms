@@ -4,19 +4,19 @@ Tags: forms, contact form, form builder, submissions, wordpress forms
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.0.2
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A modern, customizable WordPress form builder plugin with submissions, email notifications, file uploads, logs, shortcodes, captcha, and rate limiting.
+A lightweight WordPress form builder plugin for creating, styling, embedding, and managing secure forms.
 
 == Description ==
 
-Wbizmo Form Builder is a lightweight and customizable WordPress form builder plugin created for users who want clean forms, secure submissions, email notifications, submission management, file uploads, and polished frontend styling.
+Wbizmo Form Builder is a lightweight WordPress form builder plugin for creating and managing forms directly inside WordPress.
 
-The plugin includes form creation, shortcode embedding, styled frontend forms, email notifications, submission storage, file uploads, custom captcha, honeypot protection, rate limiting, error logs, and admin-friendly submission viewing.
+It includes form creation, shortcode embedding, frontend rendering, submission storage, email notifications, file uploads, custom captcha, honeypot protection, rate limiting, logging, and admin-friendly submission management.
 
-Wbizmo Form Builder was originally developed under the working name PulseForms and was renamed before WordPress.org resubmission to provide a clearer, more distinctive plugin identity.
+The plugin is designed to be simple, secure, extensible, and WordPress-native.
 
 == Features ==
 
@@ -50,15 +50,11 @@ Wbizmo Form Builder was originally developed under the working name PulseForms a
 * Uninstall cleanup option
 * Lightweight architecture
 
-== Shortcodes ==
+== Shortcode ==
 
 Use this shortcode to display a form:
 
-[wbizmo_form id="1"]
-
-The legacy shortcode is also supported for older development installs:
-
-[pulseform id="1"]
+[wbizfobu_form id="1"]
 
 == Installation ==
 
@@ -86,10 +82,6 @@ Yes. Each form includes a setting to enable or disable saved submissions.
 
 Yes. The plugin can send admin notification emails and user confirmation emails for supported form types.
 
-= Are login and registration forms treated differently? =
-
-Yes. Login and registration forms do not enable normal submission emails by default.
-
 = Does Wbizmo Form Builder support file uploads? =
 
 Yes. File uploads are supported with allowed file type and maximum size settings.
@@ -113,10 +105,22 @@ Yes. Forms can use built-in styling, inherit theme styling, use preset themes, c
 
 == Changelog ==
 
+= 1.0.4 =
+* Completed internal prefix cleanup using the wbizfobu prefix.
+* Removed old package identifiers from the submitted plugin package.
+* Updated shortcode to [wbizfobu_form].
+* Updated options, hooks, actions, script handles, constants, and internal names for WordPress.org compliance.
+
+= 1.0.3 =
+* Added unique internal plugin prefix.
+* Updated class names, constants, options, hooks, and package files.
+
+= 1.0.2 =
+* Updated WordPress.org package branding and metadata.
+* Removed custom CSS functionality and remote assets.
+
 = 1.0.1 =
-* Renamed submitted package from PulseForms to Wbizmo Form Builder for WordPress.org compliance and clearer public identity.
-* Updated plugin headers, readme metadata, and GPL license references.
-* Prepared package folder for WordPress.org resubmission.
+* Internal review package update.
 
 = 1.0.0 =
-* Initial development release under the PulseForms working name.
+* Initial development release.

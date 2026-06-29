@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 
         <?php if (!empty($logs)) : ?>
             <a
-                href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=pulseforms_clear_logs'), 'pulseforms_clear_logs')); ?>"
+                href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=wbizfobu_clear_logs'), 'wbizfobu_clear_logs')); ?>"
                 class="pf-btn pf-btn-light"
                 onclick="return confirm('Clear all Wbizmo Form Builder logs?');"
             >
@@ -59,8 +59,8 @@ if (!defined('ABSPATH')) {
                     <?php
                         $details = json_decode($log->technical_details, true);
                         $delete_url = wp_nonce_url(
-                            admin_url('admin-post.php?action=pulseforms_delete_log&log_id=' . absint($log->id)),
-                            'pulseforms_delete_log_' . absint($log->id)
+                            admin_url('admin-post.php?action=wbizfobu_delete_log&log_id=' . absint($log->id)),
+                            'wbizfobu_delete_log_' . absint($log->id)
                         );
                     ?>
 

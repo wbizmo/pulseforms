@@ -221,3 +221,40 @@ Repository
 
 https://github.com/wbizmo/pulseforms
 
+
+---
+
+## Release v1.0.4
+
+Status:
+Ready for WordPress.org Resubmission
+
+Release Title:
+Wbizmo Form Builder 1.0.4 – Full Prefix and Branding Compliance Release
+
+Summary
+
+This release completes the full internal branding and prefix cleanup requested during WordPress.org review.
+
+The submitted package now uses the Wbizmo Form Builder public identity and the unique internal prefix:
+
+wbizfobu
+
+Completed During Review Cycle
+
+- Removed remaining old PulseForms identifiers from the submitted package.
+- Removed old pulseforms and pulseform internal references from package code.
+- Updated PHP class names to use the WBIZFOBU_ prefix.
+- Updated plugin constants to use the WBIZFOBU_ prefix.
+- Updated internal include filenames to use the class-wbizfobu-* naming pattern.
+- Updated options, hooks, AJAX actions, transients, script handles, and table names to use wbizfobu-based naming.
+- Updated shortcode to [wbizfobu_form].
+- Removed legacy shortcode aliases from the submitted package.
+- Confirmed no old package identifiers remain in the Wbizmo Form Builder distributable folder.
+- Confirmed PHP lint passes across the package.
+- Rebuilt WordPress.org submission ZIP.
+
+Generated Package
+
+release/wbizmo-form-builder.zip
+

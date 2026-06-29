@@ -2,7 +2,7 @@
     "use strict";
 
     function showFeedback(form, type, message) {
-        const feedback = form.find(".pulseforms-feedback");
+        const feedback = form.find(".wbizfobu-feedback");
         const icon = type === "success" ? "check_circle" : "error";
 
         feedback
@@ -11,18 +11,18 @@
             .html('<span class="dashicons dashicons-info"></span><span>' + message + '</span>');
     }
 
-    $(document).on("submit", ".pulseforms-form", function (event) {
+    $(document).on("submit", ".wbizfobu-form", function (event) {
         event.preventDefault();
 
         const form = $(this);
-        const button = form.find(".pulseforms-submit");
+        const button = form.find(".wbizfobu-submit");
         const formData = new FormData(this);
 
         button.addClass("is-loading");
-        form.find(".pulseforms-feedback").removeClass("is-visible is-success is-error").empty();
+        form.find(".wbizfobu-feedback").removeClass("is-visible is-success is-error").empty();
 
         $.ajax({
-            url: Wbizmo Form BuilderPublic.ajaxUrl,
+            url: WbizfobuPublic.ajaxUrl,
             method: "POST",
             data: formData,
             processData: false,

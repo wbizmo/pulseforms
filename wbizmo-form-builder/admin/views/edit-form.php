@@ -45,8 +45,8 @@ $error_message = isset($settings['error_message']) ? $settings['error_message'] 
         </div>
 
         <div class="pf-shortcode-copy">
-            <code>[pulseform id="<?php echo esc_attr($form->id); ?>"]</code>
-            <button type="button" class="pf-icon-btn pf-copy-shortcode" data-shortcode='[pulseform id="<?php echo esc_attr($form->id); ?>"]'>
+            <code>[wbizfobu id="<?php echo esc_attr($form->id); ?>"]</code>
+            <button type="button" class="pf-icon-btn pf-copy-shortcode" data-shortcode='[wbizfobu id="<?php echo esc_attr($form->id); ?>"]'>
                 <span class="dashicons">content_copy</span>
             </button>
         </div>
@@ -60,8 +60,8 @@ $error_message = isset($settings['error_message']) ? $settings['error_message'] 
     <?php endif; ?>
 
     <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="pf-builder-shell">
-        <?php wp_nonce_field('pulseforms_update_form_' . absint($form->id)); ?>
-        <input type="hidden" name="action" value="pulseforms_update_form">
+        <?php wp_nonce_field('wbizfobu_update_form_' . absint($form->id)); ?>
+        <input type="hidden" name="action" value="wbizfobu_update_form">
         <input type="hidden" name="form_id" value="<?php echo esc_attr($form->id); ?>">
 
         <div class="pf-card">

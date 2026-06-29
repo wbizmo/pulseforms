@@ -4,22 +4,22 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class PulseForms_Admin {
+class WBIZFOBU_Admin {
     public function init() {
         add_action('admin_menu', [$this, 'register_admin_menu']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
 
-        add_action('admin_post_pulseforms_create_form', [$this, 'handle_create_form']);
-        add_action('admin_post_pulseforms_update_form', [$this, 'handle_update_form']);
-        add_action('admin_post_pulseforms_delete_form', [$this, 'handle_delete_form']);
+        add_action('admin_post_wbizfobu_create_form', [$this, 'handle_create_form']);
+        add_action('admin_post_wbizfobu_update_form', [$this, 'handle_update_form']);
+        add_action('admin_post_wbizfobu_delete_form', [$this, 'handle_delete_form']);
 
-        add_action('admin_post_pulseforms_delete_submission', [$this, 'handle_delete_submission']);
-        add_action('admin_post_pulseforms_mark_submission_read', [$this, 'handle_mark_submission_read']);
+        add_action('admin_post_wbizfobu_delete_submission', [$this, 'handle_delete_submission']);
+        add_action('admin_post_wbizfobu_mark_submission_read', [$this, 'handle_mark_submission_read']);
 
-        add_action('admin_post_pulseforms_delete_log', [$this, 'handle_delete_log']);
-        add_action('admin_post_pulseforms_clear_logs', [$this, 'handle_clear_logs']);
+        add_action('admin_post_wbizfobu_delete_log', [$this, 'handle_delete_log']);
+        add_action('admin_post_wbizfobu_clear_logs', [$this, 'handle_clear_logs']);
 
-        add_action('admin_post_pulseforms_save_settings', [$this, 'handle_save_settings']);
+        add_action('admin_post_wbizfobu_save_settings', [$this, 'handle_save_settings']);
     }
 
     public function register_admin_menu() {
@@ -47,17 +47,17 @@ class PulseForms_Admin {
             return;
         }
         wp_enqueue_style(
-            'pulseforms-admin',
-            PULSEFORMS_URL . 'assets/css/admin.css',
+            'wbizfobu-admin',
+            WBIZFOBU_URL . 'assets/css/admin.css',
             [],
-            PULSEFORMS_VERSION
+            WBIZFOBU_VERSION
         );
 
         wp_enqueue_script(
-            'pulseforms-admin',
-            PULSEFORMS_URL . 'assets/js/admin.js',
+            'wbizfobu-admin',
+            WBIZFOBU_URL . 'assets/js/admin.js',
             ['jquery'],
-            PULSEFORMS_VERSION,
+            WBIZFOBU_VERSION,
             true
         );
     }
@@ -65,35 +65,35 @@ class PulseForms_Admin {
     public function get_forms() {
         global $wpdb;
 
-        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_forms ORDER BY created_at DESC");
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wbizfobu_forms ORDER BY created_at DESC");
     }
 
     public function get_form($id) {
         global $wpdb;
 
         return $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_forms WHERE id = %d", absint($id))
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wbizfobu_forms WHERE id = %d", absint($id))
         );
     }
 
     public function get_submissions() {
         global $wpdb;
 
-        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_submissions ORDER BY created_at DESC LIMIT 200");
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wbizfobu_submissions ORDER BY created_at DESC LIMIT 200");
     }
 
     public function get_submission($id) {
         global $wpdb;
 
         return $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_submissions WHERE id = %d", absint($id))
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wbizfobu_submissions WHERE id = %d", absint($id))
         );
     }
 
     public function get_logs() {
         global $wpdb;
 
-        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_logs ORDER BY created_at DESC LIMIT 300");
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wbizfobu_logs ORDER BY created_at DESC LIMIT 300");
     }
 
     public function handle_create_form() {
@@ -101,7 +101,7 @@ class PulseForms_Admin {
             wp_die(esc_html__('You do not have permission to create forms.', 'wbizmo-form-builder'));
         }
 
-        check_admin_referer('pulseforms_create_form');
+        check_admin_referer('wbizfobu_create_form');
 
         global $wpdb;
 
@@ -144,7 +144,7 @@ class PulseForms_Admin {
             'field_radius'  => '14',        ];
 
         $inserted = $wpdb->insert(
-            $wpdb->prefix . 'wbizmo_form_builder_forms',
+            $wpdb->prefix . 'wbizfobu_forms',
             [
                 'name'           => $name,
                 'type'           => $type,
@@ -159,7 +159,7 @@ class PulseForms_Admin {
         );
 
         if (!$inserted) {
-            PulseForms_Logger::log('error', 'form_create_failed', 'Wbizmo Form Builder could not create the form.', [
+            WBIZFOBU_Logger::log('error', 'form_create_failed', 'Wbizmo Form Builder could not create the form.', [
                 'form_name' => $name,
                 'form_type' => $type,
                 'db_error'  => $wpdb->last_error,
@@ -185,7 +185,7 @@ class PulseForms_Admin {
             exit;
         }
 
-        check_admin_referer('pulseforms_update_form_' . $form_id);
+        check_admin_referer('wbizfobu_update_form_' . $form_id);
 
         $form = $this->get_form($form_id);
 
@@ -212,7 +212,7 @@ class PulseForms_Admin {
         $decoded_fields = json_decode($fields_raw, true);
 
         if (!is_array($decoded_fields)) {
-            PulseForms_Logger::log('error', 'form_update_invalid_json', 'Form update failed because fields JSON was invalid.', [
+            WBIZFOBU_Logger::log('error', 'form_update_invalid_json', 'Form update failed because fields JSON was invalid.', [
                 'form_id'    => $form_id,
                 'form_name'  => $name,
                 'json_error' => json_last_error_msg(),
@@ -256,7 +256,7 @@ class PulseForms_Admin {
             'field_radius'  => isset($_POST['field_radius']) ? absint($_POST['field_radius']) : 14,        ];
 
         $updated = $wpdb->update(
-            $wpdb->prefix . 'wbizmo_form_builder_forms',
+            $wpdb->prefix . 'wbizfobu_forms',
             [
                 'name'           => $name,
                 'fields'         => wp_json_encode($sanitized_fields),
@@ -271,7 +271,7 @@ class PulseForms_Admin {
         );
 
         if ($updated === false) {
-            PulseForms_Logger::log('error', 'form_update_failed', 'Wbizmo Form Builder could not update the form.', [
+            WBIZFOBU_Logger::log('error', 'form_update_failed', 'Wbizmo Form Builder could not update the form.', [
                 'form_id'   => $form_id,
                 'form_name' => $name,
                 'db_error'  => $wpdb->last_error,
@@ -297,7 +297,7 @@ class PulseForms_Admin {
             exit;
         }
 
-        check_admin_referer('pulseforms_delete_form_' . $form_id);
+        check_admin_referer('wbizfobu_delete_form_' . $form_id);
 
         global $wpdb;
 
@@ -308,10 +308,10 @@ class PulseForms_Admin {
             exit;
         }
 
-        $deleted = $wpdb->delete($wpdb->prefix . 'wbizmo_form_builder_forms', ['id' => $form_id], ['%d']);
+        $deleted = $wpdb->delete($wpdb->prefix . 'wbizfobu_forms', ['id' => $form_id], ['%d']);
 
         if (!$deleted) {
-            PulseForms_Logger::log('error', 'form_delete_failed', 'Wbizmo Form Builder could not delete the form.', [
+            WBIZFOBU_Logger::log('error', 'form_delete_failed', 'Wbizmo Form Builder could not delete the form.', [
                 'form_id'   => $form_id,
                 'form_name' => $form->name,
                 'db_error'  => $wpdb->last_error,
@@ -337,7 +337,7 @@ class PulseForms_Admin {
             exit;
         }
 
-        check_admin_referer('pulseforms_delete_submission_' . $submission_id);
+        check_admin_referer('wbizfobu_delete_submission_' . $submission_id);
 
         global $wpdb;
 
@@ -348,10 +348,10 @@ class PulseForms_Admin {
             exit;
         }
 
-        $deleted = $wpdb->delete($wpdb->prefix . 'wbizmo_form_builder_submissions', ['id' => $submission_id], ['%d']);
+        $deleted = $wpdb->delete($wpdb->prefix . 'wbizfobu_submissions', ['id' => $submission_id], ['%d']);
 
         if (!$deleted) {
-            PulseForms_Logger::log('error', 'submission_delete_failed', 'Wbizmo Form Builder could not delete the submission.', [
+            WBIZFOBU_Logger::log('error', 'submission_delete_failed', 'Wbizmo Form Builder could not delete the submission.', [
                 'submission_id' => $submission_id,
                 'db_error'      => $wpdb->last_error,
             ]);
@@ -376,12 +376,12 @@ class PulseForms_Admin {
             exit;
         }
 
-        check_admin_referer('pulseforms_mark_submission_read_' . $submission_id);
+        check_admin_referer('wbizfobu_mark_submission_read_' . $submission_id);
 
         global $wpdb;
 
         $updated = $wpdb->update(
-            $wpdb->prefix . 'wbizmo_form_builder_submissions',
+            $wpdb->prefix . 'wbizfobu_submissions',
             ['status' => 'read'],
             ['id' => $submission_id],
             ['%s'],
@@ -389,7 +389,7 @@ class PulseForms_Admin {
         );
 
         if ($updated === false) {
-            PulseForms_Logger::log('error', 'submission_mark_read_failed', 'Wbizmo Form Builder could not mark the submission as read.', [
+            WBIZFOBU_Logger::log('error', 'submission_mark_read_failed', 'Wbizmo Form Builder could not mark the submission as read.', [
                 'submission_id' => $submission_id,
                 'db_error'      => $wpdb->last_error,
             ]);
@@ -414,11 +414,11 @@ class PulseForms_Admin {
             exit;
         }
 
-        check_admin_referer('pulseforms_delete_log_' . $log_id);
+        check_admin_referer('wbizfobu_delete_log_' . $log_id);
 
         global $wpdb;
 
-        $deleted = $wpdb->delete($wpdb->prefix . 'wbizmo_form_builder_logs', ['id' => $log_id], ['%d']);
+        $deleted = $wpdb->delete($wpdb->prefix . 'wbizfobu_logs', ['id' => $log_id], ['%d']);
 
         if (!$deleted) {
             wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-logs&pf_error=delete_failed'));
@@ -434,11 +434,11 @@ class PulseForms_Admin {
             wp_die(esc_html__('You do not have permission to clear logs.', 'wbizmo-form-builder'));
         }
 
-        check_admin_referer('pulseforms_clear_logs');
+        check_admin_referer('wbizfobu_clear_logs');
 
         global $wpdb;
 
-        $wpdb->query("TRUNCATE TABLE {$wpdb->prefix}wbizmo_form_builder_logs");
+        $wpdb->query("TRUNCATE TABLE {$wpdb->prefix}wbizfobu_logs");
 
         wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-logs&pf_cleared=1'));
         exit;
@@ -449,7 +449,7 @@ class PulseForms_Admin {
             wp_die(esc_html__('You do not have permission to save settings.', 'wbizmo-form-builder'));
         }
 
-        check_admin_referer('pulseforms_save_settings');
+        check_admin_referer('wbizfobu_save_settings');
 
         $allowed_file_types = isset($_POST['allowed_file_types'])
             ? sanitize_text_field(wp_unslash($_POST['allowed_file_types']))
@@ -477,7 +477,7 @@ class PulseForms_Admin {
             'remove_data_on_uninstall' => isset($_POST['remove_data_on_uninstall']),
         ];
 
-        update_option('wbizmo_form_builder_settings', $settings);
+        update_option('wbizfobu_settings', $settings);
 
         wp_safe_redirect(admin_url('admin.php?page=wbizmo-form-builder-settings&pf_saved=1'));
         exit;
@@ -631,11 +631,11 @@ class PulseForms_Admin {
 
     public function render_forms_page() {
         $forms = $this->get_forms();
-        require PULSEFORMS_PATH . 'admin/views/forms.php';
+        require WBIZFOBU_PATH . 'admin/views/forms.php';
     }
 
     public function render_add_new_page() {
-        require PULSEFORMS_PATH . 'admin/views/add-new.php';
+        require WBIZFOBU_PATH . 'admin/views/add-new.php';
     }
 
     public function render_edit_form_page() {
@@ -647,24 +647,24 @@ class PulseForms_Admin {
             return;
         }
 
-        require PULSEFORMS_PATH . 'admin/views/edit-form.php';
+        require WBIZFOBU_PATH . 'admin/views/edit-form.php';
     }
 
     public function render_submissions_page() {
         $submissions = $this->get_submissions();
-        require PULSEFORMS_PATH . 'admin/views/submissions.php';
+        require WBIZFOBU_PATH . 'admin/views/submissions.php';
     }
 
     public function render_logs_page() {
         $logs = $this->get_logs();
-        require PULSEFORMS_PATH . 'admin/views/logs.php';
+        require WBIZFOBU_PATH . 'admin/views/logs.php';
     }
 
     public function render_settings_page() {
-        require PULSEFORMS_PATH . 'admin/views/settings.php';
+        require WBIZFOBU_PATH . 'admin/views/settings.php';
     }
 
     public function render_support_page() {
-        require PULSEFORMS_PATH . 'admin/views/support.php';
+        require WBIZFOBU_PATH . 'admin/views/support.php';
     }
 }

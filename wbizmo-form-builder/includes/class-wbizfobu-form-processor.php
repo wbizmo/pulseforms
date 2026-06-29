@@ -4,16 +4,16 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class PulseForms_Form_Processor {
+class WBIZFOBU_Form_Processor {
     public function init() {
-        add_action('wp_ajax_pulseforms_submit_form', [$this, 'handle_submission']);
-        add_action('wp_ajax_nopriv_pulseforms_submit_form', [$this, 'handle_submission']);
+        add_action('wp_ajax_wbizfobu_submit_form', [$this, 'handle_submission']);
+        add_action('wp_ajax_nopriv_wbizfobu_submit_form', [$this, 'handle_submission']);
     }
 
     public function handle_submission() {
         try {
-            $form_id = isset($_POST['pulseforms_form_id']) ? absint($_POST['pulseforms_form_id']) : 0;
-            $page_url = isset($_POST['pulseforms_page_url']) ? esc_url_raw(wp_unslash($_POST['pulseforms_page_url'])) : '';
+            $form_id = isset($_POST['wbizfobu_form_id']) ? absint($_POST['wbizfobu_form_id']) : 0;
+            $page_url = isset($_POST['wbizfobu_page_url']) ? esc_url_raw(wp_unslash($_POST['wbizfobu_page_url'])) : '';
 
             if (!$form_id) {
                 $this->log_and_fail('warning', 'missing_form_id', 'Submission failed because form ID was missing.', [
@@ -21,16 +21,16 @@ class PulseForms_Form_Processor {
                 ]);
             }
 
-            $nonce = isset($_POST['pulseforms_nonce']) ? sanitize_text_field(wp_unslash($_POST['pulseforms_nonce'])) : '';
+            $nonce = isset($_POST['wbizfobu_nonce']) ? sanitize_text_field(wp_unslash($_POST['wbizfobu_nonce'])) : '';
 
-            if (!$nonce || !wp_verify_nonce($nonce, 'pulseforms_submit_' . $form_id)) {
+            if (!$nonce || !wp_verify_nonce($nonce, 'wbizfobu_submit_' . $form_id)) {
                 $this->log_and_fail('warning', 'nonce_failed', 'Submission failed nonce verification.', [
                     'form_id'  => $form_id,
                     'page_url' => $page_url,
                 ]);
             }
 
-            $honeypot = isset($_POST['pulseforms_website']) ? sanitize_text_field(wp_unslash($_POST['pulseforms_website'])) : '';
+            $honeypot = isset($_POST['wbizfobu_website']) ? sanitize_text_field(wp_unslash($_POST['wbizfobu_website'])) : '';
 
             if (!empty($honeypot)) {
                 $this->log_and_fail('warning', 'honeypot_triggered', 'Submission blocked by honeypot.', [
@@ -67,8 +67,8 @@ class PulseForms_Form_Processor {
             }
 
             if (!empty($settings['captcha_enabled'])) {
-                $captcha_answer = isset($_POST['pulseforms_captcha_answer']) ? sanitize_text_field(wp_unslash($_POST['pulseforms_captcha_answer'])) : '';
-                $captcha_hash = isset($_POST['pulseforms_captcha_hash']) ? sanitize_text_field(wp_unslash($_POST['pulseforms_captcha_hash'])) : '';
+                $captcha_answer = isset($_POST['wbizfobu_captcha_answer']) ? sanitize_text_field(wp_unslash($_POST['wbizfobu_captcha_answer'])) : '';
+                $captcha_hash = isset($_POST['wbizfobu_captcha_hash']) ? sanitize_text_field(wp_unslash($_POST['wbizfobu_captcha_hash'])) : '';
 
                 if ($captcha_answer === '' || $captcha_hash === '' || wp_hash((string) absint($captcha_answer)) !== $captcha_hash) {
                     $this->log_and_fail('warning', 'custom_captcha_failed', 'Submission failed custom captcha verification.', [
@@ -79,8 +79,8 @@ class PulseForms_Form_Processor {
                 }
             }
 
-            $posted_fields = isset($_POST['pulseforms_fields']) && is_array($_POST['pulseforms_fields'])
-                ? wp_unslash($_POST['pulseforms_fields'])
+            $posted_fields = isset($_POST['wbizfobu_fields']) && is_array($_POST['wbizfobu_fields'])
+                ? wp_unslash($_POST['wbizfobu_fields'])
                 : [];
 
             $clean_data = [];
@@ -175,7 +175,7 @@ class PulseForms_Form_Processor {
                 }
             }
 
-            $emailer = new PulseForms_Emailer();
+            $emailer = new WBIZFOBU_Emailer();
 
             if ($admin_email_enabled) {
                 $admin_email_result = $emailer->send_admin_notification($form, $submission_id, $clean_data, $page_url);
@@ -215,7 +215,7 @@ class PulseForms_Form_Processor {
             ]);
 
         } catch (Throwable $e) {
-            PulseForms_Logger::log(
+            WBIZFOBU_Logger::log(
                 'critical',
                 'unexpected_php_error',
                 'Unexpected PHP error during form submission.',
@@ -240,7 +240,7 @@ class PulseForms_Form_Processor {
 
         return $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_forms WHERE id = %d",
+                "SELECT * FROM {$wpdb->prefix}wbizfobu_forms WHERE id = %d",
                 $form_id
             )
         );
@@ -255,7 +255,7 @@ class PulseForms_Form_Processor {
             'log_retention_days'  => 30,
         ];
 
-        $settings = get_option('wbizmo_form_builder_settings', []);
+        $settings = get_option('wbizfobu_settings', []);
 
         if (!is_array($settings)) {
             $settings = [];
@@ -290,7 +290,7 @@ class PulseForms_Form_Processor {
     }
 
     private function handle_file_upload($field_id, $label, $required, $form, $page_url) {
-        $input_name = 'pulseforms_fields';
+        $input_name = 'wbizfobu_fields';
 
         if (
             empty($_FILES[$input_name]) ||
@@ -312,7 +312,7 @@ class PulseForms_Form_Processor {
         $size = isset($_FILES[$input_name]['size'][$field_id]) ? absint($_FILES[$input_name]['size'][$field_id]) : 0;
 
         if ($error !== UPLOAD_ERR_OK) {
-            PulseForms_Logger::log('error', 'file_upload_error', 'File upload failed with PHP upload error.', [
+            WBIZFOBU_Logger::log('error', 'file_upload_error', 'File upload failed with PHP upload error.', [
                 'form_id'      => $form->id,
                 'form_name'    => $form->name,
                 'page_url'     => $page_url,
@@ -356,7 +356,7 @@ class PulseForms_Form_Processor {
         );
 
         if (isset($uploaded['error'])) {
-            PulseForms_Logger::log('error', 'file_upload_failed', 'WordPress file upload handler failed.', [
+            WBIZFOBU_Logger::log('error', 'file_upload_failed', 'WordPress file upload handler failed.', [
                 'form_id'      => $form->id,
                 'form_name'    => $form->name,
                 'page_url'     => $page_url,
@@ -426,7 +426,7 @@ class PulseForms_Form_Processor {
         global $wpdb;
 
         $inserted = $wpdb->insert(
-            $wpdb->prefix . 'wbizmo_form_builder_submissions',
+            $wpdb->prefix . 'wbizfobu_submissions',
             [
                 'form_id'         => absint($form->id),
                 'form_name'       => sanitize_text_field($form->name),
@@ -450,7 +450,7 @@ class PulseForms_Form_Processor {
     }
 
     private function log_and_fail($severity, $event_type, $message, $context = [], $public_message = null) {
-        PulseForms_Logger::log($severity, $event_type, $message, $context);
+        WBIZFOBU_Logger::log($severity, $event_type, $message, $context);
 
         wp_send_json_error([
             'message' => $public_message ?: __('Something went wrong. Please try again.', 'wbizmo-form-builder'),
@@ -474,7 +474,7 @@ class PulseForms_Form_Processor {
             ? max(1, absint($plugin_settings['rate_limit_window']))
             : 10;
 
-        $key = 'pulseforms_rate_' . md5($form_id . '_' . $ip_hash);
+        $key = 'wbizfobu_rate_' . md5($form_id . '_' . $ip_hash);
         $count = (int) get_transient($key);
 
         if ($count >= $max_attempts) {

@@ -4,41 +4,41 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class PulseForms_Form_Renderer {
+class WBIZFOBU_Form_Renderer {
     public function init() {
-        add_shortcode('wbizmo_form', [$this, 'render_shortcode']);
-        add_shortcode('pulseform', [$this, 'render_shortcode']);
+        add_shortcode('wbizfobu_form', [$this, 'render_shortcode']);
+        add_shortcode('wbizfobu', [$this, 'render_shortcode']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_public_assets']);
     }
 
     public function enqueue_public_assets() {
         wp_enqueue_style(
-            'pulseforms-public',
-            PULSEFORMS_URL . 'assets/css/public.css',
+            'wbizfobu-public',
+            WBIZFOBU_URL . 'assets/css/public.css',
             [],
-            PULSEFORMS_VERSION
+            WBIZFOBU_VERSION
         );
 
         wp_enqueue_script(
-            'pulseforms-public',
-            PULSEFORMS_URL . 'assets/js/public.js',
+            'wbizfobu-public',
+            WBIZFOBU_URL . 'assets/js/public.js',
             ['jquery'],
-            PULSEFORMS_VERSION,
+            WBIZFOBU_VERSION,
             true
         );
 
         wp_localize_script(
-            'pulseforms-public',
-            'Wbizmo Form BuilderPublic',
+            'wbizfobu-public',
+            'WbizfobuPublic',
             [
                 'ajaxUrl' => admin_url('admin-ajax.php'),
-                'nonce'   => wp_create_nonce('pulseforms_public_nonce'),
+                'nonce'   => wp_create_nonce('wbizfobu_public_nonce'),
             ]
         );
     }
 
     public function render_shortcode($atts) {
-        $atts = shortcode_atts(['id' => 0], $atts, 'pulseform');
+        $atts = shortcode_atts(['id' => 0], $atts, 'wbizfobu');
         $form_id = absint($atts['id']);
 
         if (!$form_id) {
@@ -56,7 +56,7 @@ class PulseForms_Form_Renderer {
         $style_settings = json_decode($form->style_settings, true);
 
         if (!is_array($fields)) {
-            PulseForms_Logger::log('error', 'form_render_failed', 'Wbizmo Form Builder could not render form because fields JSON is invalid.', [
+            WBIZFOBU_Logger::log('error', 'form_render_failed', 'Wbizmo Form Builder could not render form because fields JSON is invalid.', [
                 'form_id'    => $form_id,
                 'form_name'  => $form->name,
                 'page_url'   => $this->current_page_url(),
@@ -104,43 +104,43 @@ class PulseForms_Form_Renderer {
         ob_start();
         ?>
         <div
-            class="pulseforms-wrapper pulseforms-theme-<?php echo esc_attr($theme); ?> pulseforms-style-<?php echo esc_attr($style_mode); ?>"
+            class="wbizfobu-wrapper wbizfobu-theme-<?php echo esc_attr($theme); ?> wbizfobu-style-<?php echo esc_attr($style_mode); ?>"
             data-form-id="<?php echo esc_attr($form_id); ?>"
             style="<?php echo esc_attr($inline_style); ?>"
         >
-            <form class="pulseforms-form" method="post" enctype="multipart/form-data" novalidate>
-                <input type="hidden" name="action" value="pulseforms_submit_form">
-                <input type="hidden" name="pulseforms_form_id" value="<?php echo esc_attr($form_id); ?>">
-                <input type="hidden" name="pulseforms_page_url" value="<?php echo esc_url($this->current_page_url()); ?>">
-                <input type="hidden" name="pulseforms_nonce" value="<?php echo esc_attr(wp_create_nonce('pulseforms_submit_' . $form_id)); ?>">
+            <form class="wbizfobu-form" method="post" enctype="multipart/form-data" novalidate>
+                <input type="hidden" name="action" value="wbizfobu_submit_form">
+                <input type="hidden" name="wbizfobu_form_id" value="<?php echo esc_attr($form_id); ?>">
+                <input type="hidden" name="wbizfobu_page_url" value="<?php echo esc_url($this->current_page_url()); ?>">
+                <input type="hidden" name="wbizfobu_nonce" value="<?php echo esc_attr(wp_create_nonce('wbizfobu_submit_' . $form_id)); ?>">
 
                 <?php if ($captcha_enabled) : ?>
-                    <input type="hidden" name="pulseforms_captcha_hash" value="<?php echo esc_attr(wp_hash((string) $captcha_answer)); ?>">
+                    <input type="hidden" name="wbizfobu_captcha_hash" value="<?php echo esc_attr(wp_hash((string) $captcha_answer)); ?>">
                 <?php endif; ?>
 
-                <div class="pulseforms-hp-field" aria-hidden="true">
+                <div class="wbizfobu-hp-field" aria-hidden="true">
                     <label>
                         <?php esc_html_e('Leave this field empty', 'wbizmo-form-builder'); ?>
-                        <input type="text" name="pulseforms_website" tabindex="-1" autocomplete="off">
+                        <input type="text" name="wbizfobu_website" tabindex="-1" autocomplete="off">
                     </label>
                 </div>
 
-                <div class="pulseforms-fields">
+                <div class="wbizfobu-fields">
                     <?php foreach ($fields as $field) : ?>
                         <?php echo $this->render_field($field); ?>
                     <?php endforeach; ?>
 
                     <?php if ($captcha_enabled) : ?>
-                        <div class="pulseforms-field pulseforms-field-captcha pulseforms-width-full">
-                            <label for="pulseforms_captcha_<?php echo esc_attr($form_id); ?>">
+                        <div class="wbizfobu-field wbizfobu-field-captcha wbizfobu-width-full">
+                            <label for="wbizfobu_captcha_<?php echo esc_attr($form_id); ?>">
                                 <?php echo esc_html(sprintf(__('Security check: What is %d + %d?', 'wbizmo-form-builder'), $captcha_a, $captcha_b)); ?>
-                                <span class="pulseforms-required">*</span>
+                                <span class="wbizfobu-required">*</span>
                             </label>
 
                             <input
                                 type="number"
-                                id="pulseforms_captcha_<?php echo esc_attr($form_id); ?>"
-                                name="pulseforms_captcha_answer"
+                                id="wbizfobu_captcha_<?php echo esc_attr($form_id); ?>"
+                                name="wbizfobu_captcha_answer"
                                 placeholder="<?php esc_attr_e('Enter answer', 'wbizmo-form-builder'); ?>"
                                 required
                             >
@@ -148,14 +148,14 @@ class PulseForms_Form_Renderer {
                     <?php endif; ?>
                 </div>
 
-                <div class="pulseforms-actions">
-                    <button type="submit" class="pulseforms-submit">
-                        <span class="pulseforms-submit-text"><?php echo esc_html($submit_text); ?></span>
-                        <span class="pulseforms-loader" aria-hidden="true"></span>
+                <div class="wbizfobu-actions">
+                    <button type="submit" class="wbizfobu-submit">
+                        <span class="wbizfobu-submit-text"><?php echo esc_html($submit_text); ?></span>
+                        <span class="wbizfobu-loader" aria-hidden="true"></span>
                     </button>
                 </div>
 
-                <div class="pulseforms-feedback" role="status" aria-live="polite"></div>
+                <div class="wbizfobu-feedback" role="status" aria-live="polite"></div>
             </form>
         </div>
         <?php
@@ -167,7 +167,7 @@ class PulseForms_Form_Renderer {
         global $wpdb;
 
         return $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wbizmo_form_builder_forms WHERE id = %d", $form_id)
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wbizfobu_forms WHERE id = %d", $form_id)
         );
     }
 
@@ -180,17 +180,17 @@ class PulseForms_Form_Renderer {
         $required_attr = $required ? ' required' : '';
         $width = isset($field['width']) ? sanitize_key($field['width']) : 'full';
 
-        $name = 'pulseforms_fields[' . $id . ']';
-        $field_id = 'pulseforms_' . $id . '_' . wp_rand(1000, 9999);
+        $name = 'wbizfobu_fields[' . $id . ']';
+        $field_id = 'wbizfobu_' . $id . '_' . wp_rand(1000, 9999);
 
         ob_start();
         ?>
-        <div class="pulseforms-field pulseforms-field-<?php echo esc_attr($type); ?> pulseforms-width-<?php echo esc_attr($width); ?>">
+        <div class="wbizfobu-field wbizfobu-field-<?php echo esc_attr($type); ?> wbizfobu-width-<?php echo esc_attr($width); ?>">
             <?php if (!in_array($type, ['hidden', 'html'], true)) : ?>
                 <label for="<?php echo esc_attr($field_id); ?>">
                     <?php echo esc_html($label); ?>
                     <?php if ($required) : ?>
-                        <span class="pulseforms-required">*</span>
+                        <span class="wbizfobu-required">*</span>
                     <?php endif; ?>
                 </label>
             <?php endif; ?>
@@ -234,11 +234,11 @@ class PulseForms_Form_Renderer {
                 case 'checkbox':
                     $options = isset($field['options']) && is_array($field['options']) ? $field['options'] : ['Yes'];
                     ?>
-                    <div class="pulseforms-choice-list">
+                    <div class="wbizfobu-choice-list">
                         <?php foreach ($options as $index => $option) : ?>
-                            <label class="pulseforms-choice">
+                            <label class="wbizfobu-choice">
                                 <input type="checkbox" name="<?php echo esc_attr($name); ?>[]" value="<?php echo esc_attr($option); ?>"<?php echo $required && $index === 0 ? ' required' : ''; ?>>
-                                <span class="pulseforms-checkbox-ui"></span>
+                                <span class="wbizfobu-checkbox-ui"></span>
                                 <span><?php echo esc_html($option); ?></span>
                             </label>
                         <?php endforeach; ?>
@@ -249,11 +249,11 @@ class PulseForms_Form_Renderer {
                 case 'radio':
                     $options = isset($field['options']) && is_array($field['options']) ? $field['options'] : ['Option One', 'Option Two'];
                     ?>
-                    <div class="pulseforms-choice-list">
+                    <div class="wbizfobu-choice-list">
                         <?php foreach ($options as $option) : ?>
-                            <label class="pulseforms-choice">
+                            <label class="wbizfobu-choice">
                                 <input type="radio" name="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($option); ?>"<?php echo esc_attr($required_attr); ?>>
-                                <span class="pulseforms-radio-ui"></span>
+                                <span class="wbizfobu-radio-ui"></span>
                                 <span><?php echo esc_html($option); ?></span>
                             </label>
                         <?php endforeach; ?>
@@ -263,9 +263,9 @@ class PulseForms_Form_Renderer {
 
                 case 'toggle':
                     ?>
-                    <label class="pulseforms-toggle">
+                    <label class="wbizfobu-toggle">
                         <input type="checkbox" name="<?php echo esc_attr($name); ?>" value="1">
-                        <span class="pulseforms-toggle-ui"></span>
+                        <span class="wbizfobu-toggle-ui"></span>
                         <span><?php echo esc_html($placeholder ?: __('Enable option', 'wbizmo-form-builder')); ?></span>
                     </label>
                     <?php
@@ -277,7 +277,7 @@ class PulseForms_Form_Renderer {
 
                 case 'file':
                     ?>
-                    <div class="pulseforms-file">
+                    <div class="wbizfobu-file">
                         <input type="file" id="<?php echo esc_attr($field_id); ?>" name="<?php echo esc_attr($name); ?>"<?php echo esc_attr($required_attr); ?>>
                         <label for="<?php echo esc_attr($field_id); ?>">
                             <span class="dashicons dashicons-upload"></span>
@@ -296,7 +296,7 @@ class PulseForms_Form_Renderer {
 
                 case 'html':
                     ?>
-                    <div class="pulseforms-html-block">
+                    <div class="wbizfobu-html-block">
                         <?php echo wp_kses_post($placeholder); ?>
                     </div>
                     <?php
@@ -322,7 +322,7 @@ class PulseForms_Form_Renderer {
     }
 
     private function render_error_notice($message) {
-        return '<div class="pulseforms-wrapper"><div class="pulseforms-system-notice"><span class="dashicons dashicons-warning"></span>' . esc_html($message) . '</div></div>';
+        return '<div class="wbizfobu-wrapper"><div class="wbizfobu-system-notice"><span class="dashicons dashicons-warning"></span>' . esc_html($message) . '</div></div>';
     }
 
     private function current_page_url() {
