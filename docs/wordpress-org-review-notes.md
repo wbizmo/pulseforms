@@ -2,290 +2,217 @@
 
 ## Submission Information
 
-Plugin: PulseForms
-Slug: pulseforms
-Version Submitted: 1.0.1
-Submission Date: 2026-06-23
+Original Working Name: PulseForms
+Current Plugin Name: Wbizmo Form Builder
+Requested Slug: wbizmo-form-builder
+Current Package Version: 1.0.5
+Original Submission Date: 2026-06-23
+Repository: https://github.com/wbizmo/pulseforms
 
-Status: Awaiting Review
+Status:
+Ready for WordPress.org resubmission after prefix, branding, shortcode, remote asset, and custom CSS remediation.
 
-Automated Scan Result: PASS
+---
+
+## Purpose of This Document
+
+This file tracks the WordPress.org review feedback, remediation work, release updates, and packaging history for the plugin now submitted as **Wbizmo Form Builder**.
+
+The GitHub repository remains named `pulseforms` for historical continuity, but the submitted plugin package is:
+
+`wbizmo-form-builder`
+
+---
+
+## Review Feedback Summary
+
+The WordPress.org review process raised the following issues:
+
+- Plugin name/slug similarity concerns around the original PulseForms name.
+- Custom CSS input/output was not allowed.
+- Remote assets were loaded without opt-in.
+- Google Fonts / Material Symbols dependency needed removal.
+- GitHub-hosted profile image needed removal.
+- Raw form builder JSON needed sanitization before logging.
+- Generic or inconsistent internal prefixes needed replacement.
+- Options, hooks, classes, constants, AJAX actions, script handles, and shortcodes needed unique plugin-specific prefixes.
+
+---
+
+## Final Public Identity
+
+Plugin Name:
+Wbizmo Form Builder
+
+Requested WordPress.org Slug:
+wbizmo-form-builder
+
+Package Folder:
+wbizmo-form-builder
+
+Main Plugin File:
+wbizmo-form-builder.php
+
+Text Domain:
+wbizmo-form-builder
+
+Unique Internal Prefix:
+wbizfobu
+
+Canonical Shortcode:
+[wbizfobu_form id="1"]
+
+---
+
+## Completed Remediation
+
+### Branding and Naming
+
+- Renamed submitted plugin package from PulseForms to Wbizmo Form Builder.
+- Updated plugin headers.
+- Updated readme metadata.
+- Updated WordPress admin branding.
+- Updated package folder name.
+- Requested new WordPress.org slug: `wbizmo-form-builder`.
+
+### Remote Asset and Privacy Remediation
+
+- Removed Google Fonts dependency.
+- Removed Material Symbols dependency.
+- Removed remote GitHub avatar loading.
+- Confirmed no remote asset references remain in the submitted package.
+
+### Custom CSS Remediation
+
+- Removed Custom CSS editor/input.
+- Removed Custom CSS storage.
+- Removed frontend Custom CSS rendering.
+- Confirmed no custom CSS feature references remain in the submitted package.
+
+### Sanitization and Security Remediation
+
+- Sanitized form builder JSON before decoding/logging.
+- Verified nonce usage.
+- Verified capability checks.
+- Verified server-side validation.
+- Verified upload validation.
+- Verified user-safe frontend error handling.
+- Verified admin-side diagnostic logging.
+
+### Prefix Compliance Remediation
+
+- Replaced old internal package identifiers with `wbizfobu`.
+- Updated PHP classes to use `WBIZFOBU_`.
+- Updated constants to use `WBIZFOBU_`.
+- Updated option names to use `wbizfobu_`.
+- Updated database table names to use `wbizfobu_`.
+- Updated AJAX actions to use `wbizfobu_`.
+- Updated scheduled cleanup hook to use `wbizfobu_`.
+- Updated script handles to use `wbizfobu-`.
+- Updated localized frontend object to `WbizfobuPublic`.
+- Updated shortcode to `[wbizfobu_form]`.
+- Removed shortcode aliases from the submitted package.
+
+---
+
+## Release History During Review
+
+### v1.0.1
+
+Initial compliance package after the first review response.
+
+Included:
+
+- Plugin renamed to Wbizmo Form Builder.
+- Package folder renamed to `wbizmo-form-builder`.
+- Initial remote asset and custom CSS remediation.
+
+### v1.0.2
+
+Version alignment and readme cleanup release.
+
+Included:
+
+- Updated plugin version metadata.
+- Updated readme stable tag.
+- Corrected package/readme version mismatch.
+
+### v1.0.3
+
+Prefix compliance release.
+
+Included:
+
+- Began replacing old internal identifiers.
+- Introduced `wbizfobu` internal prefix.
+- Updated classes, constants, options, hooks, and file names.
+
+### v1.0.4
+
+Full branding and prefix cleanup release.
+
+Included:
+
+- Removed remaining old internal identifiers from the submitted package.
+- Updated shortcode to `[wbizfobu_form]`.
+- Updated package-wide references to use the Wbizmo Form Builder public identity and `wbizfobu` internal prefix.
+
+### v1.0.5
+
+Final shortcode and prefix finalization release.
+
+Included:
+
+- Removed extra `[wbizfobu]` shortcode alias.
+- Left `[wbizfobu_form]` as the single canonical shortcode.
+- Confirmed no old `PulseForms`, `pulseforms`, `pulseform`, `wbizmo_form`, or `wbizmo_form_builder` identifiers remain in the submitted package.
+- Confirmed no remote asset references remain.
+- Confirmed no custom CSS feature references remain.
+- Confirmed PHP lint passes across the submitted package.
+- Rebuilt WordPress.org submission ZIP.
+
+---
+
+## Latest Generated Package
+
+release/wbizmo-form-builder.zip
+
+---
+
+## Latest Validation Summary
+
+Validated before resubmission:
+
+- PHP lint passed.
+- Version metadata checked.
+- Stable tag checked.
+- Shortcode checked.
+- Old identifier scan passed.
+- Remote asset scan passed.
+- Custom CSS scan passed.
+- Nonce usage checked.
+- Capability checks checked.
+- Sanitization usage checked.
+- AJAX action prefix scan passed.
+- Option name prefix scan passed.
+- Database table prefix scan passed.
+- Cron hook prefix scan passed.
+- Package ZIP rebuilt.
 
 ---
 
 ## Notes
 
-This file tracks all WordPress.org review feedback, fixes, commits, and release updates related to the PulseForms plugin approval process.
+The repository intentionally remains:
 
-Repository:
 https://github.com/wbizmo/pulseforms
 
-Plugin Directory Slug:
-https://wordpress.org/plugins/pulseforms/
+This preserves the original development history.
 
-## Wbizmo Form Builder Rename and WordPress.org Compliance Notes
-
-The plugin was originally developed under the working name **PulseForms**.
-
-For WordPress.org resubmission, the distributable plugin package is being renamed to **Wbizmo Form Builder** with the requested slug:
-
-`wbizmo-form-builder`
-
-The GitHub repository may remain named `pulseforms` for project continuity and historical context, but the submitted WordPress plugin package uses the compliant public identity.
-
-### Naming Timeline
-
-| Version | Public/Working Name |
-| --- | --- |
-| 1.0.0 development build | PulseForms |
-| 1.0.1+ WordPress.org package | Wbizmo Form Builder |
-
-### Review-Focused Changes Planned
-
-- Rename submitted plugin package to Wbizmo Form Builder.
-- Use `wbizmo-form-builder` as the WordPress.org slug request.
-- Remove arbitrary custom CSS input/output.
-- Remove remote asset loading.
-- Remove dynamic GitHub avatar loading.
-- Sanitize raw JSON before logging.
-- Keep form styling system intact through controlled settings and built-in themes.
-- Rebuild ZIP as `release/wbizmo-form-builder.zip`.
-
-
-## Wbizmo Form Builder Rename and WordPress.org Compliance Notes
-
-The plugin was originally developed under the working name **PulseForms**.
-
-For WordPress.org resubmission, the distributable plugin package is being renamed to **Wbizmo Form Builder** with the requested slug:
-
-`wbizmo-form-builder`
-
-The GitHub repository may remain named `pulseforms` for project continuity and historical context, but the submitted WordPress plugin package uses the compliant public identity.
-
-### Naming Timeline
-
-| Version | Public/Working Name |
-| --- | --- |
-| 1.0.0 development build | PulseForms |
-| 1.0.1+ WordPress.org package | Wbizmo Form Builder |
-
-### Review-Focused Changes Planned
-
-- Rename submitted plugin package to Wbizmo Form Builder.
-- Use `wbizmo-form-builder` as the WordPress.org slug request.
-- Remove arbitrary custom CSS input/output.
-- Remove remote asset loading.
-- Remove dynamic GitHub avatar loading.
-- Sanitize raw JSON before logging.
-- Keep form styling system intact through controlled settings and built-in themes.
-- Rebuild ZIP as `release/wbizmo-form-builder.zip`.
-
-
-## Sprint 2 Compliance Updates
-
-- Removed arbitrary Custom CSS feature.
-- Removed Custom CSS storage.
-- Removed frontend inline style output.
-- Removed Google Fonts / Material Symbols remote asset loading.
-- Sanitized form_fields before JSON decoding and logging.
-- Preparing package for WordPress.org compliance review.
-
-
-## Sprint 3 Package Identity Updates
-
-- Updated compliant package branding to Wbizmo Form Builder.
-- Updated WordPress admin page slugs in the package folder.
-- Updated text domain references in the package folder.
-- Updated plugin option names, scheduled cleanup hook, and database table names for the compliant package.
-- Added `[wbizmo_form]` shortcode.
-- Kept `[pulseform]` as a legacy alias for development/demo compatibility.
-
-
-## Final Compliance Package Build
-
-- Fixed invalid PHP identifiers caused by branding rename.
-- Confirmed PHP syntax lint passes across the Wbizmo Form Builder package.
-- Removed remaining remote GitHub avatar image.
-- Removed remaining Material Symbols references.
-- Added `[wbizmo_form]` shortcode while preserving `[pulseform]` as a legacy alias.
-- Built resubmission ZIP as `release/wbizmo-form-builder.zip`.
-
-
----
-
-## Release v1.0.1
-
-Release Date: 2026-06-24
-
-Status:
-Ready for WordPress.org Resubmission
-
-Release Title:
-Wbizmo Form Builder 1.0.1 – WordPress.org Compliance Release
-
-Summary
-
-This release completes the first WordPress.org compliance remediation cycle.
-
-The project transitions from the original PulseForms working identity to the public WordPress.org package identity:
+The WordPress.org package identity is:
 
 Wbizmo Form Builder
 
-Completed During Review Cycle
-
-- Removed arbitrary Custom CSS functionality.
-- Removed frontend Custom CSS rendering.
-- Removed remote GitHub avatar loading.
-- Removed Google Fonts dependency.
-- Removed Material Symbols dependency.
-- Improved sanitization around form builder JSON processing.
-- Added WordPress.org compliant package branding.
-- Added [wbizmo_form] shortcode.
-- Preserved [pulseform] shortcode for backwards compatibility.
-- Updated package namespace references.
-- Updated option namespace references.
-- Updated scheduled cleanup namespace references.
-- Updated database table namespace references.
-
-Validation
-
-- PHP lint passed.
-- Remote asset scan passed.
-- Compliance audit passed.
-- Shortcode validation passed.
-- Package validation passed.
-
-Generated Package
-
-release/wbizmo-form-builder.zip
-
-Repository
-
-https://github.com/wbizmo/pulseforms
-
-Notes
-
-The GitHub repository intentionally remains named "pulseforms" for project continuity and historical traceability.
-
-The WordPress.org package and public plugin identity use:
+The requested WordPress.org slug is:
 
 wbizmo-form-builder
-
-
----
-
-## Release v1.0.2
-
-Release Date: 2026-06-24
-
-Status:
-Ready for WordPress.org Resubmission
-
-Release Title:
-Wbizmo Form Builder 1.0.2 – WordPress.org Compliance Release
-
-Summary
-
-This release completes the WordPress.org compliance remediation cycle and formally transitions the submitted package from PulseForms to Wbizmo Form Builder.
-
-Completed During Review Cycle
-
-- Renamed submitted plugin package to Wbizmo Form Builder.
-- Renamed WordPress.org package folder to wbizmo-form-builder.
-- Removed arbitrary Custom CSS functionality.
-- Removed frontend Custom CSS rendering.
-- Removed remote GitHub avatar loading.
-- Removed Google Fonts dependency.
-- Removed Material Symbols dependency.
-- Improved sanitization around form builder JSON processing.
-- Added [wbizmo_form] shortcode.
-- Preserved [pulseform] shortcode for backwards compatibility.
-- Updated package namespace references.
-- Updated option namespace references.
-- Updated cleanup scheduler namespace references.
-- Updated database table namespace references.
-
-Validation
-
-- PHP lint passed.
-- Remote asset scan passed.
-- Compliance audit passed.
-- Shortcode validation passed.
-- Package validation passed.
-
-Generated Package
-
-release/wbizmo-form-builder.zip
-
-Repository
-
-https://github.com/wbizmo/pulseforms
-
-
----
-
-## Release v1.0.4
-
-Status:
-Ready for WordPress.org Resubmission
-
-Release Title:
-Wbizmo Form Builder 1.0.4 – Full Prefix and Branding Compliance Release
-
-Summary
-
-This release completes the full internal branding and prefix cleanup requested during WordPress.org review.
-
-The submitted package now uses the Wbizmo Form Builder public identity and the unique internal prefix:
-
-wbizfobu
-
-Completed During Review Cycle
-
-- Removed remaining old PulseForms identifiers from the submitted package.
-- Removed old pulseforms and pulseform internal references from package code.
-- Updated PHP class names to use the WBIZFOBU_ prefix.
-- Updated plugin constants to use the WBIZFOBU_ prefix.
-- Updated internal include filenames to use the class-wbizfobu-* naming pattern.
-- Updated options, hooks, AJAX actions, transients, script handles, and table names to use wbizfobu-based naming.
-- Updated shortcode to [wbizfobu_form].
-- Removed legacy shortcode aliases from the submitted package.
-- Confirmed no old package identifiers remain in the Wbizmo Form Builder distributable folder.
-- Confirmed PHP lint passes across the package.
-- Rebuilt WordPress.org submission ZIP.
-
-Generated Package
-
-release/wbizmo-form-builder.zip
-
-
----
-
-## Release v1.0.5
-
-Status:
-Ready for WordPress.org Resubmission
-
-Release Title:
-Wbizmo Form Builder 1.0.5 – Shortcode and Prefix Finalization Release
-
-Summary
-
-This release removes the extra `[wbizfobu]` shortcode alias and leaves `[wbizfobu_form]` as the single canonical shortcode in the submitted package.
-
-Completed During Review Cycle
-
-- Removed extra `[wbizfobu]` shortcode alias.
-- Updated admin-displayed shortcodes to `[wbizfobu_form]`.
-- Confirmed no old PulseForms identifiers remain in the submitted package.
-- Confirmed no old `pulseforms` or `pulseform` identifiers remain in the submitted package.
-- Confirmed no old `wbizmo_form` or `wbizmo_form_builder` identifiers remain in the submitted package.
-- Confirmed no remote asset references remain.
-- Confirmed no custom CSS feature references remain.
-- Confirmed PHP lint passes across the package.
-- Rebuilt WordPress.org submission ZIP.
-
-Generated Package
-
-release/wbizmo-form-builder.zip
-
