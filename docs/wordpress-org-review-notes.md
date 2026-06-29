@@ -258,3 +258,34 @@ Generated Package
 
 release/wbizmo-form-builder.zip
 
+
+---
+
+## Release v1.0.5
+
+Status:
+Ready for WordPress.org Resubmission
+
+Release Title:
+Wbizmo Form Builder 1.0.5 – Shortcode and Prefix Finalization Release
+
+Summary
+
+This release removes the extra `[wbizfobu]` shortcode alias and leaves `[wbizfobu_form]` as the single canonical shortcode in the submitted package.
+
+Completed During Review Cycle
+
+- Removed extra `[wbizfobu]` shortcode alias.
+- Updated admin-displayed shortcodes to `[wbizfobu_form]`.
+- Confirmed no old PulseForms identifiers remain in the submitted package.
+- Confirmed no old `pulseforms` or `pulseform` identifiers remain in the submitted package.
+- Confirmed no old `wbizmo_form` or `wbizmo_form_builder` identifiers remain in the submitted package.
+- Confirmed no remote asset references remain.
+- Confirmed no custom CSS feature references remain.
+- Confirmed PHP lint passes across the package.
+- Rebuilt WordPress.org submission ZIP.
+
+Generated Package
+
+release/wbizmo-form-builder.zip
+

@@ -80,8 +80,8 @@ if (!defined('ABSPATH')) {
 
                                 <td>
                                     <div class="pf-shortcode-copy">
-                                        <code>[wbizfobu id="<?php echo esc_attr($form->id); ?>"]</code>
-                                        <button type="button" class="pf-icon-btn pf-copy-shortcode" data-shortcode='[wbizfobu id="<?php echo esc_attr($form->id); ?>"]'>
+                                        <code>[wbizfobu_form id="<?php echo esc_attr($form->id); ?>"]</code>
+                                        <button type="button" class="pf-icon-btn pf-copy-shortcode" data-shortcode='[wbizfobu_form id="<?php echo esc_attr($form->id); ?>"]'>
                                             <span class="dashicons">content_copy</span>
                                         </button>
                                     </div>
