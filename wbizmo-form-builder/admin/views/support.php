@@ -43,7 +43,7 @@ if (!defined('ABSPATH')) {
                         GitHub
                     </a>
 
-                    <a href="https://github.com/wbizmo/wbizfobu" target="_blank" rel="noopener noreferrer" class="pf-btn pf-btn-light">
+                    <a href="https://github.com/wbizmo/pulseforms" target="_blank" rel="noopener noreferrer" class="pf-btn pf-btn-light">
                         <span class="dashicons">open_in_new</span>
                         Plugin Repository
                     </a>
