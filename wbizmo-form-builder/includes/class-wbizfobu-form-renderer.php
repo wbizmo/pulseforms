@@ -7,7 +7,6 @@ if (!defined('ABSPATH')) {
 class WBIZFOBU_Form_Renderer {
     public function init() {
         add_shortcode('wbizfobu_form', [$this, 'render_shortcode']);
-        add_shortcode('wbizfobu', [$this, 'render_shortcode']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_public_assets']);
     }
 
