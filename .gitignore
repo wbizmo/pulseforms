@@ -1,14 +1,19 @@
 .replit
 replit.nix
 
+.agents/
 .config/
 .cache/
+.local/
 .upm/
 
 node_modules/
 vendor/
 
+wordpress-svn/
+
 .DS_Store
 Thumbs.db
 
 *.log
+*.tmp

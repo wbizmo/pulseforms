@@ -98,10 +98,10 @@ Yes. Forms can use built-in styling, inherit theme styling, use preset themes, c
 
 1. Forms admin page.
 2. Form creation screen.
-3. Frontend form display.
-4. Submission viewer.
-5. Logs viewer.
-6. Settings page.
+3. Submission viewer.
+4. Logs viewer.
+5. Settings page.
+6. Support page.
 
 == Changelog ==
 

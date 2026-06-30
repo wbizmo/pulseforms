@@ -1,10 +1,22 @@
-# Wbizmo Form Builder
+# PulseForms (now Wbizmo Form Builder)
 
-**Wbizmo Form Builder** is a modern WordPress form builder plugin focused on clean form creation, secure submissions, frontend styling, email notifications, file uploads, observability, and full ownership of collected data.
+**PulseForms** (now **Wbizmo Form Builder**) is a modern WordPress form builder plugin focused on clean form creation, secure submissions, frontend styling, email notifications, file uploads, observability, and full ownership of collected data.
 
-This package is the WordPress.org compliance edition of the original PulseForms project.
+During the WordPress.org review process, the plugin was renamed to **Wbizmo Form Builder** to comply with the WordPress Plugin Directory naming requirements while preserving the original GitHub repository and project history.
 
-The project was renamed during the WordPress.org review process to ensure a distinctive and compliant plugin identity.
+> **Project Update**
+>
+> The GitHub repository intentionally retains its original **PulseForms** name for project continuity and historical context.
+>
+> The plugin is now officially published on the WordPress Plugin Directory as **Wbizmo Form Builder**.
+>
+> **WordPress Plugin Directory**
+>
+> https://wordpress.org/plugins/wbizmo-form-builder/
+>
+> GitHub Repository:
+>
+> https://github.com/wbizmo/pulseforms
 
 ---
 
@@ -12,9 +24,9 @@ The project was renamed during the WordPress.org review process to ensure a dist
 
 Installable package:
 
+```
 release/wbizmo-form-builder.zip
-
----
+```
 
 ## WordPress.org Review History
 
@@ -317,8 +329,11 @@ https://github.com/wbizmo
 Repository:
 https://github.com/wbizmo/pulseforms
 
+WordPress Plugin:
+https://wordpress.org/plugins/wbizmo-form-builder/
+
 ---
 
 ## Version
 
-Current Version: 1.0.3
+Current Version: **1.0.6**
