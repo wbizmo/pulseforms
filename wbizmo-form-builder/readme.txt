@@ -4,7 +4,7 @@ Tags: forms, contact form, form builder, submissions, wordpress forms
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,14 @@ Yes. Forms can use built-in styling, inherit theme styling, use preset themes, c
 6. Support page.
 
 == Changelog ==
+
+= 1.0.7 =
+* Fixed a critical PHP 8 fatal error where wp_handle_upload() was called with an inline array instead of a reference-safe variable, which could break file-upload fields.
+* Hardened the frontend submission script to render server messages as text instead of HTML, removing a low-risk output-escaping gap.
+* Completed a full WordPress Coding Standards (PHPCS/WPCS) pass: added file/class/method DocBlocks, translator comments, Yoda conditions, and explicit ternaries across the codebase.
+* Wrapped remaining hardcoded admin-screen and email-template strings in translation functions for full i18n coverage.
+* Removed two unused, empty legacy class files.
+* Documented direct custom-table database queries with PHPCS justification comments per WordPress plugin review guidelines.
 
 = 1.0.4 =
 * Completed internal prefix cleanup using the wbizfobu prefix.

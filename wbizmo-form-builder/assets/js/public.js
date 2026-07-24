@@ -3,12 +3,13 @@
 
     function showFeedback(form, type, message) {
         const feedback = form.find(".wbizfobu-feedback");
-        const icon = type === "success" ? "check_circle" : "error";
 
         feedback
             .removeClass("is-success is-error")
             .addClass("is-visible is-" + type)
-            .html('<span class="dashicons dashicons-info"></span><span>' + message + '</span>');
+            .empty()
+            .append($('<span class="dashicons dashicons-info"></span>'))
+            .append($("<span></span>").text(message));
     }
 
     $(document).on("submit", ".wbizfobu-form", function (event) {
