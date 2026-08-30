@@ -1,0 +1,37 @@
+name: Security smoke
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  php-security-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP syntax
+        run: |
+          find pulseforms wbizmo-form-builder -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Upload and client-IP regressions
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          processors = [
+              Path('pulseforms/includes/class-pulseforms-form-processor.php'),
+              Path('wbizmo-form-builder/includes/class-wbizfobu-form-processor.php'),
+          ]
+          for path in processors:
+              text = path.read_text()
+              if re.search(r'wp_handle_upload\s*\(\s*\[', text, re.S):
+                  raise SystemExit(f'{path}: wp_handle_upload receives a temporary array')
+              if 'HTTP_CLIENT_IP' in text or 'HTTP_X_FORWARDED_FOR' in text:
+                  raise SystemExit(f'{path}: trusts caller-controlled forwarding headers')
+
+          canonical = Path('wbizmo-form-builder/wbizmo-form-builder.php').read_text()
+          if 'class-wbizfobu-private-files.php' not in canonical:
+              raise SystemExit('canonical plugin does not load private-file storage')
+          PY

@@ -31,6 +31,7 @@ require_once WBIZFOBU_PATH . 'includes/class-wbizfobu-logger.php';
 require_once WBIZFOBU_PATH . 'includes/class-wbizfobu-emailer.php';
 require_once WBIZFOBU_PATH . 'includes/class-wbizfobu-form-renderer.php';
 require_once WBIZFOBU_PATH . 'includes/class-wbizfobu-form-processor.php';
+require_once WBIZFOBU_PATH . 'includes/class-wbizfobu-private-files.php';
 
 register_activation_hook(__FILE__, ['WBIZFOBU_Activator', 'activate']);
 register_deactivation_hook(__FILE__, ['WBIZFOBU_Deactivator', 'deactivate']);
@@ -41,6 +42,9 @@ function wbizfobu_run() {
 
     $renderer = new WBIZFOBU_Form_Renderer();
     $renderer->init();
+
+    $private_files = new WBIZFOBU_Private_Files();
+    $private_files->init();
 
     $processor = new WBIZFOBU_Form_Processor();
     $processor->init();
