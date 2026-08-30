@@ -341,19 +341,20 @@ class WBIZFOBU_Form_Processor {
 
         require_once ABSPATH . 'wp-admin/includes/file.php';
 
-        $uploaded = wp_handle_upload(
-            [
-                'name'     => $file_name,
-                'type'     => $file_type,
-                'tmp_name' => $tmp_name,
-                'error'    => $error,
-                'size'     => $size,
-            ],
-            [
-                'test_form' => false,
-                'mimes'     => $allowed_mimes,
-            ]
-        );
+        // WordPress accepts the upload array by reference. Assign it to a variable
+        // first so PHP 8+ does not fatally reject a temporary array expression.
+        $upload = [
+            'name'     => $file_name,
+            'type'     => $file_type,
+            'tmp_name' => $tmp_name,
+            'error'    => $error,
+            'size'     => $size,
+        ];
+        $overrides = [
+            'test_form' => false,
+            'mimes'     => $allowed_mimes,
+        ];
+        $uploaded = wp_handle_upload($upload, $overrides);
 
         if (isset($uploaded['error'])) {
             WBIZFOBU_Logger::log('error', 'file_upload_failed', 'WordPress file upload handler failed.', [
@@ -491,15 +492,12 @@ class WBIZFOBU_Form_Processor {
     }
 
     private function get_user_ip_hash() {
-        $ip = '';
-
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = sanitize_text_field(wp_unslash($_SERVER['HTTP_CLIENT_IP']));
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR']));
-        } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
-            $ip = sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']));
-        }
+        // Caller-controlled forwarding headers are not trustworthy unless a known
+        // reverse proxy has already normalized them. WordPress receives the TCP
+        // peer in REMOTE_ADDR, so fail closed to that value by default.
+        $ip = !empty($_SERVER['REMOTE_ADDR'])
+            ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']))
+            : '';
 
         return $ip ? wp_hash($ip) : null;
     }
