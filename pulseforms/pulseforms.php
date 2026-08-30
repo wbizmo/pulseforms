@@ -25,6 +25,7 @@ define('PULSEFORMS_BASENAME', plugin_basename(__FILE__));
 
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-activator.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-deactivator.php';
+require_once PULSEFORMS_PATH . 'includes/class-pulseforms-security.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-admin.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-logger.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-emailer.php';
@@ -35,6 +36,9 @@ register_activation_hook(__FILE__, ['PulseForms_Activator', 'activate']);
 register_deactivation_hook(__FILE__, ['PulseForms_Deactivator', 'deactivate']);
 
 function pulseforms_run() {
+    $security = new PulseForms_Security();
+    $security->init();
+
     $admin = new PulseForms_Admin();
     $admin->init();
 
