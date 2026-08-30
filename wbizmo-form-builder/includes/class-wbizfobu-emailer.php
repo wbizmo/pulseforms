@@ -1,101 +1,160 @@
 <?php
+/**
+ * Sends admin notification and user confirmation emails for form submissions.
+ *
+ * @package Wbizmo_Form_Builder
+ */
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
+/**
+ * Builds and sends transactional emails for form submissions.
+ */
 class WBIZFOBU_Emailer {
-    public function send_admin_notification($form, $submission_id, $clean_data, $page_url) {
-        $to = get_option('admin_email');
 
-        if (!$to || !is_email($to)) {
-            return new WP_Error('invalid_admin_email', 'The site admin email address is invalid.');
-        }
+	/**
+	 * Send the admin notification email for a submission.
+	 *
+	 * @param object $form          Form database row.
+	 * @param int    $submission_id Saved submission ID, or null when not saved.
+	 * @param array  $clean_data    Sanitized submitted field data.
+	 * @param string $page_url      URL of the page the form was submitted from.
+	 * @return true|WP_Error True on success, WP_Error on failure.
+	 */
+	public function send_admin_notification( $form, $submission_id, $clean_data, $page_url ) {
+		$to = get_option( 'admin_email' );
 
-        $subject = sprintf(
-            __('New submission from %s', 'wbizmo-form-builder'),
-            $form->name
-        );
+		if ( ! $to || ! is_email( $to ) ) {
+			return new WP_Error( 'invalid_admin_email', __( 'The site admin email address is invalid.', 'wbizmo-form-builder' ) );
+		}
 
-        $body = $this->render_template('admin-notification.php', [
-            'site_name'     => get_bloginfo('name'),
-            'title'         => __('New Form Submission', 'wbizmo-form-builder'),
-            'intro'         => sprintf(__('A new submission was received from %s.', 'wbizmo-form-builder'), $form->name),
-            'form'          => $form,
-            'submission_id' => $submission_id,
-            'clean_data'    => $clean_data,
-            'page_url'      => $page_url,
-            'footer'        => __('This notification was sent by Wbizmo Form Builder.', 'wbizmo-form-builder'),
-        ]);
+		// translators: %s is the form name.
+		$subject = sprintf( __( 'New submission from %s', 'wbizmo-form-builder' ), $form->name );
 
-        return $this->send($to, $subject, $body);
-    }
+		$body = $this->render_template(
+			'admin-notification.php',
+			array(
+				'site_name'     => get_bloginfo( 'name' ),
+				'title'         => __( 'New Form Submission', 'wbizmo-form-builder' ),
+				/* translators: %s is the form name. */
+				'intro'         => sprintf( __( 'A new submission was received from %s.', 'wbizmo-form-builder' ), $form->name ),
+				'form'          => $form,
+				'submission_id' => $submission_id,
+				'clean_data'    => $clean_data,
+				'page_url'      => $page_url,
+				'footer'        => __( 'This notification was sent by Wbizmo Form Builder.', 'wbizmo-form-builder' ),
+			)
+		);
 
-    public function send_user_confirmation($form, $submission_id, $clean_data, $page_url) {
-        $user_email = $this->extract_email_from_submission($clean_data);
+		return $this->send( $to, $subject, $body );
+	}
 
-        if (!$user_email || !is_email($user_email)) {
-            return new WP_Error('missing_user_email', 'Wbizmo Form Builder could not find a valid user email field.');
-        }
+	/**
+	 * Send the confirmation email to the person who submitted the form.
+	 *
+	 * @param object $form          Form database row.
+	 * @param int    $submission_id Saved submission ID, or null when not saved.
+	 * @param array  $clean_data    Sanitized submitted field data.
+	 * @param string $page_url      URL of the page the form was submitted from.
+	 * @return true|WP_Error True on success, WP_Error on failure.
+	 */
+	public function send_user_confirmation( $form, $submission_id, $clean_data, $page_url ) {
+		$user_email = $this->extract_email_from_submission( $clean_data );
 
-        $subject = sprintf(
-            __('We received your submission - %s', 'wbizmo-form-builder'),
-            get_bloginfo('name')
-        );
+		if ( ! $user_email || ! is_email( $user_email ) ) {
+			return new WP_Error( 'missing_user_email', __( 'Wbizmo Form Builder could not find a valid user email field.', 'wbizmo-form-builder' ) );
+		}
 
-        $body = $this->render_template('user-confirmation.php', [
-            'site_name'     => get_bloginfo('name'),
-            'title'         => __('Submission Received', 'wbizmo-form-builder'),
-            'intro'         => __('Thank you. Your submission has been received successfully.', 'wbizmo-form-builder'),
-            'form'          => $form,
-            'submission_id' => $submission_id,
-            'clean_data'    => $clean_data,
-            'page_url'      => $page_url,
-            'footer'        => sprintf(__('Sent from %s using Wbizmo Form Builder.', 'wbizmo-form-builder'), get_bloginfo('name')),
-        ]);
+		/* translators: %s is the site name. */
+		$subject = sprintf( __( 'We received your submission - %s', 'wbizmo-form-builder' ), get_bloginfo( 'name' ) );
 
-        return $this->send($user_email, $subject, $body);
-    }
+		$body = $this->render_template(
+			'user-confirmation.php',
+			array(
+				'site_name'     => get_bloginfo( 'name' ),
+				'title'         => __( 'Submission Received', 'wbizmo-form-builder' ),
+				'intro'         => __( 'Thank you. Your submission has been received successfully.', 'wbizmo-form-builder' ),
+				'form'          => $form,
+				'submission_id' => $submission_id,
+				'clean_data'    => $clean_data,
+				'page_url'      => $page_url,
+				/* translators: %s is the site name. */
+				'footer'        => sprintf( __( 'Sent from %s using Wbizmo Form Builder.', 'wbizmo-form-builder' ), get_bloginfo( 'name' ) ),
+			)
+		);
 
-    private function send($to, $subject, $body) {
-        $headers = [
-            'Content-Type: text/html; charset=UTF-8',
-        ];
+		return $this->send( $user_email, $subject, $body );
+	}
 
-        $sent = wp_mail($to, $subject, $body, $headers);
+	/**
+	 * Send an HTML email via wp_mail().
+	 *
+	 * @param string $to      Recipient email address.
+	 * @param string $subject Email subject.
+	 * @param string $body    Rendered HTML body.
+	 * @return true|WP_Error True on success, WP_Error on failure.
+	 */
+	private function send( $to, $subject, $body ) {
+		$headers = array(
+			'Content-Type: text/html; charset=UTF-8',
+		);
 
-        if (!$sent) {
-            return new WP_Error('wp_mail_failed', 'wp_mail returned false.');
-        }
+		$sent = wp_mail( $to, $subject, $body, $headers );
 
-        return true;
-    }
+		if ( ! $sent ) {
+			return new WP_Error( 'wp_mail_failed', __( 'wp_mail returned false.', 'wbizmo-form-builder' ) );
+		}
 
-    private function render_template($template, $args = []) {
-        $template_path = WBIZFOBU_PATH . 'templates/emails/' . $template;
+		return true;
+	}
 
-        if (!file_exists($template_path)) {
-            return '';
-        }
+	/**
+	 * Render an email template with the given variables and return the output.
+	 *
+	 * @param string $template Template file name relative to templates/emails/.
+	 * @param array  $args     Variables made available to the template.
+	 * @return string Rendered HTML, or an empty string if the template is missing.
+	 */
+	private function render_template( $template, $args = array() ) {
+		$template_path = WBIZFOBU_PATH . 'templates/emails/' . $template;
 
-        extract($args, EXTR_SKIP);
+		if ( ! file_exists( $template_path ) ) {
+			return '';
+		}
 
-        ob_start();
-        include $template_path;
-        return ob_get_clean();
-    }
+		$site_name     = isset( $args['site_name'] ) ? $args['site_name'] : '';
+		$title         = isset( $args['title'] ) ? $args['title'] : '';
+		$intro         = isset( $args['intro'] ) ? $args['intro'] : '';
+		$form          = isset( $args['form'] ) ? $args['form'] : null;
+		$submission_id = isset( $args['submission_id'] ) ? $args['submission_id'] : 0;
+		$clean_data    = isset( $args['clean_data'] ) ? $args['clean_data'] : array();
+		$page_url      = isset( $args['page_url'] ) ? $args['page_url'] : '';
+		$footer        = isset( $args['footer'] ) ? $args['footer'] : '';
 
-    private function extract_email_from_submission($clean_data) {
-        foreach ($clean_data as $field) {
-            if (
-                isset($field['type'], $field['value']) &&
-                $field['type'] === 'email' &&
-                is_email($field['value'])
-            ) {
-                return sanitize_email($field['value']);
-            }
-        }
+		ob_start();
+		include $template_path;
+		return ob_get_clean();
+	}
 
-        return null;
-    }
+	/**
+	 * Find the first valid email field value in the submitted data.
+	 *
+	 * @param array $clean_data Sanitized submitted field data.
+	 * @return string|null Email address, or null when none is found.
+	 */
+	private function extract_email_from_submission( $clean_data ) {
+		foreach ( $clean_data as $field ) {
+			if (
+				isset( $field['type'], $field['value'] ) &&
+				'email' === $field['type'] &&
+				is_email( $field['value'] )
+			) {
+				return sanitize_email( $field['value'] );
+			}
+		}
+
+		return null;
+	}
 }

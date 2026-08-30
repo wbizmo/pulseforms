@@ -1,22 +1,36 @@
 <?php
+/**
+ * Handles plugin activation tasks.
+ *
+ * @package Wbizmo_Form_Builder
+ */
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
+/**
+ * Creates the plugin's custom database tables and default options on activation.
+ */
 class WBIZFOBU_Activator {
-    public static function activate() {
-        global $wpdb;
 
-        $charset_collate = $wpdb->get_charset_collate();
+	/**
+	 * Create custom tables, default options, and the cleanup cron event.
+	 *
+	 * @return void
+	 */
+	public static function activate() {
+		global $wpdb;
 
-        $forms_table = $wpdb->prefix . 'wbizfobu_forms';
-        $submissions_table = $wpdb->prefix . 'wbizfobu_submissions';
-        $logs_table = $wpdb->prefix . 'wbizfobu_logs';
+		$charset_collate = $wpdb->get_charset_collate();
 
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		$forms_table       = $wpdb->prefix . 'wbizfobu_forms';
+		$submissions_table = $wpdb->prefix . 'wbizfobu_submissions';
+		$logs_table        = $wpdb->prefix . 'wbizfobu_logs';
 
-        $sql_forms = "CREATE TABLE $forms_table (
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+		$sql_forms = "CREATE TABLE $forms_table (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             name VARCHAR(191) NOT NULL,
             type VARCHAR(80) NOT NULL DEFAULT 'custom',
@@ -29,7 +43,7 @@ class WBIZFOBU_Activator {
             PRIMARY KEY  (id)
         ) $charset_collate;";
 
-        $sql_submissions = "CREATE TABLE $submissions_table (
+		$sql_submissions = "CREATE TABLE $submissions_table (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             form_id BIGINT(20) UNSIGNED NOT NULL,
             form_name VARCHAR(191) NULL,
@@ -45,7 +59,7 @@ class WBIZFOBU_Activator {
             KEY form_id (form_id)
         ) $charset_collate;";
 
-        $sql_logs = "CREATE TABLE $logs_table (
+		$sql_logs = "CREATE TABLE $logs_table (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             severity VARCHAR(30) NOT NULL DEFAULT 'info',
             event_type VARCHAR(120) NOT NULL,
@@ -68,24 +82,27 @@ class WBIZFOBU_Activator {
             KEY form_id (form_id)
         ) $charset_collate;";
 
-        dbDelta($sql_forms);
-        dbDelta($sql_submissions);
-        dbDelta($sql_logs);
+		dbDelta( $sql_forms );
+		dbDelta( $sql_submissions );
+		dbDelta( $sql_logs );
 
-        add_option('wbizfobu_version', WBIZFOBU_VERSION);
+		add_option( 'wbizfobu_version', WBIZFOBU_VERSION );
 
-        if (!get_option('wbizfobu_settings')) {
-            add_option('wbizfobu_settings', [
-                'upload_max_size'     => 5,
-                'allowed_file_types'  => 'jpg,jpeg,png,gif,pdf,doc,docx,txt',
-                'rate_limit_attempts' => 5,
-                'rate_limit_window'   => 10,
-                'log_retention_days'  => 30,
-            ]);
-        }
+		if ( ! get_option( 'wbizfobu_settings' ) ) {
+			add_option(
+				'wbizfobu_settings',
+				array(
+					'upload_max_size'     => 5,
+					'allowed_file_types'  => 'jpg,jpeg,png,gif,pdf,doc,docx,txt',
+					'rate_limit_attempts' => 5,
+					'rate_limit_window'   => 10,
+					'log_retention_days'  => 30,
+				)
+			);
+		}
 
-        if (!wp_next_scheduled('wbizfobu_daily_cleanup')) {
-            wp_schedule_event(time(), 'daily', 'wbizfobu_daily_cleanup');
-        }
-    }
+		if ( ! wp_next_scheduled( 'wbizfobu_daily_cleanup' ) ) {
+			wp_schedule_event( time(), 'daily', 'wbizfobu_daily_cleanup' );
+		}
+	}
 }
