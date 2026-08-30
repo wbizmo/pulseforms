@@ -29,12 +29,16 @@ require_once PULSEFORMS_PATH . 'includes/class-pulseforms-admin.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-logger.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-emailer.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-form-renderer.php';
+require_once PULSEFORMS_PATH . 'includes/class-pulseforms-private-files.php';
 require_once PULSEFORMS_PATH . 'includes/class-pulseforms-form-processor.php';
 
 register_activation_hook(__FILE__, ['PulseForms_Activator', 'activate']);
 register_deactivation_hook(__FILE__, ['PulseForms_Deactivator', 'deactivate']);
 
 function pulseforms_run() {
+    $private_files = new PulseForms_Private_Files();
+    $private_files->init();
+
     $admin = new PulseForms_Admin();
     $admin->init();
 
